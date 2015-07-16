@@ -1,0 +1,921 @@
+//импорт с-ф
+#include "bo_const.ch" 
+#define _NOMSTR_      1
+#define _NAME_TOV_    2
+#define _OKEY_        3
+#define _QUANTITY_    4
+#define _PRICE_       5
+#define _COST_NOT_TAX 6
+#define _COST_ALL_    7
+#define _LNDS_        8
+#define _NDS_RATE_    9
+#define _ID_NDS_RATE_ 10
+#define _LA_          11
+#define _A_RATE_      12
+#define _ID_A_RATE    13
+#define _NDS_SUM_     14
+#define _A_SUM_       15
+#define _COUNTRY_     16
+#define _GTD_         17
+#define _SF_STR_ID_   18
+#define _STR_TP_      19
+#define _GROUP_       20
+#define _NOM_NUM_     21
+#define _PART_        22
+#define _STR_FROM_    23
+#define _COMMENT_     24
+#define _STRN_ID_     25
+Function __ImportTaxInvXml(cFile,cFileName,cTiCtg,aMssg)
+local hxmldocs, a , elem
+altd()
+  if ValType(hxmldocs) == "O"
+     hxmldocs := nil
+  endif
+  a := {}
+  hxmldocs := HXMLDoc():new()
+  hxmldocs:read(cFile)
+  elem := hxmldocs:Find("Файл")
+  begin sequence
+    ParsXmlDoc(elem,a)     
+  recover
+     AADD(aMssg,"не правильная XML структура файла.")
+    Return .F.
+  end sequence
+  if !GetStructXmlDoc(a,cFileName,cTiCtg,@aMssg)
+    Return .F.
+  endif
+Return .T.
+ 
+Function GetStructXmlDoc(arr,cFile,cTiCtg,aMssg)
+local a := {},aStr := {},i
+local cParam,Value
+local idOtprav := "" , IdGrOtprav := "", cSobsName := "" , cGrOtpravName := ""
+local idPoluch := "" , idGrPoluch := "" ,cPoluchName := "" , cGrPoluchName := ""
+Local IsKor := .F.
+local cDocNum := "", cDocDopNum := "" , dDocDate := CTOD("") , cMoveTp := "", cValId := ""
+local lRet ,lNoNds
+local cMsg := ''
+local cDocNumDef := "", cDocNumKor := "",cDocDopNumDef := "", cDocDopNumKor := "",  dDocDateDef := CTOD(""),dDocDateKor := CTOD("")
+local cDocNumKorSfDef := "",cDocDopNumKorSfDef := "",cDateNumKorSfDef := CTOD("") //Исправительный к корректируемому - в корректировочном
+local IsDef := .F. , IsDefKorSf
+local IsBest5 := .F. , sTextInf := "" ,sTextInfStr := ""
+local idOper := "", nLen
+local cSfId := "", cSfDefId := ""
+local lAdd := .F.  , cSchet := ""
+Local nNomStr := 0,cNameTov := "", cOKEY := "",nQuan := 0,nPrice := 0
+local nCostNotTax := 0, nCostAll := 0,nTaxNdsRate := 0, IdTaxNdsRate := "",lA := .F.
+local nTaxARate := 0, IdTaxARate := "", nNdsSum := 0, nASum := 0, lNds := .T.
+local cCountry := "", cGTD := "", lStA := .F. , nRate := 0, IdRate := ""
+local cSfStrId := "",cStrTp := "",cGroup := "",cNomNum := "",cPart := "",cStrFrom := "", cComment := ""
+local aAns ,aIniValue , nSumSfNNds := 0, nSumSfNds := 0 , nSumSfA := 0  ,lNoNdsSf := .F.
+local cSfKorrId := "", IdPosred := "", cSfPosredId := ""
+local cKOP_NDS := "",cKOP_AST := "", cKOP_NNDS := "",cKOP_NDS0 := "",cKOP_AG_NDS := ""
+local dCUST_DATE := CTOD(""),dCONF_DATE := CTOD(""),cCompl_M := "",cStrNid := ""
+  for i := 1 to len(arr)
+    cParam := Upper(AllTrim(arr[i][1]))
+    Value := Upper(AllTrim(arr[i][2]))
+    DO CASE
+      CASE cParam == Upper("ИдФайл")
+        if AllTrim(Upper(Value + ".xml")) != Upper(AllTrim(cFile))
+           //if (6 != messagebox("Имя файла не соответствует имени в параметре 'ИдФайл'. Продолжить? ",TITLEAPP,68))
+           AADD(aMssg,"Имя файла не соответствует имени в параметре 'ИдФайл'")
+           Return .F.
+           //Endif
+        endif
+        if "ON_KORSFAKT_" $ Value
+          IsKor := .T.
+        endif
+      CASE cParam == Upper("ВерсПрог")
+        if Value == Upper("БЭСТ-5")
+          IsBest5 := .T.
+        endif
+      CASE cParam == Upper("ВерсФорм")
+        //if Value != Upper(AllTrim("5.02"))
+           //if (6 != messagebox("Версия формата " +  Value +". Продолжить? ",TITLEAPP,68))
+           //  Return .F.
+           //Endif
+        //endif
+      CASE cParam == Upper("ИдОтпр")
+        if Empty(Value)
+          AADD(aMssg,'Для отправителя не определен код участника электронного документооборота')
+          Return .F.
+        endif
+        idOtprav := Value
+
+      CASE cParam == Upper("ИдПок")
+        if Empty(Value)
+          AADD(aMssg,'Для покупателя не определен код участника электронного документооборота')
+          Return .F.
+        endif
+        idPoluch := Value
+
+      CASE cParam == Upper("КНД")
+/*
+        lRet := .T.
+        If IsKor
+          if Value != "1115108"
+            lRet := .F.
+          endif
+        else
+          if Value != "1115101"
+            lRet := .F.
+          endif
+        endif
+        if !lRet
+          if (6 != messagebox("Код формы по КНД:  " +  Value +". Продолжить? ",TITLEAPP,68))
+             Return .F.
+           Endif
+        endif */
+altd()
+     CASE cParam == Upper("ИдЭДО")
+       idOper := Value
+       if Empty(idOper)
+         AADD(aMssg,'Для отправителя не определен идентификатор оператора электронного документооборота')
+         Return .F.
+       endif
+       nLen := len(idOper)
+       idOtprav := SubStr(idOtprav,nLen + 1)
+       if Empty(idOtprav) .Or. !(DIC_PARTNER)->(DbSeek(idOtprav,.T.,"TAG_UCHEDO"))
+         AADD(aMssg,'Для отправителя не определен код участника электронного документооборота')
+         Return .F.
+       else
+         idOtprav := (DIC_PARTNER)->PART_ID
+       endif
+       idPoluch := SubStr(idPoluch,nLen + 1)
+       if Empty(idPoluch) .Or. !(DIC_PARTNER)->(DbSeek(idPoluch,.T.,"TAG_UCHEDO"))
+         AADD(aMssg,'Для отправителя не определен код участника электронного документооборота')
+         Return .F.
+       else
+         idPoluch := (DIC_PARTNER)->PART_ID
+       endif
+
+     CASE cParam == Upper("ИННЮЛ")
+       if Upper("СвУчДокОбор") $ Upper(AllTrim(arr[i][3]))
+         if !CheckPartnerForInn(Value,.T.)
+           AADD(aMssg,'Не определен оператор электронного документооборота')
+           Return .F.
+         endif
+       endif
+     CASE cParam == Upper("НаимОрг")
+       if Upper("СвСчФакт-СвПрод-ИдСв-СвЮЛ") $ Upper(AllTrim(arr[i][3]))
+         cSobsName := Value
+       endif
+       if Upper("СвСчФакт-СвПокуп-ИдСв-СвЮЛ") $ Upper(AllTrim(arr[i][3]))
+         cPoluchName := Value
+       endif
+       if Upper("СвСчФакт-ГрузОт-ГрузОтпр-НаимГОП") $ Upper(AllTrim(arr[i][3]))
+         cGrOtpravName := Value
+       endif
+       if Upper("СвСчФакт-ГрузПолуч-НаимГОП") $ Upper(AllTrim(arr[i][3]))
+         cGrPoluchName := Value
+       endif
+     CASE cParam == Upper("ОнЖе")
+        IdGrOtprav := IdOtprav
+     CASE cParam == Upper("ИННФЛ")
+       if Upper("СвСчФакт-ГрузОт-ГрузОтпр-НаимГОП") $ Upper(AllTrim(arr[i][3]))
+         if !CheckPartnerForInn(Value,.F.,@IdGrOtprav)
+           IdGrOtprav := ""
+           //не определен грузоотправитель
+         endif
+       endif
+       if Upper("СвСчФакт-ГрузПолуч-НаимГОП") $ Upper(AllTrim(arr[i][3]))
+         if !CheckPartnerForInn(Value,.F.,@IdGrPoluch)
+           IdGrPoluch := ""
+           //не определен грузоотправитель
+         endif
+       endif
+   ENDCASE
+  next
+  //Не можем определить адресса 
+
+  if !Empty(cGrOtpravName)
+    if cGrOtpravName == cSobsName
+      IdGrOtprav := idOtprav
+    else
+       //не определен грузоотправитель
+    endif
+  endif
+
+  if !Empty(cGrPoluchName)
+    if cGrPoluchName == cPoluchName
+      IdGrPoluch := idPoluch
+    else
+      //не определен грузополучатель
+    endif
+  endif
+
+
+  for i := 1 to len(arr)
+    cParam := Upper(AllTrim(arr[i][1]))
+    Value := AllTrim(arr[i][2])
+    DO CASE
+      CASE cParam == Upper("НомерСчФ")
+        cDocNum := AllTrim(arr[i][2])
+        if len(cDocNum) > 24          
+          cDocDopNum := SubStr(cDocNum,25)
+          cDocNum := PADR(AllTrim(cDocNum),24)
+        endif
+      CASE cParam == Upper("ДатаСчФ")
+        if !conversionDateFromXml(@Value)
+          cMsg := ''
+          cMsg += ' Не верно передана дата счета-фактуры. Изменена на текущую.' + CRLF
+          AADD(aMssg,cMsg)
+          //cMsg += ' Не верно передана дата счета-фактуры.' + CRLF
+          //cMsg += 'При записи будет изменена на текущую. Продолжить? '
+          //if (6 != messagebox(cMsg,TITLEAPP,68))
+          //   Return .F.
+          //Endif
+          dDocDate := date()
+        else
+          dDocDate := Value
+        endif
+      CASE cParam == Upper("КодОКВ")
+        if Empty(Value) .Or. !CheckValutaFromXml(@Value)
+          cMsg := ''
+          cMsg += ' Не верно передана валюта счета-фактуры. Изменена на основную валюту.' + CRLF
+          AADD(aMssg,cMsg)
+          //cMsg += ' Не верно передана валюта счета-фактуры.' + CRLF
+          //cMsg += 'При записи будет установлена основная валюта. Продолжить? '
+          //if (6 != messagebox(cMsg,TITLEAPP,68))
+          //   Return .F.
+          //Endif
+          GetCurrParam(@cValId,,,,.T.)
+        else
+          cValId := Value
+        endif
+      CASE cParam == Upper("НомИспрСчФ")
+        if !Empty(Value)
+          IsDef := .T.
+        endif
+        cDocNumDef := AllTrim(arr[i][2])
+        if len(cDocNumDef) > 24
+          cDocDopNumDef := SubStr(cDocNumDef,25) 
+          cDocNumDef := PADR(cDocNumDef,24)
+        endif
+      CASE cParam == Upper("ДатаИспрСчФ")
+        if !conversionDateFromXml(@Value)
+          cMsg := ''
+          cMsg += ' Не верно передана дата счета-фактуры. Изменена на текущую.' + CRLF
+          AADD(aMssg,cMsg)
+          //cMsg += ' Не верно передана дата счета-фактуры.' + CRLF
+          //cMsg += 'При записи будет изменена на текущую. Продолжить? '
+          //if (6 != messagebox(cMsg,TITLEAPP,68))
+          //   Return .F.
+          //Endif
+          dDocDateDef := date()
+        else
+          dDocDateDef := Value
+        endif
+      CASE cParam == Upper("НомерКСчФ")
+        cDocNumKor := AllTrim(arr[i][2])
+        if len(cDocNumKor) > 24
+          cDocDopNumKor := SubStr(cDocNumKor,25)
+          cDocNumKor := PADR(cDocNumKor,24)
+        endif
+      CASE cParam == Upper("ДатаКСчФ")
+        if !conversionDateFromXml(@Value)
+          cMsg := ''
+          cMsg += ' Не верно передана дата счета-фактуры. Изменена на текущую.' + CRLF
+          AADD(aMssg,cMsg)
+          //cMsg += ' Не верно передана дата счета-фактуры.' + CRLF
+          //cMsg += 'При записи будет изменена на текущую. Продолжить? '
+          //if (6 != messagebox(cMsg,TITLEAPP,68))
+          //   Return .F.
+          //Endif
+          dDocDateKor := date()
+        else
+          dDocDateKor := Value
+        endif
+      CASE cParam == Upper("НомИспрКСчФ")
+        if !Empty(Value)
+          IsDefKorSf := .T.
+        endif
+        cDocNumKorSfDef := AllTrim(arr[i][2])
+        if len(cDocNumKorSfDef) > 24
+          cDocDopNumKorSfDef := SubStr(cDocNumKorSfDef,25)
+          cDocNumKorSfDef := PADR(cDocNumKorSfDef,24)
+        endif
+      CASE cParam == Upper("ДатаИспрКСчФ")
+        if !conversionDateFromXml(@Value)
+          cMsg := ''
+          cMsg += ' Не верно передана дата счета-фактуры. Изменена на текущую.' + CRLF
+          AADD(aMssg,cMsg)
+          //cMsg += ' Не верно передана дата счета-фактуры.' + CRLF
+          //cMsg += 'При записи будет изменена на текущую. Продолжить? '
+          //if (6 != messagebox(cMsg,TITLEAPP,68))
+          //   Return .F.
+          //Endif
+          cDateNumKorSfDef := date()
+        else
+          cDateNumKorSfDef := Value
+        endif
+      CASE Upper("ИнфПол-ТекстИнф") $ Upper(AllTrim(arr[i][3]))
+
+          Do case
+            case  cParam == Upper("ИД_СФ")
+              cSfId := Value
+            case  cParam == Upper("TI_CTG")
+              if !Empty(Value) .And. Value $ "12"
+                cTiCtg := Value
+              endif
+            case  cParam == Upper("MOVE_TP")
+              cMoveTp := Value
+            case  cParam == Upper("DEF")
+              if Value == "T"
+                isDef := .T.
+              endif
+            case  cParam == Upper("SFD_ID")
+              cSfDefId := Value
+            case  cParam == Upper("ИД_Грузоотпр")
+              if !Empty(Value) .And. (DIC_PARTNER)->(DbSeek(Value,.T.,"TAG_UCHEDO"))
+                IdGrOtprav := (DIC_PARTNER)->PART_ID
+              endif
+            case  cParam == Upper("ИД_Грузопол")
+              if !Empty(Value) .And. (DIC_PARTNER)->(DbSeek(Value,.T.,"TAG_UCHEDO"))
+                idGrPoluch := (DIC_PARTNER)->PART_ID
+              endif
+            case  cParam == Upper("KORR")
+              if Value == "T"
+                IsKor := .T.
+              endif
+            case  cParam == Upper("ИД_ПОСРЕД")
+              if !Empty(Value) .And. (DIC_PARTNER)->(DbSeek(Value,.T.,"TAG_UCHEDO"))
+                IdPosred := (DIC_PARTNER)->PART_ID
+              endif
+            case  cParam == Upper("ИД_ПОСР_ОСНОВ")
+              cSfPosredId := Value
+            case  cParam == Upper("КОД_ОПЕР_СФ")
+              cKOP_NDS := Value
+            case  cParam == Upper("КОД_НДС0")
+              cKOP_NDS0 := Value
+            case  cParam == Upper("КОД_НЕТ_НДС")
+              cKOP_NNDS := Value
+            case  cParam == Upper("КОД_АГЕНТА")
+              cKOP_AG_NDS := Value
+            case  cParam == Upper("КОД_НЕДВ")
+              cKOP_AST := Value
+            case  cParam == Upper("ДАТА_ТАМОЖ")
+              if !Empty(!conversionDateFromXml(@Value))
+                dCUST_DATE := Value
+              endif
+            case  cParam == Upper("ДАТА_ПОДТВ")
+              if !Empty(!conversionDateFromXml(@Value))
+                dCONF_DATE := Value
+              endif
+            case  cParam == Upper("Коммент_сф")
+              cCompl_M := Value
+            case  cParam == Upper("СЧЕТ")
+              cSchet := CheckSchetFromXml(Value)
+            OTHERWISE
+              if Empty(sTextInf)
+                sTextInf := "Параметры дополнительной информации от " + cSobsName + " :" + CRLF
+              endif
+              sTextInf += "Имя: " + Upper(AllTrim(arr[i][1])) + " Значение: " + Upper(AllTrim(arr[i][2])) + CRLF
+          endcase
+
+      CASE cParam == Upper("СтТовБезНДСВсего")
+        nSumSfNNds := Val(Value)
+      CASE cParam == Upper("СтТовУчНалВсего")
+        nSumSfA := Val(Value)
+      CASE Upper("ВсегоОпл-СумНалВсего") $ Upper(AllTrim(arr[i][3]))
+        do case
+          CASE cParam == Upper("СумНДС")
+            nSumSfNds := Val(Value)
+          CASE cParam == Upper("БезНДС")
+            lNoNdsSf := .T.
+        endcase
+      CASE cParam == Upper("НомСтр") .Or. i == len(arr) - 1
+        lAdd := .F.
+        if cParam != Upper("НомСтр") .And. nNomStr != 0
+          lAdd := .T.
+        else
+          if nNomStr != Val(Value)
+            if  nNomStr != 0
+              lAdd := .T.
+            endif
+            nNomStr := Val(Value)
+          endif
+        endif
+        if lAdd
+          if !Empty(nASum) .And. Empty(IdTaxARate)
+             if !CheckRateA(nCostNotTax,nASum,@nTaxARate,@IdTaxARate,dDocDate)
+               AADD(aMssg,'Не удалось определить ставку Акциза.')
+               Return .F.
+             endif
+          endif
+          AADD(astr,{nNomStr,cNameTov,cOKEY,nQuan,nPrice,nCostNotTax,nCostAll,;
+                     lNds,nTaxNdsRate,IdTaxNdsRate,lA,nTaxARate,IdTaxARate,;
+                     nNdsSum,nASum,cCountry,cGTD,cSfStrId,cStrTp,cGroup,;
+                     cNomNum,cPart,cStrFrom,cComment,cStrNid})
+
+
+          cNameTov := ""
+          cOKEY := ""
+          nQuan := 0
+          nPrice := 0
+          nCostNotTax := 0
+          nCostAll := 0
+          nTaxNdsRate := 0
+          IdTaxNdsRate := ""
+          lA := .F.
+          nTaxARate := 0
+          IdTaxARate := ""
+          nNdsSum := 0
+          nASum := 0
+          lNds := .T.
+          cCountry := ""
+          cGTD := ""
+          cSfStrId := ""
+          cStrTp := ""
+          cGroup := ""
+          cNomNum := ""
+          cPart := ""
+          cStrFrom := ""
+          cComment := ""
+          cStrNid := ""
+        endif
+      CASE cParam == Upper("НаимТов")
+        cNameTov := Value
+      CASE cParam == Upper("ОКЕИ_Тов")
+        if CheckUnitFromXml(@Value)
+          cOKEY := Value
+        endif
+      CASE cParam == Upper("КолТов")
+        nQuan := Val(Value)
+      CASE cParam == Upper("ЦенаТов")
+        nPrice := Val(Value)
+      CASE cParam == Upper("СтТовБезНДС")
+        nCostNotTax := Val(Value)
+      CASE cParam == Upper("СтТовУчНал")
+        nCostAll := Val(Value)
+      CASE cParam == Upper("НалСт")
+        lNoNds := .F.
+        if Upper("без") $ Value
+          lNoNds := .T.
+          Value := 0
+        elseif AT("/",Value) > 0
+          Value := Val(SubStr(1,AT("/",Value)-1))
+        elseif AT("%",Value) > 0
+          Value := Val(SubStr(1,AT("%",Value)-1))
+        else
+          Value := Val(Value)
+        endif
+        if !CheckTax(Value,lNoNds,@IdRate,@lStA,dDocDate)
+          AADD(aMssg,'Ставка НДС - " + Str(Value,10,5) + "%  отсутствует в справочнике')
+          Return .F.
+        endif
+        if  lStA
+          nTaxARate := Value
+          IdTaxARate := IdRate
+        else
+          nTaxNdsRate := Value
+          IdTaxNdsRate := IdRate
+          lNds := !lNoNds
+        endif
+
+
+      CASE cParam == Upper("БезАкциз")
+        lA := .F.
+      CASE cParam == Upper("СумАкциз")
+        nASum := Val(Value)
+      CASE cParam == Upper("СумНДС")
+        nNdsSum := Val(Value)
+      CASE cParam == Upper("КодПроисх")
+        cCountry := Value
+      CASE cParam == Upper("НомерТД")
+        cGTD := Value
+
+      CASE Upper("ТаблСчФакт-СведТов-ИнфПолСтр") $ Upper(AllTrim(arr[i][3]))
+
+          Do case
+            case  cParam == Upper("STR_ID")
+              cSfStrId := Value
+            case  cParam == Upper("STR_TP")
+              if !Empty(Value) .And. Value $ "01234567"
+                cStrTp := Value
+              endif
+            case  cParam == Upper("STRN_ID")
+              cStrNid := Value
+            case  cParam == Upper("ГРУППА")
+              cGroup := Value
+            case  cParam == Upper("НОМ_НОМЕР")
+              cNomNum := Padr(Value,13)
+            case  cParam == Upper("НОМ_ПАРТИЯ")
+              cPart := Value
+            case  cParam == Upper("Тип_СТРОКИ")
+              cStrFrom := Value
+            case  cParam == Upper("КОММЕНТ_СТРОКИ")
+              cComment := Value
+            OTHERWISE
+              if Empty(sTextInfStr)
+                sTextInfStr := "Параметры дополнительной информации по строкам от " + cSobsName + " :" + CRLF
+              endif
+              sTextInfStr += "Имя: " + Upper(AllTrim(arr[i][1])) + " Значение: " + Upper(AllTrim(arr[i][2])) + CRLF
+          endcase
+
+    ENDCASE
+  next
+
+  If !Empty(sTextInf)
+     AADD(aMssg,sTextInf + CRLF)
+     AADD(aMssg,"не обработаны программой импорта" + CRLF)
+    //cMsg := sTextInf + CRLF
+    //cMsg := "не обработаны программой импорта. Продолжить?  " + CRLF
+    //if (6 != messagebox(cMsg,TITLEAPP,68))
+    //   messagebox("В работе")
+    //Endif
+  endif
+
+  If !Empty(sTextInfStr)
+     AADD(aMssg,sTextInfStr + CRLF)
+     AADD(aMssg,"не обработаны программой импорта" + CRLF)
+    //cMsg := sTextInfStr + CRLF
+    //cMsg += 'не обработаны программой импорта. Продолжить? ' + CRLF
+    //if (6 != messagebox(cMsg,TITLEAPP,68))
+    //   Return .F.
+    //Endif
+  endif
+
+  if len(astr)==0
+    AADD(aMssg," У импортируемого счета-фактуры нет строк" + CRLF)
+    //cMsg := " У импортируемого счета-фактуры нет строк "
+    //cMsg += 'продолжить импорт?' + CRLF
+    //if (6 != messagebox(cMsg,TITLEAPP,68))
+    //   Return .F.
+    //Endif
+  endif
+
+  if ValType(cTiCtg) != "C" .Or. Empty(cTiCtg) .Or. !(cTiCtg $ "1,2")
+    aAns:={'Закупка','Продажа default'}
+    aIniValue := {{'Категория счета-фактуры',aAns}}
+    a := DialogGr('Укажите категория', aIniValue)
+   IF Len(A)=0
+      Messagebox("Выполнение программы прервано пользователем.")
+      RETURN .F.
+   ELSE
+      IF !EMPTY(a[1])
+        if Upper(AllTrim(a[1])) == Upper('Закупка')
+          cTiCtg := "1"
+        else
+          cTiCtg := "2"
+        endif
+      ENDIF
+   ENDIF
+  endif
+
+  if Empty(cMoveTp) .Or. ValType(cMoveTp) != "C" .Or. !(cMoveTp $ "ЗК,БП,ПР,ОТ,ПП")
+    if cTiCtg == "1"
+      aAns:={'Закупка ТМЦ default','Безвоздмездное получение','Предоплата'}
+    else
+      aAns:={'Отгрузка default','Безвозмездная передача','Предоплата','Поступление прочих денежных средств'}
+    endif
+    aIniValue := {{'Вид движения счета-фактуры',aAns}}
+
+   a := DialogGr('Вид движения счета-фактуры', aIniValue)
+   IF Len(A)=0
+      Messagebox("Выполнение программы прервано пользователем.")
+      RETURN .T.
+   ELSE
+      IF !EMPTY(a[1])
+        cMoveTp := Upper(AllTrim(a[1]))
+        do case
+          case cMoveTp  == Upper('Закупка ТМЦ')
+            cMoveTp := "ЗК"
+          case cMoveTp  == Upper('Безвоздмездное получение')
+            cMoveTp := "БП"
+          case cMoveTp  == Upper('Предоплата')
+            cMoveTp := "ПР"
+          case cMoveTp  == Upper('Отгрузка')
+            cMoveTp := "ОТ"
+          case cMoveTp  == Upper('Поступление прочих денежных средств')
+            cMoveTp := "ПП"
+        endcase
+      ENDIF
+   ENDIF
+
+    //Запросить вид двидения
+  endif
+  if cMoveTp $ "ОТ,БП,ЗК"
+    if !CheckStr(astr,@aMssg)
+      Return .F.
+    endif
+  endif
+
+  If !CreateSfFromXml(cTiCtg,cMoveTp,cValId,;
+                      idOtprav,IdGrOtprav,idPoluch,idGrPoluch,;
+                      IsKor,IsDef,cDocNum,dDocDate,;
+                      cDocNumKor,dDocDateKor,cDocNumDef,dDocDateDef,;
+                      cDocNumKorSfDef,cDateNumKorSfDef,;
+                      cSfId,cSfDefId,IsBest5,;
+                      cKOP_NDS,cKOP_AST,cKOP_NNDS,cKOP_NDS0,cKOP_AG_NDS,;
+                      dCUST_DATE,dCONF_DATE,cCompl_M,;
+                      cDocDopNum,cDocDopNumKor,cDocDopNumDef,cDocDopNumKorSfDef,cSchet,;
+                      astr,@aMssg)
+
+    Return .F.
+  endif
+
+return .T.
+
+Function conversionDateFromXml(cDate)
+local a,s
+  if len(cDate) != 10
+    Return .F.
+  endif
+  a := StrSplit(cDate,".")
+  if len(a) != 3
+    Return .F.
+  endif
+  s := a[3]+a[2]+a[1]
+  cDate := STOD(s)
+  if Empty(cDate)
+    Return .F.
+  endif
+return .T.
+
+function CheckSchetFromXml(Value)
+local s := ""
+  if !Empty(Value)
+    if (DIC_PLAN_SCH)->(DbSeek(Upper(Value)))
+      s := Value
+    endif
+  endif
+Return s
+
+function CheckValutaFromXml(Value)
+local lRet := .F.
+  (DIC_VALUTA)->(DbGoTop())
+  Do While !(DIC_VALUTA)->(Eof())
+    if Value == Upper(AllTrim((DIC_VALUTA)->NCODE))
+      Value := (DIC_VALUTA)->VAL_ID
+      lRet := .T.
+      exit
+    endif
+    (DIC_VALUTA)->(DbSkip(1))
+  Enddo
+return lRet
+
+Function CheckPartnerForInn(INN,NotFiz,IdPartner)
+  if NotFiz
+    if !(DIC_PARTNER)->(DbSeek(" " + INN,.T.,"S_TAG_INN"))
+      if !(DIC_PARTNER)->(DbSeek("2" + INN,.T.,"S_TAG_INN"))
+        Return .F.
+      endif
+    endif
+  else
+    if !(DIC_PARTNER)->(DbSeek("1" + INN,.T.,"S_TAG_INN"))
+      Return .F.
+    endif
+  endif
+  IdPartner := (DIC_PARTNER)->PART_ID
+Return .T.
+
+function CheckTax(nTaxNdsRate,lNoNds,IdTaxNdsRate,lStA,dDocDate)
+local cAl,lRet := .T., cAlTaxTp , aKey,i ,cKey
+  begin sequence
+  if ! _DbAreaOpen(B6_DBF_PATH + "SPR_NDS.dbf", @cAl,"TAG_NDS")
+     Break(.F.)
+  endif
+  if ! _DbAreaOpen(B6_DBF_PATH + "TAX\TAX_TP.dbf", @cAlTaxTp,"TAG_CODE")
+     Break(.F.)
+  endif
+  if lNoNds
+    aKey := {"НДС"}
+  else
+    aKey := {"НДС","АКЦ"}
+  endif
+  for i := 1 to len(aKey)
+    if !(cAlTaxTp)->(DbSeek(aKey[i]))
+      Break(.F.)
+    endif
+    if lNoNds
+      cKey := STR(0,19,5)+'1'+(cAlTaxTp)->TAX_ID
+    else
+      cKey := STR(nTaxNdsRate,19,5)+'0'+(cAlTaxTp)->TAX_ID
+    endif
+    (cAl)->(OrdScope(0,cKey))
+    (cAl)->(OrdScope(1,cKey))
+    (cAl)->(DbGoTop())
+    Do while !(cAl)->(Eof())
+      if dDocDate >= (cAl)->DATE_BEG
+        if Empty((cAl)->DATE_END) .Or. dDocDate <= (cAl)->DATE_BEG
+          IdTaxNdsRate := (cAl)->NNOPER
+          lStA := (aKey[i] == "АКЦ")
+        endif
+      endif
+      (cAl)->(DbSkip(1))
+    enddo
+    if !Empty(IdTaxNdsRate)
+      exit
+    endif
+  next
+  if Empty(IdTaxNdsRate)
+    Break(.F.)
+  endif
+  recover
+    lRet := .F.
+  end sequence
+  _DbAreaClose(cAl)
+  _DbAreaClose(cAlTaxTp)
+return lRet
+
+function CheckRateA(nCostNotTax,nASum,nTaxARate,IdTaxARate,dDocDate)
+local nRate := Round(100*nASum/(nCostNotTax - nASum),5)
+local lStA
+  if !CheckTax(nRate,.F.,@IdTaxARate,@lStA,dDocDate)
+    return .F.
+  else
+    if !lStA
+      return .F.
+    endif
+    nTaxARate := nRate
+  endif
+return .T.
+
+function CheckStr(astr,aMssg)
+Local i , value ,aAns,aIniValue,a
+local tbName , tagName , group, nnum,name,cAl , lAdd := .F.
+local cMsg , aEd := {}, j , cName := ""
+  for i := 1 to len(astr)
+    value := astr[i][_STR_TP_]    
+    if ValType(value) != "C" .Or. Empty(value) .Or. !(value $ "2,3,4,5,6,7")
+        aAns:={'Товары default','Запасы','Услуги','Имущество'}
+        aIniValue := {{"Категория для товара: " +  astr[i][_NAME_TOV_] ,aAns}}
+        a := DialogGr('Укажите категория', aIniValue)
+        IF Len(A)=0
+          Messagebox("Выполнение программы прервано пользователем.")
+          RETURN .F.
+        endif
+        IF !EMPTY(a[1])
+          value := Upper(AllTrim(a[1]))
+          do case
+            case value  == Upper('Товары')
+              value := "2"
+            case value  == Upper('Запасы')
+              value := "3"
+            case value  == Upper('Услуги')
+              value := "4"
+            case value  == Upper('Имущество')
+              value := "5"
+          endcase
+          astr[i][_STR_TP_] := value
+        ENDIF
+    endif
+
+    do case
+      case value  == "2"
+        cName := "товара"
+      case value  == "3"
+        cName := "запаса"
+      case value  == "4"
+        cName := "услуги"
+      case value  == "5"
+        cName := "имущества"
+   endcase
+    
+    if Empty(astr[i][_NAME_TOV_])      
+       AADD(aMssg,"Не указано наименование " + cName )
+      RETURN .F.
+    endif
+
+    lAdd := .F.
+
+    tbName := B6_DBF_PATH
+    value := astr[i][_STR_TP_]
+    group := astr[i][_GROUP_]
+    nnum :=  PADR(astr[i][_NOM_NUM_],13)
+    name := astr[i][_NAME_TOV_]
+    do case
+      case value == "2"
+        tbName +="Sclad\MLabel.dbf"
+        tagName := "MLabel"
+        group := PADR(group,5)
+        name := left(name,30)
+      case value == "3"
+        tbName +="Zapas\MLabel.dbf"
+        tagName := "MLabel"
+        group := PADR(group,5)
+        name := left(name,30)
+      case value == "4"
+        tbName +="TOVAR\MLabel.dbf"
+        tagName := "MLabel"
+        group := PADR(group,5)
+        name := left(name,30)
+      case value == "5"
+        tbName +="Assets\res_lbl.dbf"
+        tagName := "TAG_CODE"
+        group := PADR(group,6)
+    endcase
+    if ! _DbAreaOpen(tbName, @cAl,tagName)
+      RETURN .F.
+    endif
+
+    if Empty(group) .Or. Empty(nnum)
+      lAdd := .T.
+    else
+      If !(cAl)->(DbSeek(Upper(group + nnum )))
+        lAdd := .T.
+      else
+        if UPPER(ALLTRIM(astr[i][_NAME_TOV_])) != Upper(AllTrim((cAl)->Name))
+altd()           
+          cMsg := " У " + cName + ": " + astr[i][_NAME_TOV_]   + CRLF
+          cMsg := "наименование в справочнике не совепадается с наименованием в импортируемом файле"   + CRLF          
+          cMsg += "Изменено на наименвоание из справочника." + CRLF 
+          astr[i][_NAME_TOV_] := (cAl)->Name 
+          AADD(aMssg,cMsg)         
+          //cMsg += "Изменить название " + cName + " на соответствующее параметрам?"
+          //if (6 != messagebox(cMsg,TITLEAPP,68))
+          //lAdd := .T.
+          //Endif
+        endif
+      endif
+    endif
+    if lAdd
+      If !(cAl)->(DbSeek(Upper(name),.T.,tagName))
+        AADD(aMssg,"Не найдено соответствие " + cName + " из счета-фактуры в номенклатурном справочнике.")
+        _DbAreaClose(cAl)
+        RETURN .F.
+      else
+        if value == "5"
+          astr[i][_GROUP_] := (cAl)->GROUP
+          astr[i][_NOM_NUM_] := (cAl)->NNUM
+        else
+          astr[i][_GROUP_] := (cAl)->GRUP
+          astr[i][_NOM_NUM_] := (cAl)->NNUM
+        endif
+        AADD(aMssg,cMsg)
+      endif
+    endif
+    if value == "5"
+      aEd := {Upper(AllTrim((cAl)->UNIT))}
+    elseif value == "4"
+      aEd := {Upper(AllTrim((cAl)->ED))}
+    else
+      aEd := {Upper(AllTrim((cAl)->ED))}
+      if !Empty((cAl)->ED1)
+        AADD(aEd,Upper(AllTrim((cAl)->ED1)))
+      endif
+      if !Empty((cAl)->ED2)
+        AADD(aEd,Upper(AllTrim((cAl)->ED2)))
+      endif
+      if !Empty((cAl)->ED3)
+        AADD(aEd,Upper(AllTrim((cAl)->ED3)))
+      endif
+
+    endif
+    _DbAreaClose(cAl)
+    
+    if Empty(astr[i][_OKEY_])
+      if len(aEd) = 1
+        cMsg := " У " + cName +": " + astr[i][_NAME_TOV_]  + CRLF
+        cMsg += "не определена единица измерения." + CRLF
+        cMsg += "Изменена на основную из номенклатурного справочника."
+        AADD(aMssg,cMsg)
+        //cMsg += "Изменить на основную из номенклатурного справочника?"
+        //if (6 != messagebox(cMsg,TITLEAPP,68))
+        //  Messagebox("Выполнение программы прервано пользователем.")
+        //  RETURN .F.
+        //Endif
+        astr[i][_OKEY_] := aEd[1]
+      else
+        aAns := array(len(aEd) )
+        for n := 1 to len(aEd)
+          aAns[i] := aEd[n]
+          if n == 1
+            aAns[n] += "default"
+          endif
+        next
+        aIniValue := {{"Единица измерения для " + cName + ": " +  astr[i][_NAME_TOV_] ,aAns}}
+        a := DialogGr('Укажите единицу измерения', aIniValue)
+        IF Len(A)=0
+          Messagebox("Выполнение программы прервано пользователем.")
+          RETURN .F.
+        endif
+        IF !EMPTY(a[1])
+          astr[i][_OKEY_] := Upper(AllTrim(a[1]))
+        ENDIF
+      endif
+    else
+      lAdd := .T.
+      for j := 1 to len(aEd)
+        if AllTrim(Upper(astr[i][_OKEY_])) == AllTrim(Upper(aEd[j]))
+          lAdd := .F. 
+          exit
+        endif
+      next
+      if lAdd 
+        cMsg := " У " + cName + ": " + astr[i][_NAME_TOV_]  + CRLF
+        cMsg += "не найдено соответствие переданной единицы измерения" + CRLF      
+        cMsg += "единицам измерения из номенклатурного справочника." + CRLF
+        cMsg += "Изменена на переданную единицу измерения."
+        AADD(aMssg,cMsg)
+        //cMsg += "Изменить на переданную единицу измерения?"
+        //if (6 != messagebox(cMsg,TITLEAPP,68))          
+          astr[i][_OKEY_] := aEd[1]
+        //Endif   
+      endif
+    endif
+
+  next
+return .T.
+
