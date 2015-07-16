@@ -1,7 +1,7 @@
 //**************************************************
 //          C:\ALASKA\Best\BADI\BClasses\Tax\clsTax_Inv.prg
 //**************************************************
-//    Счет-фактура (шапка)
+//    РЎС‡РµС‚-С„Р°РєС‚СѓСЂР° (С€Р°РїРєР°)
 
 #include "hbclass.ch"
 #include "..\include\BO_Const.ch"
@@ -30,32 +30,32 @@
 #define _TAXCODE_  11
 #define _PRICEIN   12
 #define _SUMUSE    13
-// Масси первоначальных настроек
-#define _TAX_SM_PS      1 //-объединять одноименные позиции
-#define _TAX_CNT        2 //- соблюдать хронологию,
-#define _TAX_RET        3 //- обычная или отрицательная С_Ф при возвратах
-#define _TAX_MOD        4 //- ID налоговой модели
-#define _TAX_ENT_ID     5 //- собственное предприятие
-#define _TAX_ENT_ADDRID 6 //- собственное как грузополучатель
-#define _TAX_OUT_PL     7 //учетная политика
-#define _TAX_DOCTYPE    8 //- тип документа
-#define _TAX_SFCUR      9 //- можно или нет создавать валютные с-ф
-#define _TAX_DATE_BEG   10 //- дата начала работы подсистемы
-#define _TAX_TAX_PERIOD 11 //- налоговый период (0-месяц, 1-квартал)
-#define _TAX_QUE        12 //- запись в книгу по запросу 1
-#define _TAX_BANK_AV    13 //- создание авансового с-ф из банка 0 - не создавать 1 по запросу 2 автоматически
-#define _TAX_CASH_AV    14 //- создание авансового с-ф из кассы 0 - не создавать 1 по запросу 2 автоматически
-#define _TAX_DOPSF      15 //- T примечание из документа источника
-#define _TAX_COMCF      16 //- T комментарий из документа источника
-#define _TAX_IN_NUM     17 //- T проверяем уникальность на закупках по партнеру
-#define _TAX_NM_AV      18 // T - из документа  Наименование авансового счета-фактуры
-#define _TAX_NM_AV_TXT  19 // Текст наименования
-#define _TAX_DOP_AV     20 // T - из документа  Дополнение авансового счета-фактуры
-#define _TAX_COM_AV     21 // Т - из документа Комментарий авансового счета-фактуры
-#define _TAX_ENT_SEL    22 // T - можно изменить собственное предприятие
-#define _TAX_USE_DOPNUM 23 // T - использовать доп номер
-#define _TAX_INI_DOPNUM 24 // инициировать доп номер значкением
-#define _TAX_DNUM_RUL   25 // Т  доп номер грузоотправитель
+// РњР°СЃСЃРё РїРµСЂРІРѕРЅР°С‡Р°Р»СЊРЅС‹С… РЅР°СЃС‚СЂРѕРµРє
+#define _TAX_SM_PS      1 //-РѕР±СЉРµРґРёРЅСЏС‚СЊ РѕРґРЅРѕРёРјРµРЅРЅС‹Рµ РїРѕР·РёС†РёРё
+#define _TAX_CNT        2 //- СЃРѕР±Р»СЋРґР°С‚СЊ С…СЂРѕРЅРѕР»РѕРіРёСЋ,
+#define _TAX_RET        3 //- РѕР±С‹С‡РЅР°СЏ РёР»Рё РѕС‚СЂРёС†Р°С‚РµР»СЊРЅР°СЏ РЎ_Р¤ РїСЂРё РІРѕР·РІСЂР°С‚Р°С…
+#define _TAX_MOD        4 //- ID РЅР°Р»РѕРіРѕРІРѕР№ РјРѕРґРµР»Рё
+#define _TAX_ENT_ID     5 //- СЃРѕР±СЃС‚РІРµРЅРЅРѕРµ РїСЂРµРґРїСЂРёСЏС‚РёРµ
+#define _TAX_ENT_ADDRID 6 //- СЃРѕР±СЃС‚РІРµРЅРЅРѕРµ РєР°Рє РіСЂСѓР·РѕРїРѕР»СѓС‡Р°С‚РµР»СЊ
+#define _TAX_OUT_PL     7 //СѓС‡РµС‚РЅР°СЏ РїРѕР»РёС‚РёРєР°
+#define _TAX_DOCTYPE    8 //- С‚РёРї РґРѕРєСѓРјРµРЅС‚Р°
+#define _TAX_SFCUR      9 //- РјРѕР¶РЅРѕ РёР»Рё РЅРµС‚ СЃРѕР·РґР°РІР°С‚СЊ РІР°Р»СЋС‚РЅС‹Рµ СЃ-С„
+#define _TAX_DATE_BEG   10 //- РґР°С‚Р° РЅР°С‡Р°Р»Р° СЂР°Р±РѕС‚С‹ РїРѕРґСЃРёСЃС‚РµРјС‹
+#define _TAX_TAX_PERIOD 11 //- РЅР°Р»РѕРіРѕРІС‹Р№ РїРµСЂРёРѕРґ (0-РјРµСЃСЏС†, 1-РєРІР°СЂС‚Р°Р»)
+#define _TAX_QUE        12 //- Р·Р°РїРёСЃСЊ РІ РєРЅРёРіСѓ РїРѕ Р·Р°РїСЂРѕСЃСѓ 1
+#define _TAX_BANK_AV    13 //- СЃРѕР·РґР°РЅРёРµ Р°РІР°РЅСЃРѕРІРѕРіРѕ СЃ-С„ РёР· Р±Р°РЅРєР° 0 - РЅРµ СЃРѕР·РґР°РІР°С‚СЊ 1 РїРѕ Р·Р°РїСЂРѕСЃСѓ 2 Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё
+#define _TAX_CASH_AV    14 //- СЃРѕР·РґР°РЅРёРµ Р°РІР°РЅСЃРѕРІРѕРіРѕ СЃ-С„ РёР· РєР°СЃСЃС‹ 0 - РЅРµ СЃРѕР·РґР°РІР°С‚СЊ 1 РїРѕ Р·Р°РїСЂРѕСЃСѓ 2 Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё
+#define _TAX_DOPSF      15 //- T РїСЂРёРјРµС‡Р°РЅРёРµ РёР· РґРѕРєСѓРјРµРЅС‚Р° РёСЃС‚РѕС‡РЅРёРєР°
+#define _TAX_COMCF      16 //- T РєРѕРјРјРµРЅС‚Р°СЂРёР№ РёР· РґРѕРєСѓРјРµРЅС‚Р° РёСЃС‚РѕС‡РЅРёРєР°
+#define _TAX_IN_NUM     17 //- T РїСЂРѕРІРµСЂСЏРµРј СѓРЅРёРєР°Р»СЊРЅРѕСЃС‚СЊ РЅР° Р·Р°РєСѓРїРєР°С… РїРѕ РїР°СЂС‚РЅРµСЂСѓ
+#define _TAX_NM_AV      18 // T - РёР· РґРѕРєСѓРјРµРЅС‚Р°  РќР°РёРјРµРЅРѕРІР°РЅРёРµ Р°РІР°РЅСЃРѕРІРѕРіРѕ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹
+#define _TAX_NM_AV_TXT  19 // РўРµРєСЃС‚ РЅР°РёРјРµРЅРѕРІР°РЅРёСЏ
+#define _TAX_DOP_AV     20 // T - РёР· РґРѕРєСѓРјРµРЅС‚Р°  Р”РѕРїРѕР»РЅРµРЅРёРµ Р°РІР°РЅСЃРѕРІРѕРіРѕ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹
+#define _TAX_COM_AV     21 // Рў - РёР· РґРѕРєСѓРјРµРЅС‚Р° РљРѕРјРјРµРЅС‚Р°СЂРёР№ Р°РІР°РЅСЃРѕРІРѕРіРѕ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹
+#define _TAX_ENT_SEL    22 // T - РјРѕР¶РЅРѕ РёР·РјРµРЅРёС‚СЊ СЃРѕР±СЃС‚РІРµРЅРЅРѕРµ РїСЂРµРґРїСЂРёСЏС‚РёРµ
+#define _TAX_USE_DOPNUM 23 // T - РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РґРѕРї РЅРѕРјРµСЂ
+#define _TAX_INI_DOPNUM 24 // РёРЅРёС†РёРёСЂРѕРІР°С‚СЊ РґРѕРї РЅРѕРјРµСЂ Р·РЅР°С‡РєРµРЅРёРµРј
+#define _TAX_DNUM_RUL   25 // Рў  РґРѕРї РЅРѕРјРµСЂ РіСЂСѓР·РѕРѕС‚РїСЂР°РІРёС‚РµР»СЊ
 
 #define _ALLOWED_ 1
 #define _VIEW_    2
@@ -67,11 +67,11 @@
 ***************************************************
 * public funcs
 ***************************************************
-* возвращает массив параметров , {lPay, cClassName}
+* РІРѕР·РІСЂР°С‰Р°РµС‚ РјР°СЃСЃРёРІ РїР°СЂР°РјРµС‚СЂРѕРІ , {lPay, cClassName}
 function taxGetParamsForStr( StrTp ,MoveTp)
   local lPay := .F., cClsName := ""
-  // для аванса тип строк может быть отличный от 0 1
-  if  MoveTp $ "ПР,ПП"
+  // РґР»СЏ Р°РІР°РЅСЃР° С‚РёРї СЃС‚СЂРѕРє РјРѕР¶РµС‚ Р±С‹С‚СЊ РѕС‚Р»РёС‡РЅС‹Р№ РѕС‚ 0 1
+  if  MoveTp $ "РџР ,РџРџ"
     RETURN { .T., "" }
   endif
   do case
@@ -102,28 +102,28 @@ CLASS clsTax_Inv FROM clsMetaBO
     var  mTI_CTG
     var  mMove_Tp
     //var  mStr_Tp
-    var  mPkDoc   //значение ключа дос-та из которого создаем счет-фактуру
+    var  mPkDoc   //Р·РЅР°С‡РµРЅРёРµ РєР»СЋС‡Р° РґРѕСЃ-С‚Р° РёР· РєРѕС‚РѕСЂРѕРіРѕ СЃРѕР·РґР°РµРј СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ
     var  mDocType
     var  mDocDate
     var  mEntId
     var  mEntADDRId
-    var  mVAL_ID init ""//идентификатор основной валюты
+    var  mVAL_ID init ""//РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РѕСЃРЅРѕРІРЅРѕР№ РІР°Р»СЋС‚С‹
     var  mMainCurCode init ""
 
 
-    var aTabCnt // массив - 1 тип сделки
-                // 2 - рекорд на таблицу документов основания
+    var aTabCnt // РјР°СЃСЃРёРІ - 1 С‚РёРї СЃРґРµР»РєРё
+                // 2 - СЂРµРєРѕСЂРґ РЅР° С‚Р°Р±Р»РёС†Сѓ РґРѕРєСѓРјРµРЅС‚РѕРІ РѕСЃРЅРѕРІР°РЅРёСЏ
 
     var ObjMOVE_TP init ""
     var ObjDOC_TYPE init ""
     var STPTP init ""
-    var mTbPartAddr //рекордсет на таблицу адресов партнера
-    var mTbSeg init ""// роекордсет аналитических сегментов под счет
-    var mTbCard //рекордсет карточек
+    var mTbPartAddr //СЂРµРєРѕСЂРґСЃРµС‚ РЅР° С‚Р°Р±Р»РёС†Сѓ Р°РґСЂРµСЃРѕРІ РїР°СЂС‚РЅРµСЂР°
+    var mTbSeg init ""// СЂРѕРµРєРѕСЂРґСЃРµС‚ Р°РЅР°Р»РёС‚РёС‡РµСЃРєРёС… СЃРµРіРјРµРЅС‚РѕРІ РїРѕРґ СЃС‡РµС‚
+    var mTbCard //СЂРµРєРѕСЂРґСЃРµС‚ РєР°СЂС‚РѕС‡РµРє
     var mTbApReg
     var mAnlSeg init ""
-    var mCardId //  карточка
-    var mCardPartner // партнер карточки расчетов
+    var mCardId //  РєР°СЂС‚РѕС‡РєР°
+    var mCardPartner // РїР°СЂС‚РЅРµСЂ РєР°СЂС‚РѕС‡РєРё СЂР°СЃС‡РµС‚РѕРІ
     var mCardRecNo
     var maTran init {}
     var mEditValue init {}
@@ -135,10 +135,10 @@ CLASS clsTax_Inv FROM clsMetaBO
     var aRight init {}
     var mDateSf
     var mlEditStr init .F.
-    var mDelBook init .F. // Флаг - нужно удалить записи не сохраняя с-ф - изменились параметры для регистрации
-    var mDelRecBook init .F. // Флаг - нужно удалить записи не сохраняя с-ф - изменились параметры для регистрации
-    var mTbInv init ""  // рабочая область счет-фактуры
-    var mTbInvArc init ""  // рабочая область счет-фактуры архивной - для работы с корректиро. или исправ. в архивном периоде.
+    var mDelBook init .F. // Р¤Р»Р°Рі - РЅСѓР¶РЅРѕ СѓРґР°Р»РёС‚СЊ Р·Р°РїРёСЃРё РЅРµ СЃРѕС…СЂР°РЅСЏСЏ СЃ-С„ - РёР·РјРµРЅРёР»РёСЃСЊ РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ СЂРµРіРёСЃС‚СЂР°С†РёРё
+    var mDelRecBook init .F. // Р¤Р»Р°Рі - РЅСѓР¶РЅРѕ СѓРґР°Р»РёС‚СЊ Р·Р°РїРёСЃРё РЅРµ СЃРѕС…СЂР°РЅСЏСЏ СЃ-С„ - РёР·РјРµРЅРёР»РёСЃСЊ РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ СЂРµРіРёСЃС‚СЂР°С†РёРё
+    var mTbInv init ""  // СЂР°Р±РѕС‡Р°СЏ РѕР±Р»Р°СЃС‚СЊ СЃС‡РµС‚-С„Р°РєС‚СѓСЂС‹
+    var mTbInvArc init ""  // СЂР°Р±РѕС‡Р°СЏ РѕР±Р»Р°СЃС‚СЊ СЃС‡РµС‚-С„Р°РєС‚СѓСЂС‹ Р°СЂС…РёРІРЅРѕР№ - РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РєРѕСЂСЂРµРєС‚РёСЂРѕ. РёР»Рё РёСЃРїСЂР°РІ. РІ Р°СЂС…РёРІРЅРѕРј РїРµСЂРёРѕРґРµ.
     var mCreateFromArc init .F.
     var aStrS init {}
     var mlKorr init .F.
@@ -146,82 +146,82 @@ CLASS clsTax_Inv FROM clsMetaBO
     var mOldKorr init ""
     var mnSort init -1
     var mArc init .F.
-    var mlSaveOnly init .F.  //Флаг обязательного сохранения - после правки окументов
-    // нужно обязательно сохранить с-ф
+    var mlSaveOnly init .F.  //Р¤Р»Р°Рі РѕР±СЏР·Р°С‚РµР»СЊРЅРѕРіРѕ СЃРѕС…СЂР°РЅРµРЅРёСЏ - РїРѕСЃР»Рµ РїСЂР°РІРєРё РѕРєСѓРјРµРЅС‚РѕРІ
+    // РЅСѓР¶РЅРѕ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ СЃРѕС…СЂР°РЅРёС‚СЊ СЃ-С„
     var mAliasInv init ""
-    var mAliasSum init "" // алиас сумм
-    var mAliasStr init "" // алиас строк
-    var mAliasSin init "" // алиас для синхронизации строк в архивном и текущем
+    var mAliasSum init "" // Р°Р»РёР°СЃ СЃСѓРјРј
+    var mAliasStr init "" // Р°Р»РёР°СЃ СЃС‚СЂРѕРє
+    var mAliasSin init "" // Р°Р»РёР°СЃ РґР»СЏ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРё СЃС‚СЂРѕРє РІ Р°СЂС…РёРІРЅРѕРј Рё С‚РµРєСѓС‰РµРј
     var mAliasTaxTp init ""
-    var mParamIni init {}//массив параметров настройки системы
+    var mParamIni init {}//РјР°СЃСЃРёРІ РїР°СЂР°РјРµС‚СЂРѕРІ РЅР°СЃС‚СЂРѕР№РєРё СЃРёСЃС‚РµРјС‹
     var mMultyStorno
-    var mGroupSf // создается групповой С-ф
+    var mGroupSf // СЃРѕР·РґР°РµС‚СЃСЏ РіСЂСѓРїРїРѕРІРѕР№ РЎ-С„
     Var oSelf
     Var aMsqNotSave
     Var lMsgErrShow init .T.
     Var lMsgDelBook init .T.
-    var mlRegDoc // T - есть зарегистрированные документы
-    // {журнал, рекорд на таблицу, recno документов используемых в с-ф }
-    var aTab //массив 1 - таблица из которой д-ты,
-                // 2 - индекс для ключа документа
-                 // 3 индекс для идентификатора С_Ф
-    var maTbDoc Init {} // массив таблиц связанных д-тов
+    var mlRegDoc // T - РµСЃС‚СЊ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅРЅС‹Рµ РґРѕРєСѓРјРµРЅС‚С‹
+    // {Р¶СѓСЂРЅР°Р», СЂРµРєРѕСЂРґ РЅР° С‚Р°Р±Р»РёС†Сѓ, recno РґРѕРєСѓРјРµРЅС‚РѕРІ РёСЃРїРѕР»СЊР·СѓРµРјС‹С… РІ СЃ-С„ }
+    var aTab //РјР°СЃСЃРёРІ 1 - С‚Р°Р±Р»РёС†Р° РёР· РєРѕС‚РѕСЂРѕР№ Рґ-С‚С‹,
+                // 2 - РёРЅРґРµРєСЃ РґР»СЏ РєР»СЋС‡Р° РґРѕРєСѓРјРµРЅС‚Р°
+                 // 3 РёРЅРґРµРєСЃ РґР»СЏ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° РЎ_Р¤
+    var maTbDoc Init {} // РјР°СЃСЃРёРІ С‚Р°Р±Р»РёС† СЃРІСЏР·Р°РЅРЅС‹С… Рґ-С‚РѕРІ
     Var maJrnDocDim Init {}
     Var mRound init 2
-    Var mlYesDoc init .F.// Т - есть документы при взятии на редактирование
+    Var mlYesDoc init .F.// Рў - РµСЃС‚СЊ РґРѕРєСѓРјРµРЅС‚С‹ РїСЂРё РІР·СЏС‚РёРё РЅР° СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ
     var aSFDOC init {}
     Var mlCreateRec init .T.
-    Var mlFromDoc init .F. //T - с-ф создали из документа - при сохранении - выдаем запрос на возврат в документ
+    Var mlFromDoc init .F. //T - СЃ-С„ СЃРѕР·РґР°Р»Рё РёР· РґРѕРєСѓРјРµРЅС‚Р° - РїСЂРё СЃРѕС…СЂР°РЅРµРЅРёРё - РІС‹РґР°РµРј Р·Р°РїСЂРѕСЃ РЅР° РІРѕР·РІСЂР°С‚ РІ РґРѕРєСѓРјРµРЅС‚
     Var mnRecAddDoc init 0
     Var mcJrnAddDoc init ""
     Var mNoAddArrEdit init .F.
-    Var mReMakeBook init .F. // Проверять соответствие записи сумме по документу
-    Var maReRegDoc init {} // массив параметров документа который изменяли
-    Var mlMsgForReg init .T. // задавать или нет запрос на сохранение
-    Var mlHandSum init .F.  // если дата меньше начала даты периода - и нет суммы записи стартовать
-                           //или нет форму ручного ввода суммы
+    Var mReMakeBook init .F. // РџСЂРѕРІРµСЂСЏС‚СЊ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРµ Р·Р°РїРёСЃРё СЃСѓРјРјРµ РїРѕ РґРѕРєСѓРјРµРЅС‚Сѓ
+    Var maReRegDoc init {} // РјР°СЃСЃРёРІ РїР°СЂР°РјРµС‚СЂРѕРІ РґРѕРєСѓРјРµРЅС‚Р° РєРѕС‚РѕСЂС‹Р№ РёР·РјРµРЅСЏР»Рё
+    Var mlMsgForReg init .T. // Р·Р°РґР°РІР°С‚СЊ РёР»Рё РЅРµС‚ Р·Р°РїСЂРѕСЃ РЅР° СЃРѕС…СЂР°РЅРµРЅРёРµ
+    Var mlHandSum init .F.  // РµСЃР»Рё РґР°С‚Р° РјРµРЅСЊС€Рµ РЅР°С‡Р°Р»Р° РґР°С‚С‹ РїРµСЂРёРѕРґР° - Рё РЅРµС‚ СЃСѓРјРјС‹ Р·Р°РїРёСЃРё СЃС‚Р°СЂС‚РѕРІР°С‚СЊ
+                           //РёР»Рё РЅРµС‚ С„РѕСЂРјСѓ СЂСѓС‡РЅРѕРіРѕ РІРІРѕРґР° СЃСѓРјРјС‹
 
-    Var mlReg init .T. // В зависимости от того при пересоздании
-    // с-ф для первой с-ф произвели регистрацию в книгу Т илинет
-    //Var cGenPAddSclad init "0" //как заполнять партию для Sclad
-    //Var cGenPAddZapas init "0" //как заполнять партию для Zapas
-    Var mlRePlaceMod init .F.  // При замене налоговой модели сохраняем если изменились параметрыс-ф
-    Var mlReCreateBook init .F.// если изменились параметры с-ф нужно пересоздать записи в книгу
+    Var mlReg init .T. // Р’ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РѕРіРѕ РїСЂРё РїРµСЂРµСЃРѕР·РґР°РЅРёРё
+    // СЃ-С„ РґР»СЏ РїРµСЂРІРѕР№ СЃ-С„ РїСЂРѕРёР·РІРµР»Рё СЂРµРіРёСЃС‚СЂР°С†РёСЋ РІ РєРЅРёРіСѓ Рў РёР»РёРЅРµС‚
+    //Var cGenPAddSclad init "0" //РєР°Рє Р·Р°РїРѕР»РЅСЏС‚СЊ РїР°СЂС‚РёСЋ РґР»СЏ Sclad
+    //Var cGenPAddZapas init "0" //РєР°Рє Р·Р°РїРѕР»РЅСЏС‚СЊ РїР°СЂС‚РёСЋ РґР»СЏ Zapas
+    Var mlRePlaceMod init .F.  // РџСЂРё Р·Р°РјРµРЅРµ РЅР°Р»РѕРіРѕРІРѕР№ РјРѕРґРµР»Рё СЃРѕС…СЂР°РЅСЏРµРј РµСЃР»Рё РёР·РјРµРЅРёР»РёСЃСЊ РїР°СЂР°РјРµС‚СЂС‹СЃ-С„
+    Var mlReCreateBook init .F.// РµСЃР»Рё РёР·РјРµРЅРёР»РёСЃСЊ РїР°СЂР°РјРµС‚СЂС‹ СЃ-С„ РЅСѓР¶РЅРѕ РїРµСЂРµСЃРѕР·РґР°С‚СЊ Р·Р°РїРёСЃРё РІ РєРЅРёРіСѓ
 
-    ACCESS ASSIGN METHOD DOC_ID()    // c 22 N(10,0)  Уникальный идентификатор документа в журнале
-    ACCESS ASSIGN METHOD TI_CTG()    // C(01)    Категория счета-фактуры
-    ACCESS ASSIGN METHOD MOVE_TP()   // C(02)    Вид движения счета-фактуры
+    ACCESS ASSIGN METHOD DOC_ID()    // c 22 N(10,0)  РЈРЅРёРєР°Р»СЊРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РґРѕРєСѓРјРµРЅС‚Р° РІ Р¶СѓСЂРЅР°Р»Рµ
+    ACCESS ASSIGN METHOD TI_CTG()    // C(01)    РљР°С‚РµРіРѕСЂРёСЏ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹
+    ACCESS ASSIGN METHOD MOVE_TP()   // C(02)    Р’РёРґ РґРІРёР¶РµРЅРёСЏ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹
           ACCESS  METHOD MOVE_NAME()
-    //ACCESS ASSIGN METHOD STR_TP()    // C(01)    Тип строк
-    ACCESS ASSIGN METHOD DOC_TP()    //c 22 N(10,0)  Вид документа
+    //ACCESS ASSIGN METHOD STR_TP()    // C(01)    РўРёРї СЃС‚СЂРѕРє
+    ACCESS ASSIGN METHOD DOC_TP()    //c 22 N(10,0)  Р’РёРґ РґРѕРєСѓРјРµРЅС‚Р°
            ACCESS METHOD CODE_TP()
-    ACCESS ASSIGN METHOD DOC_NUM()   // C - 24  C (15) - C(06)    Номер документа
-    ACCESS ASSIGN METHOD DOC_DATE()  // D        Дата документа
-    ACCESS ASSIGN METHOD REG_NUM()   // C(06)    Номер документа
-    ACCESS ASSIGN METHOD REG_DATE()  // D        Дата регистрации
-    ACCESS ASSIGN METHOD ENT_ID()  // c 22 N10(06)    Код собственного предприятия
+    ACCESS ASSIGN METHOD DOC_NUM()   // C - 24  C (15) - C(06)    РќРѕРјРµСЂ РґРѕРєСѓРјРµРЅС‚Р°
+    ACCESS ASSIGN METHOD DOC_DATE()  // D        Р”Р°С‚Р° РґРѕРєСѓРјРµРЅС‚Р°
+    ACCESS ASSIGN METHOD REG_NUM()   // C(06)    РќРѕРјРµСЂ РґРѕРєСѓРјРµРЅС‚Р°
+    ACCESS ASSIGN METHOD REG_DATE()  // D        Р”Р°С‚Р° СЂРµРіРёСЃС‚СЂР°С†РёРё
+    ACCESS ASSIGN METHOD ENT_ID()  // c 22 N10(06)    РљРѕРґ СЃРѕР±СЃС‚РІРµРЅРЅРѕРіРѕ РїСЂРµРґРїСЂРёСЏС‚РёСЏ
     ACCESS ASSIGN METHOD ENT_ADDRID() // c 22
-    ACCESS ASSIGN METHOD PRT_ID()  // c 22 N10(06)    Код партнера
+    ACCESS ASSIGN METHOD PRT_ID()  // c 22 N10(06)    РљРѕРґ РїР°СЂС‚РЅРµСЂР°
     ACCESS ASSIGN METHOD PRT_ADDRID() //c 22
-    ACCESS ASSIGN METHOD VAL_ID()  // c 22 C(03)    Код валюты
-    ACCESS ASSIGN METHOD VAL_RATE()  // N(19,5)  Курс на дату регистрации?
-    ACCESS ASSIGN METHOD SUM_NNDS()  // N(19,4)  Сумма в валюте без НДС
-    ACCESS ASSIGN METHOD SUM_NDS()   // N(19,4)  Сумма НДС в валюте
-    ACCESS ASSIGN METHOD SUM_A()     // N(19,4)  Сумма в валюте с НДС
-    ACCESS ASSIGN METHOD SUM_BOOK()  // N(19,4)  Сумма по книге в валюте?
-    ACCESS ASSIGN METHOD SUM_PAY()  // N(19,4)  Сумма оплаты в валюте
-    ACCESS ASSIGN METHOD SUM_SHP()  // N(19,4)   Сумма оприходования- отгрузки в валюте
-    ACCESS ASSIGN METHOD ST_SUM()  // N(19,4)    Сумма сторно
-    ACCESS ASSIGN METHOD COMMENT_m() // M        Комментарий
-    ACCESS ASSIGN METHOD COMPL_m()   // M        Дополнение
-    ACCESS ASSIGN METHOD ACNT_ID()      //c 16 На ключ - N10 C(16)    Счет
-    ACCESS ASSIGN METHOD ANALIT()    // C(24)    Аналитика
-    ACCESS ASSIGN METHOD ENT_LOC() //c 22 - идентификатор адреса грузополучателя собственного предприятия
-    ACCESS ASSIGN METHOD PRT_LOC() //c 22 - идентификатор адреса грузополучателя партнера
-    ACCESS ASSIGN METHOD CNT_TYPE() //c 1 тип сделки основания
-    ACCESS ASSIGN METHOD CNT_DOC_ID() //c 22 идентификатор сделки
-    ACCESS ASSIGN METHOD IS_FULL()   //L T полностью разнесенная с-ф
-    ACCESS ASSIGN METHOD PRT_TP()   // c 1 тип партнера 1 - партнер 2 сотрудник
+    ACCESS ASSIGN METHOD VAL_ID()  // c 22 C(03)    РљРѕРґ РІР°Р»СЋС‚С‹
+    ACCESS ASSIGN METHOD VAL_RATE()  // N(19,5)  РљСѓСЂСЃ РЅР° РґР°С‚Сѓ СЂРµРіРёСЃС‚СЂР°С†РёРё?
+    ACCESS ASSIGN METHOD SUM_NNDS()  // N(19,4)  РЎСѓРјРјР° РІ РІР°Р»СЋС‚Рµ Р±РµР· РќР”РЎ
+    ACCESS ASSIGN METHOD SUM_NDS()   // N(19,4)  РЎСѓРјРјР° РќР”РЎ РІ РІР°Р»СЋС‚Рµ
+    ACCESS ASSIGN METHOD SUM_A()     // N(19,4)  РЎСѓРјРјР° РІ РІР°Р»СЋС‚Рµ СЃ РќР”РЎ
+    ACCESS ASSIGN METHOD SUM_BOOK()  // N(19,4)  РЎСѓРјРјР° РїРѕ РєРЅРёРіРµ РІ РІР°Р»СЋС‚Рµ?
+    ACCESS ASSIGN METHOD SUM_PAY()  // N(19,4)  РЎСѓРјРјР° РѕРїР»Р°С‚С‹ РІ РІР°Р»СЋС‚Рµ
+    ACCESS ASSIGN METHOD SUM_SHP()  // N(19,4)   РЎСѓРјРјР° РѕРїСЂРёС…РѕРґРѕРІР°РЅРёСЏ- РѕС‚РіСЂСѓР·РєРё РІ РІР°Р»СЋС‚Рµ
+    ACCESS ASSIGN METHOD ST_SUM()  // N(19,4)    РЎСѓРјРјР° СЃС‚РѕСЂРЅРѕ
+    ACCESS ASSIGN METHOD COMMENT_m() // M        РљРѕРјРјРµРЅС‚Р°СЂРёР№
+    ACCESS ASSIGN METHOD COMPL_m()   // M        Р”РѕРїРѕР»РЅРµРЅРёРµ
+    ACCESS ASSIGN METHOD ACNT_ID()      //c 16 РќР° РєР»СЋС‡ - N10 C(16)    РЎС‡РµС‚
+    ACCESS ASSIGN METHOD ANALIT()    // C(24)    РђРЅР°Р»РёС‚РёРєР°
+    ACCESS ASSIGN METHOD ENT_LOC() //c 22 - РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р°РґСЂРµСЃР° РіСЂСѓР·РѕРїРѕР»СѓС‡Р°С‚РµР»СЏ СЃРѕР±СЃС‚РІРµРЅРЅРѕРіРѕ РїСЂРµРґРїСЂРёСЏС‚РёСЏ
+    ACCESS ASSIGN METHOD PRT_LOC() //c 22 - РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р°РґСЂРµСЃР° РіСЂСѓР·РѕРїРѕР»СѓС‡Р°С‚РµР»СЏ РїР°СЂС‚РЅРµСЂР°
+    ACCESS ASSIGN METHOD CNT_TYPE() //c 1 С‚РёРї СЃРґРµР»РєРё РѕСЃРЅРѕРІР°РЅРёСЏ
+    ACCESS ASSIGN METHOD CNT_DOC_ID() //c 22 РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРґРµР»РєРё
+    ACCESS ASSIGN METHOD IS_FULL()   //L T РїРѕР»РЅРѕСЃС‚СЊСЋ СЂР°Р·РЅРµСЃРµРЅРЅР°СЏ СЃ-С„
+    ACCESS ASSIGN METHOD PRT_TP()   // c 1 С‚РёРї РїР°СЂС‚РЅРµСЂР° 1 - РїР°СЂС‚РЅРµСЂ 2 СЃРѕС‚СЂСѓРґРЅРёРє
 
     ACCESS ASSIGN METHOD STR_TP2 //L(1)
     ACCESS ASSIGN METHOD SHP_TP2 //L(1)
@@ -235,7 +235,7 @@ CLASS clsTax_Inv FROM clsMetaBO
     ACCESS ASSIGN METHOD ID_OBL  //C(22)
     ACCESS ASSIGN METHOD IS_ANUL //L 1
     ACCESS ASSIGN METHOD DOCDIM // C(60)
-    ACCESS ASSIGN METHOD PAY_COMM //(M) Расчетно-платежный документ - текстом
+    ACCESS ASSIGN METHOD PAY_COMM //(M) Р Р°СЃС‡РµС‚РЅРѕ-РїР»Р°С‚РµР¶РЅС‹Р№ РґРѕРєСѓРјРµРЅС‚ - С‚РµРєСЃС‚РѕРј
     ACCESS ASSIGN METHOD AnalitName
 
     ACCESS ASSIGN METHOD KOP_NDS  //C(2)
@@ -283,12 +283,12 @@ CLASS clsTax_Inv FROM clsMetaBO
     ACCESS METHOD CNTDOCDIM()
     ACCESS METHOD SFANALIT()
     ACCESS METHOD CNTANALIT()
-    ACCESS METHOD STSUM() //Не отсторнированная сумма
+    ACCESS METHOD STSUM() //РќРµ РѕС‚СЃС‚РѕСЂРЅРёСЂРѕРІР°РЅРЅР°СЏ СЃСѓРјРјР°
     ACCESS METHOD OBLNUM()
-    ACCESS METHOD SFKVID()  // Вид корректируемого с-ф
-    ACCESS METHOD SFKNUM()  // Номер корректируемого с-ф
-    ACCESS METHOD SFKDATE() // Дата корректируемого с-ф
-    ACCESS METHOD SFKDOPNUM() //Доп номер связанного с-ф
+    ACCESS METHOD SFKVID()  // Р’РёРґ РєРѕСЂСЂРµРєС‚РёСЂСѓРµРјРѕРіРѕ СЃ-С„
+    ACCESS METHOD SFKNUM()  // РќРѕРјРµСЂ РєРѕСЂСЂРµРєС‚РёСЂСѓРµРјРѕРіРѕ СЃ-С„
+    ACCESS METHOD SFKDATE() // Р”Р°С‚Р° РєРѕСЂСЂРµРєС‚РёСЂСѓРµРјРѕРіРѕ СЃ-С„
+    ACCESS METHOD SFKDOPNUM() //Р”РѕРї РЅРѕРјРµСЂ СЃРІСЏР·Р°РЅРЅРѕРіРѕ СЃ-С„
 
     METHOD Init()
     METHOD BeforeAppend(TI_CTG, Move_Tp,sPkDoc )
@@ -298,10 +298,10 @@ CLASS clsTax_Inv FROM clsMetaBO
     Method Delete()
     Method Destroy()
 
-    Method GetAnalit()      //получаем по партнеру значение аналитики
+    Method GetAnalit()      //РїРѕР»СѓС‡Р°РµРј РїРѕ РїР°СЂС‚РЅРµСЂСѓ Р·РЅР°С‡РµРЅРёРµ Р°РЅР°Р»РёС‚РёРєРё
     Method IsValMain(lRet)
-    Method CreateStrForDoc() // создание строк из документов
-    Method ClearMarkForStrDocm() // снятие в строкач документа отметки
+    Method CreateStrForDoc() // СЃРѕР·РґР°РЅРёРµ СЃС‚СЂРѕРє РёР· РґРѕРєСѓРјРµРЅС‚РѕРІ
+    Method ClearMarkForStrDocm() // СЃРЅСЏС‚РёРµ РІ СЃС‚СЂРѕРєР°С‡ РґРѕРєСѓРјРµРЅС‚Р° РѕС‚РјРµС‚РєРё
     Method CreateForDoc51Order(oObjDoc,nFor)
     Method CreateForDoc51OrderRBook(oObjDoc,nFor)
     Method CheckRBook()
@@ -313,9 +313,9 @@ CLASS clsTax_Inv FROM clsMetaBO
     Method CreateArrStrAssets()
     Method CreateTaxForSF()
     Method GetDocRecNo(aRecNo)
-    Method ClearMarkStrInDoc() // удаляем ссылку на строку при удалении строки
-    Method SetStrDoc() // получить таблицы строк документов
-    Method CreateAVForBook()//создание записи в книгу для Авансового С-Ф
+    Method ClearMarkStrInDoc() // СѓРґР°Р»СЏРµРј СЃСЃС‹Р»РєСѓ РЅР° СЃС‚СЂРѕРєСѓ РїСЂРё СѓРґР°Р»РµРЅРёРё СЃС‚СЂРѕРєРё
+    Method SetStrDoc() // РїРѕР»СѓС‡РёС‚СЊ С‚Р°Р±Р»РёС†С‹ СЃС‚СЂРѕРє РґРѕРєСѓРјРµРЅС‚РѕРІ
+    Method CreateAVForBook()//СЃРѕР·РґР°РЅРёРµ Р·Р°РїРёСЃРё РІ РєРЅРёРіСѓ РґР»СЏ РђРІР°РЅСЃРѕРІРѕРіРѕ РЎ-Р¤
     Method CreateRecInBook()
     Method CreateStorno()
     Method CreateStornoRecInBook()
@@ -330,27 +330,27 @@ CLASS clsTax_Inv FROM clsMetaBO
     Method CreateDocument()
     Method GetPSchName(cSchet)
     Method GetSfFieldName(cStrTp)
-    Method GetNextNumInv()//перенумерация д-та при смене типа или года
-    Method CardYes() // Есть ли карточка под С/ф
-    Method CheckCard() //Синхронизация или создание новой карточки
-    Method CheckUniqueNum() //Проверка номера на уникальность
+    Method GetNextNumInv()//РїРµСЂРµРЅСѓРјРµСЂР°С†РёСЏ Рґ-С‚Р° РїСЂРё СЃРјРµРЅРµ С‚РёРїР° РёР»Рё РіРѕРґР°
+    Method CardYes() // Р•СЃС‚СЊ Р»Рё РєР°СЂС‚РѕС‡РєР° РїРѕРґ РЎ/С„
+    Method CheckCard() //РЎРёРЅС…СЂРѕРЅРёР·Р°С†РёСЏ РёР»Рё СЃРѕР·РґР°РЅРёРµ РЅРѕРІРѕР№ РєР°СЂС‚РѕС‡РєРё
+    Method CheckUniqueNum() //РџСЂРѕРІРµСЂРєР° РЅРѕРјРµСЂР° РЅР° СѓРЅРёРєР°Р»СЊРЅРѕСЃС‚СЊ
     Method OldCard()
     Method CreateCard()
     Method DeleteCard()
     Method RegDocForSF()
     Method ReLockDocForSf()
-    Method RecoverAnulRecords() //востановление аннулированных записей
-    Method GetAddrName(lEnt) //Получение адреса по идентификатору
-    Method CreateBrg(cCnt) //создание рекордов на документы основания
-    Method GetBrg(nParam) // поллучение параметра документа основания
-    Method CheckObl() //Проверка наличия обязательного этапа
+    Method RecoverAnulRecords() //РІРѕСЃС‚Р°РЅРѕРІР»РµРЅРёРµ Р°РЅРЅСѓР»РёСЂРѕРІР°РЅРЅС‹С… Р·Р°РїРёСЃРµР№
+    Method GetAddrName(lEnt) //РџРѕР»СѓС‡РµРЅРёРµ Р°РґСЂРµСЃР° РїРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ
+    Method CreateBrg(cCnt) //СЃРѕР·РґР°РЅРёРµ СЂРµРєРѕСЂРґРѕРІ РЅР° РґРѕРєСѓРјРµРЅС‚С‹ РѕСЃРЅРѕРІР°РЅРёСЏ
+    Method GetBrg(nParam) // РїРѕР»Р»СѓС‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР° РґРѕРєСѓРјРµРЅС‚Р° РѕСЃРЅРѕРІР°РЅРёСЏ
+    Method CheckObl() //РџСЂРѕРІРµСЂРєР° РЅР°Р»РёС‡РёСЏ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕРіРѕ СЌС‚Р°РїР°
     Method lTaxNds(cTaxId)
     Method ChengeSumStatus()
     METHOD Open()
     Method SetParamStrSum()
     Method Pereschet()
     Method GetDocForStr()
-    Method ReplaceNdsFromKalk() //Замена значений в строке налогов для НДС согласно калькуляции
+    Method ReplaceNdsFromKalk() //Р—Р°РјРµРЅР° Р·РЅР°С‡РµРЅРёР№ РІ СЃС‚СЂРѕРєРµ РЅР°Р»РѕРіРѕРІ РґР»СЏ РќР”РЎ СЃРѕРіР»Р°СЃРЅРѕ РєР°Р»СЊРєСѓР»СЏС†РёРё
     //Method GetPAdd()
     method DelAllStr()
     Method LenNum()
@@ -369,9 +369,9 @@ CLASS clsTax_Inv FROM clsMetaBO
     ACCESS METHOD FieldList()
 
     ACCESS METHOD CheckBeforeEdit
-    ACCESS METHOD CheckBeforeSave   //метод проверки возможности записи
-    ACCESS METHOD CheckBeforeDel    //метод проверки возможности удаления
-    ACCESS METHOD CheckBeforeAdd    //метод проверки возможности создания
+    ACCESS METHOD CheckBeforeSave   //РјРµС‚РѕРґ РїСЂРѕРІРµСЂРєРё РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё Р·Р°РїРёСЃРё
+    ACCESS METHOD CheckBeforeDel    //РјРµС‚РѕРґ РїСЂРѕРІРµСЂРєРё РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё СѓРґР°Р»РµРЅРёСЏ
+    ACCESS METHOD CheckBeforeAdd    //РјРµС‚РѕРґ РїСЂРѕРІРµСЂРєРё РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё СЃРѕР·РґР°РЅРёСЏ
 
 ENDCLASS
 
@@ -387,83 +387,83 @@ METHOD clsTax_Inv:Init(xParam)
   ::clsMetaBO:Init()
   ::MBOVERSION := 1
   // pg - 16_09_09 38051,38052
-  // пишем в изменение рег номер - юридический в комментарий
-  //[Forward note from Александр Титов -- 07.09.09 16:04:54]
-  // В комментариях (там где партнер) надо вписать еще юр.номер
-  ::aJrnCodeDoc := {"DOC_ID",;                     // 1-имя поля первичного ключа
-                    "Счета-фактуры",;              // 2-наименование реестра (16 символов) - типа jrn_name в jrn_sys.dbf
-                    "С/Ф",;                        // 3-сокращенное наименование реестра (9 символов) - типа brg_name
-                    {||Field->CODE_TP},;                // 4-блок кода, возвращающий вид документа (стоим в документе)
-                    {||Field->REG_NUM/*Doc_Num*/},;                // 5-блок кода для номера документа
-                    {||Field->REG_DATE/*Doc_date*/},;               // 6-блок кода для даты документа
-                    {|pr,cNum|pr:=Field->prt_id, cNum := if((DIC_PARTNER)->(DBSEEK(pr)),(DIC_PARTNER)->shortname,""), cNum + " Юр.ном." + Field->Doc_Num + " от " + DTOC(Field->Doc_date) },;// 7-блок кода для наименования партнера
-                    {||Field->Sum_A},;                  // 8-блок кода для суммы
-                    {||if(Field->ti_ctg=="1","+","-")},;// 9-блок кода для признака прихода-расхода, должен возвратить "+" или "-" или пробел
-                    "1601";                        //10-код журнала (4 символа) должен быть уникальным для реестра
+  // РїРёС€РµРј РІ РёР·РјРµРЅРµРЅРёРµ СЂРµРі РЅРѕРјРµСЂ - СЋСЂРёРґРёС‡РµСЃРєРёР№ РІ РєРѕРјРјРµРЅС‚Р°СЂРёР№
+  //[Forward note from РђР»РµРєСЃР°РЅРґСЂ РўРёС‚РѕРІ -- 07.09.09 16:04:54]
+  // Р’ РєРѕРјРјРµРЅС‚Р°СЂРёСЏС… (С‚Р°Рј РіРґРµ РїР°СЂС‚РЅРµСЂ) РЅР°РґРѕ РІРїРёСЃР°С‚СЊ РµС‰Рµ СЋСЂ.РЅРѕРјРµСЂ
+  ::aJrnCodeDoc := {"DOC_ID",;                     // 1-РёРјСЏ РїРѕР»СЏ РїРµСЂРІРёС‡РЅРѕРіРѕ РєР»СЋС‡Р°
+                    "РЎС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹",;              // 2-РЅР°РёРјРµРЅРѕРІР°РЅРёРµ СЂРµРµСЃС‚СЂР° (16 СЃРёРјРІРѕР»РѕРІ) - С‚РёРїР° jrn_name РІ jrn_sys.dbf
+                    "РЎ/Р¤",;                        // 3-СЃРѕРєСЂР°С‰РµРЅРЅРѕРµ РЅР°РёРјРµРЅРѕРІР°РЅРёРµ СЂРµРµСЃС‚СЂР° (9 СЃРёРјРІРѕР»РѕРІ) - С‚РёРїР° brg_name
+                    {||Field->CODE_TP},;                // 4-Р±Р»РѕРє РєРѕРґР°, РІРѕР·РІСЂР°С‰Р°СЋС‰РёР№ РІРёРґ РґРѕРєСѓРјРµРЅС‚Р° (СЃС‚РѕРёРј РІ РґРѕРєСѓРјРµРЅС‚Рµ)
+                    {||Field->REG_NUM/*Doc_Num*/},;                // 5-Р±Р»РѕРє РєРѕРґР° РґР»СЏ РЅРѕРјРµСЂР° РґРѕРєСѓРјРµРЅС‚Р°
+                    {||Field->REG_DATE/*Doc_date*/},;               // 6-Р±Р»РѕРє РєРѕРґР° РґР»СЏ РґР°С‚С‹ РґРѕРєСѓРјРµРЅС‚Р°
+                    {|pr,cNum|pr:=Field->prt_id, cNum := if((DIC_PARTNER)->(DBSEEK(pr)),(DIC_PARTNER)->shortname,""), cNum + " Р®СЂ.РЅРѕРј." + Field->Doc_Num + " РѕС‚ " + DTOC(Field->Doc_date) },;// 7-Р±Р»РѕРє РєРѕРґР° РґР»СЏ РЅР°РёРјРµРЅРѕРІР°РЅРёСЏ РїР°СЂС‚РЅРµСЂР°
+                    {||Field->Sum_A},;                  // 8-Р±Р»РѕРє РєРѕРґР° РґР»СЏ СЃСѓРјРјС‹
+                    {||if(Field->ti_ctg=="1","+","-")},;// 9-Р±Р»РѕРє РєРѕРґР° РґР»СЏ РїСЂРёР·РЅР°РєР° РїСЂРёС…РѕРґР°-СЂР°СЃС…РѕРґР°, РґРѕР»Р¶РµРЅ РІРѕР·РІСЂР°С‚РёС‚СЊ "+" РёР»Рё "-" РёР»Рё РїСЂРѕР±РµР»
+                    "1601";                        //10-РєРѕРґ Р¶СѓСЂРЅР°Р»Р° (4 СЃРёРјРІРѕР»Р°) РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ СѓРЅРёРєР°Р»СЊРЅС‹Рј РґР»СЏ СЂРµРµСЃС‚СЂР°
                    }
 //altd()
   ::NameBO      := "clsTax_Inv"
   ::ModifyType  := mtNewEditDel
   ::clsMetaBO:subself:=self
   ::FnCheckBeforeEdit:="CheckBeforeEdit"
-  ::FnCheckBeforeSave:="CheckBeforeSave"//имя функции,вызываемую для проверки возможности сохранения
-  ::FnCheckBeforeDel :="CheckBeforeDel"//имя функции,вызываемую для проверки возможности удалить
-  ::FnCheckBeforeAdd :="CheckBeforeAdd"//имя функции,вызываемую для проверки возможности создать новую
-  ::PrimaryKey := {"DOC_ID","TAG_ID","SEQ01",.T.}//описание первичного ключа{<Имя поля>,<Имя индекса>,<правило нумерации>}{"ID_OP","ID_OP","CASH"}
+  ::FnCheckBeforeSave:="CheckBeforeSave"//РёРјСЏ С„СѓРЅРєС†РёРё,РІС‹Р·С‹РІР°РµРјСѓСЋ РґР»СЏ РїСЂРѕРІРµСЂРєРё РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё СЃРѕС…СЂР°РЅРµРЅРёСЏ
+  ::FnCheckBeforeDel :="CheckBeforeDel"//РёРјСЏ С„СѓРЅРєС†РёРё,РІС‹Р·С‹РІР°РµРјСѓСЋ РґР»СЏ РїСЂРѕРІРµСЂРєРё РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё СѓРґР°Р»РёС‚СЊ
+  ::FnCheckBeforeAdd :="CheckBeforeAdd"//РёРјСЏ С„СѓРЅРєС†РёРё,РІС‹Р·С‹РІР°РµРјСѓСЋ РґР»СЏ РїСЂРѕРІРµСЂРєРё РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё СЃРѕР·РґР°С‚СЊ РЅРѕРІСѓСЋ
+  ::PrimaryKey := {"DOC_ID","TAG_ID","SEQ01",.T.}//РѕРїРёСЃР°РЅРёРµ РїРµСЂРІРёС‡РЅРѕРіРѕ РєР»СЋС‡Р°{<РРјСЏ РїРѕР»СЏ>,<РРјСЏ РёРЅРґРµРєСЃР°>,<РїСЂР°РІРёР»Рѕ РЅСѓРјРµСЂР°С†РёРё>}{"ID_OP","ID_OP","CASH"}
                 //Prm;
   ::CHILDLIST := "TAX_STR;TAX_STR:TAXSTRSUM;BOOK;BOOKST"
 
-   ::SortList  := "TAG_MOVE;виду движения;"+;
-                  "TAG_DTNUM;дате,номеру;"+;
-                  "TAG_NUMDT;номеру, дате;"+;
-                  "TAG_DTNUMR;дате регистрации,регистрационному номеру;"+;
-                  "TAG_NUMDTR;регистрационному номеру, дате регистрации;"+;
-                  "PART_TEMP{TI_CTG+UPPER(PARTNER_NAME)||PARTNER_NAME};партнеру"
+   ::SortList  := "TAG_MOVE;РІРёРґСѓ РґРІРёР¶РµРЅРёСЏ;"+;
+                  "TAG_DTNUM;РґР°С‚Рµ,РЅРѕРјРµСЂСѓ;"+;
+                  "TAG_NUMDT;РЅРѕРјРµСЂСѓ, РґР°С‚Рµ;"+;
+                  "TAG_DTNUMR;РґР°С‚Рµ СЂРµРіРёСЃС‚СЂР°С†РёРё,СЂРµРіРёСЃС‚СЂР°С†РёРѕРЅРЅРѕРјСѓ РЅРѕРјРµСЂСѓ;"+;
+                  "TAG_NUMDTR;СЂРµРіРёСЃС‚СЂР°С†РёРѕРЅРЅРѕРјСѓ РЅРѕРјРµСЂСѓ, РґР°С‚Рµ СЂРµРіРёСЃС‚СЂР°С†РёРё;"+;
+                  "PART_TEMP{TI_CTG+UPPER(PARTNER_NAME)||PARTNER_NAME};РїР°СЂС‚РЅРµСЂСѓ"
    ::NumeratorRule:={{"TAX\MEMDAT.dbf","TAG_IDENT","TAG_NUM",   "DOC_NUM","SFDOC","DOC_TP + left(DTOS(REG_DATE),4)","0"},;
                      {"TAX\MEMDAT.dbf","TAG_IDENT","TAG_NUMREG","REG_NUM","SFREG","DOC_TP + left(DTOS(REG_DATE),4)","0"} } //,;
                      //{"TAX\MEMDAT.dbf","TAG_IDENT","TAG_NUMKOR","DOC_NUM","SFKORR","DOC_TP + left(DTOS(REG_DATE),4)","0"}}
 
-   ::AddChildName( {  "clsTax_Str" ; //1 имя создаваемого класса
-                   , "Tag_DOC_ID"  ; //2 TAG устанавить при открытии
+   ::AddChildName( {  "clsTax_Str" ; //1 РёРјСЏ СЃРѕР·РґР°РІР°РµРјРѕРіРѕ РєР»Р°СЃСЃР°
+                   , "Tag_DOC_ID"  ; //2 TAG СѓСЃС‚Р°РЅР°РІРёС‚СЊ РїСЂРё РѕС‚РєСЂС‹С‚РёРё
                    , .T.           ; //3 MultiRecType
-                   , mtNewEditDel  ; //4 ModifyType   Режимы редактирования
-                   , "TAX_STR"     ; //5 название интерфейса для обращения к Chaild
-                   ;      // ------ ЭТО ДЛЯ МАСТЕР-ДЕТЕИЛ ------
+                   , mtNewEditDel  ; //4 ModifyType   Р РµР¶РёРјС‹ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ
+                   , "TAX_STR"     ; //5 РЅР°Р·РІР°РЅРёРµ РёРЅС‚РµСЂС„РµР№СЃР° РґР»СЏ РѕР±СЂР°С‰РµРЅРёСЏ Рє Chaild
+                   ;      // ------ Р­РўРћ Р”Р›РЇ РњРђРЎРўР•Р -Р”Р•РўР•РР› ------
                    , {"DOC_ID","Tag_DOC_ID","DOC_ID",psSCOPE} ; //6
-                   ;      // ------ ЭТО ДЛЯ ВСЕ ПОД ДОКУМЕНТ ------
+                   ;      // ------ Р­РўРћ Р”Р›РЇ Р’РЎР• РџРћР” Р”РћРљРЈРњР•РќРў ------
                    , {"DOC_ID","Tag_DOC_ID","DOC_ID",psSCOPE} ; //7
                    }  )
 
- ::AddChildName( {  "clsTax_Book" ; //1 имя создаваемого класса
-                   , "TAG_SF"         ; //2 TAG устанавить при открытии
+ ::AddChildName( {  "clsTax_Book" ; //1 РёРјСЏ СЃРѕР·РґР°РІР°РµРјРѕРіРѕ РєР»Р°СЃСЃР°
+                   , "TAG_SF"         ; //2 TAG СѓСЃС‚Р°РЅР°РІРёС‚СЊ РїСЂРё РѕС‚РєСЂС‹С‚РёРё
                    , .T.                ; //3 MultiRecType
-                   , mtReadOnly       ; //4 ModifyType   Режимы редактирования
-                   , "BOOK"         ; //5 название интерфейса для обращения к Chaild
+                   , mtReadOnly       ; //4 ModifyType   Р РµР¶РёРјС‹ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ
+                   , "BOOK"         ; //5 РЅР°Р·РІР°РЅРёРµ РёРЅС‚РµСЂС„РµР№СЃР° РґР»СЏ РѕР±СЂР°С‰РµРЅРёСЏ Рє Chaild
                    , {"DOC_ID","TAG_SF","SF_ID",psSCOPE} ; //6
                    , {"DOC_ID","TAG_SF","SF_ID",psSCOPE} ; //7
                    }  )
 
- ::AddChildName( {  "clsTax_Book" ; //1 имя создаваемого класса
-                   , "TAG_SF"         ; //2 TAG устанавить при открытии
+ ::AddChildName( {  "clsTax_Book" ; //1 РёРјСЏ СЃРѕР·РґР°РІР°РµРјРѕРіРѕ РєР»Р°СЃСЃР°
+                   , "TAG_SF"         ; //2 TAG СѓСЃС‚Р°РЅР°РІРёС‚СЊ РїСЂРё РѕС‚РєСЂС‹С‚РёРё
                    , .T.                ; //3 MultiRecType
-                   , mtReadOnly       ; //4 ModifyType   Режимы редактирования
-                   , "BOOKST"         ; //5 название интерфейса для обращения к Chaild
+                   , mtReadOnly       ; //4 ModifyType   Р РµР¶РёРјС‹ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ
+                   , "BOOKST"         ; //5 РЅР°Р·РІР°РЅРёРµ РёРЅС‚РµСЂС„РµР№СЃР° РґР»СЏ РѕР±СЂР°С‰РµРЅРёСЏ Рє Chaild
                    , {"DOC_ID","TAG_SFST","ST_SF",psSCOPE} ; //6
                    , {"DOC_ID","TAG_SFST","ST_SF",psSCOPE} ; //7
                    }  )
    /*
-   ::AddChildName( {  "clsPrm_Vle" ; //1 имя создаваемого класса
-                   , "TAG_DOC"         ; //2 TAG устанавить при открытии
+   ::AddChildName( {  "clsPrm_Vle" ; //1 РёРјСЏ СЃРѕР·РґР°РІР°РµРјРѕРіРѕ РєР»Р°СЃСЃР°
+                   , "TAG_DOC"         ; //2 TAG СѓСЃС‚Р°РЅР°РІРёС‚СЊ РїСЂРё РѕС‚РєСЂС‹С‚РёРё
                    , .T.                ; //3 MultiRecType
-                   , mtEditOnly       ; //4 ModifyType   Режимы редактирования
-                   , "PRM"         ; //5 название интерфейса для обращения к Chaild
+                   , mtEditOnly       ; //4 ModifyType   Р РµР¶РёРјС‹ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ
+                   , "PRM"         ; //5 РЅР°Р·РІР°РЅРёРµ РёРЅС‚РµСЂС„РµР№СЃР° РґР»СЏ РѕР±СЂР°С‰РµРЅРёСЏ Рє Chaild
                    , {"DOC_ID","TAG_DOC","IDDOC",psSCOPE} ; //6
                    , {"DOC_ID","TAG_DOC","IDDOC",psSCOPE} ; //7
                    }  )
     */
     GetCurrParam(@::mVAL_ID,,,@::mMainCurCode,.T.)
 
-    //   "Bank\Doc51.Dbf" - nnoper_id, остальные - nnoper
+    //   "Bank\Doc51.Dbf" - nnoper_id, РѕСЃС‚Р°Р»СЊРЅС‹Рµ - nnoper
     ::aTab := {{"Bank\Doc51.Dbf","TAG_OPER","TAG_SF","Sf_Id","0101"},;
                {"CASH\K_ORDER.DBF","TAG_OPER","TAG_SF","Sf_Id","0201"},;
                {"SCLAD\MDOC.DBF","TAG_OPER","TAG_SF","OPER_FACT","0301","SCLAD\MDOCM.DBF","TAG_FACT","TAG_OPERM","OPER_FACT"},;
@@ -563,7 +563,7 @@ LOCAL s
 RETURN s
 
 Method clsTax_Inv:CheckBeforeEdit()
-local lStorno := ((::mAliasInv)->MOVE_TP $ {'СЗ','СП'})
+local lStorno := ((::mAliasInv)->MOVE_TP $ {'РЎР—','РЎРџ'})
 local  oErr ,lAv := .F.
 Local nRecNo := 0,cOldTag := "", cKey := ""
 Local lWr := .T. ,lRet //nRec, cAlias ,
@@ -572,11 +572,11 @@ Local cAl , cMssg := ""
   begin sequence
   (::mTbInv)->(OrdSetFocus("TAG_SFMD"))
   if (::mTbInv)->(DbSeek((::cWa)->DOC_ID))
-    //messagebox("Счет-фактура перевыставлен.",TITLEAPP,48)
-    cMssg := "Счет-фактура перевыставлен." +  chr(13) + chr(10)
+    //messagebox("РЎС‡РµС‚-С„Р°РєС‚СѓСЂР° РїРµСЂРµРІС‹СЃС‚Р°РІР»РµРЅ.",TITLEAPP,48)
+    cMssg := "РЎС‡РµС‚-С„Р°РєС‚СѓСЂР° РїРµСЂРµРІС‹СЃС‚Р°РІР»РµРЅ." +  chr(13) + chr(10)
     Do while !(::mTbInv)->(Eof())
       if (::mTbInv)->SFMD_ID == (::cWa)->DOC_ID
-        cMssg += (::mTbInv)->DOC_NUM + " от " + DTOC((::mTbInv)->DOC_DATE) +  chr(13) + chr(10)
+        cMssg += (::mTbInv)->DOC_NUM + " РѕС‚ " + DTOC((::mTbInv)->DOC_DATE) +  chr(13) + chr(10)
       endif
       (::mTbInv)->(DbSkip(1))
     enddo
@@ -585,7 +585,7 @@ Local cAl , cMssg := ""
   endif
   (::mTbInv)->(OrdSetFocus("TAG_SFD"))
   if (::mTbInv)->(DbSeek((::cWa)->DOC_ID))
-    messagebox("По счету-фактуре есть исправительный счет-фактура.",TITLEAPP,48)
+    messagebox("РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ РµСЃС‚СЊ РёСЃРїСЂР°РІРёС‚РµР»СЊРЅС‹Р№ СЃС‡РµС‚-С„Р°РєС‚СѓСЂР°.",TITLEAPP,48)
     Break(.F.)
   endif
 
@@ -594,7 +594,7 @@ Local cAl , cMssg := ""
   ::TAX_STR:GoTop()
   Do While !(::mAliasStr)->(Eof())
     if (::mAliasStr)->STR_V == "C"
-      messagebox("По счету-фактуре есть откорректированные строки.",TITLEAPP,48)
+      messagebox("РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ РµСЃС‚СЊ РѕС‚РєРѕСЂСЂРµРєС‚РёСЂРѕРІР°РЅРЅС‹Рµ СЃС‚СЂРѕРєРё.",TITLEAPP,48)
       Break(.F.)
     endif
     (::mAliasStr)->(DbSkip(1))
@@ -608,7 +608,7 @@ Local cAl , cMssg := ""
     endif
     (cAl)->(OrdSetFocus("TAG_ID"))
     if !(cAl)->(DbSeek((::cWa)->SFD_ID))
-      messagebox("Не найден исходный счет-фактура.",TITLEAPP,48)
+      messagebox("РќРµ РЅР°Р№РґРµРЅ РёСЃС…РѕРґРЅС‹Р№ СЃС‡РµС‚-С„Р°РєС‚СѓСЂР°.",TITLEAPP,48)
       Break(.F.)
     endif
     ::mOldKorr := (cAl)->SFK_ID
@@ -636,25 +636,25 @@ Local cAl , cMssg := ""
      enddo
      ::TAX_STR:GoTop()
    endif
-  //pg 38454 - после аннулирования авансовый счет-фактура, так же как отгрузочный, должен быть доступен для корректировок - сейчас это сделать нельзя.
+  //pg 38454 - РїРѕСЃР»Рµ Р°РЅРЅСѓР»РёСЂРѕРІР°РЅРёСЏ Р°РІР°РЅСЃРѕРІС‹Р№ СЃС‡РµС‚-С„Р°РєС‚СѓСЂР°, С‚Р°Рє Р¶Рµ РєР°Рє РѕС‚РіСЂСѓР·РѕС‡РЅС‹Р№, РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РґРѕСЃС‚СѓРїРµРЅ РґР»СЏ РєРѕСЂСЂРµРєС‚РёСЂРѕРІРѕРє - СЃРµР№С‡Р°СЃ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ РЅРµР»СЊР·СЏ.
   /*
-  if ((::mAliasInv)->TI_CTG == "2") .And. ((::mAliasInv)->MOVE_TP $ {'ПР','ПП'})
+  if ((::mAliasInv)->TI_CTG == "2") .And. ((::mAliasInv)->MOVE_TP $ {'РџР ','РџРџ'})
     lAv := .T.
     if (::mAliasInv)->IS_ANUL
-      messagebox("По авансовому счету-фактуре есть анулированные записи в книге.",TITLEAPP,48)
+      messagebox("РџРѕ Р°РІР°РЅСЃРѕРІРѕРјСѓ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ РµСЃС‚СЊ Р°РЅСѓР»РёСЂРѕРІР°РЅРЅС‹Рµ Р·Р°РїРёСЃРё РІ РєРЅРёРіРµ.",TITLEAPP,48)
       Break(.F.)
     endif
   endif
   */
   if len(::mParamIni) <= 0
     if !GetParamIni((::mAliasInv)->TI_CTG,lAv,@::mParamIni)
-      messagebox("Не удалось инициализировать параметры настройки подсистемы КПП",TITLEAPP,48)
+      messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°С‚СЊ РїР°СЂР°РјРµС‚СЂС‹ РЅР°СЃС‚СЂРѕР№РєРё РїРѕРґСЃРёСЃС‚РµРјС‹ РљРџРџ",TITLEAPP,48)
       Break(.F.)
     endif
   endif
   // 28908
   //if ::mParamIni[10] > (::mAliasInv)->DOC_DATE
-  //  messagebox("Счет-фактура в закрытом периоде.",TITLEAPP,48)
+  //  messagebox("РЎС‡РµС‚-С„Р°РєС‚СѓСЂР° РІ Р·Р°РєСЂС‹С‚РѕРј РїРµСЂРёРѕРґРµ.",TITLEAPP,48)
   //  Break(.F.)
   //endif
 
@@ -663,7 +663,7 @@ Local cAl , cMssg := ""
     Break(.F.)
   endif
   if lRet
-    messagebox("Счет-фактура в закрытом периоде.",TITLEAPP,48)
+    messagebox("РЎС‡РµС‚-С„Р°РєС‚СѓСЂР° РІ Р·Р°РєСЂС‹С‚РѕРј РїРµСЂРёРѕРґРµ.",TITLEAPP,48)
     Break(.F.)
   endif
   if !::SetParamStrSum()
@@ -681,7 +681,7 @@ Local cAl , cMssg := ""
   //::mlCreateRec := .F.
 
   if !::mNoAddArrEdit .And. (!::BOOK:Eof() .Or. !::BOOKST:Eof())
-    // Запишем если есть не аннулированные записи
+    // Р—Р°РїРёС€РµРј РµСЃР»Рё РµСЃС‚СЊ РЅРµ Р°РЅРЅСѓР»РёСЂРѕРІР°РЅРЅС‹Рµ Р·Р°РїРёСЃРё
 
     lWr := CheckNoAnulRec(::BOOK,::BOOKST)
     if lWr
@@ -720,20 +720,20 @@ Local cAl , cMssg := ""
 Return .T.
 //***********************
 //PG
-//  Инициализация переменных перед созданием записи в С-Ф
-//  TI_CTG - 1 - закупки 2 - продажи
-//  Move_Tp - Вид движения - из справочника
-//  Str_Tp - Тип строк  - системный справочник
-//  sPkDoc - идентификатор д-та из которого создается - для создания не из реестра С-Ф
-//  DocType - Вид документа
-//  Ent - идентификатор собственного предприятия
-//  EntAddr - идентификатор собственного предприятия грузополучателя
-//  GroupSf - флаг групповая С-Ф
-//  cModId - налоговая модель
-//  dDate - дата с-ф
-//  lKorr - T - корректирующая с-ф
-// lIspr - T исправительный если и lKorr - Т то исправительный корректировочный
-//  в случае успешного выполнения - Т
+//  РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїРµСЂРµРјРµРЅРЅС‹С… РїРµСЂРµРґ СЃРѕР·РґР°РЅРёРµРј Р·Р°РїРёСЃРё РІ РЎ-Р¤
+//  TI_CTG - 1 - Р·Р°РєСѓРїРєРё 2 - РїСЂРѕРґР°Р¶Рё
+//  Move_Tp - Р’РёРґ РґРІРёР¶РµРЅРёСЏ - РёР· СЃРїСЂР°РІРѕС‡РЅРёРєР°
+//  Str_Tp - РўРёРї СЃС‚СЂРѕРє  - СЃРёСЃС‚РµРјРЅС‹Р№ СЃРїСЂР°РІРѕС‡РЅРёРє
+//  sPkDoc - РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Рґ-С‚Р° РёР· РєРѕС‚РѕСЂРѕРіРѕ СЃРѕР·РґР°РµС‚СЃСЏ - РґР»СЏ СЃРѕР·РґР°РЅРёСЏ РЅРµ РёР· СЂРµРµСЃС‚СЂР° РЎ-Р¤
+//  DocType - Р’РёРґ РґРѕРєСѓРјРµРЅС‚Р°
+//  Ent - РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕР±СЃС‚РІРµРЅРЅРѕРіРѕ РїСЂРµРґРїСЂРёСЏС‚РёСЏ
+//  EntAddr - РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕР±СЃС‚РІРµРЅРЅРѕРіРѕ РїСЂРµРґРїСЂРёСЏС‚РёСЏ РіСЂСѓР·РѕРїРѕР»СѓС‡Р°С‚РµР»СЏ
+//  GroupSf - С„Р»Р°Рі РіСЂСѓРїРїРѕРІР°СЏ РЎ-Р¤
+//  cModId - РЅР°Р»РѕРіРѕРІР°СЏ РјРѕРґРµР»СЊ
+//  dDate - РґР°С‚Р° СЃ-С„
+//  lKorr - T - РєРѕСЂСЂРµРєС‚РёСЂСѓСЋС‰Р°СЏ СЃ-С„
+// lIspr - T РёСЃРїСЂР°РІРёС‚РµР»СЊРЅС‹Р№ РµСЃР»Рё Рё lKorr - Рў С‚Рѕ РёСЃРїСЂР°РІРёС‚РµР»СЊРЅС‹Р№ РєРѕСЂСЂРµРєС‚РёСЂРѕРІРѕС‡РЅС‹Р№
+//  РІ СЃР»СѓС‡Р°Рµ СѓСЃРїРµС€РЅРѕРіРѕ РІС‹РїРѕР»РЅРµРЅРёСЏ - Рў
 method clsTax_Inv:BeforeAppend(TI_CTG, Move_Tp, sPkDoc, DocType,Ent,EntAddr,GroupSf,cModId,dDate,lKorr,lIspr )
 local lAv
   //altd()
@@ -749,19 +749,19 @@ local lAv
   if !(GroupSf  == nil)
     ::mGroupSf := GroupSf
   endif
-  if (Upper(::mMove_Tp) $ {'ПР','ПП'})
+  if (Upper(::mMove_Tp) $ {'РџР ','РџРџ'})
     lAv := .T.
   else
    lAv := .F.
   endif
   if len(::mParamIni) <= 0
     if !GetParamIni(::mTI_CTG,lAv,@::mParamIni)
-      messagebox("Не удалось инициализировать параметры настройки подсистемы КПП",TITLEAPP,48)
+      messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°С‚СЊ РїР°СЂР°РјРµС‚СЂС‹ РЅР°СЃС‚СЂРѕР№РєРё РїРѕРґСЃРёСЃС‚РµРјС‹ РљРџРџ",TITLEAPP,48)
       Break(.F.)
     endif
   endif
   if Empty(::mParamIni[4])
-    messagebox("Не определена налоговая модель в настройке подсистемы!",TITLEAPP,48)
+    messagebox("РќРµ РѕРїСЂРµРґРµР»РµРЅР° РЅР°Р»РѕРіРѕРІР°СЏ РјРѕРґРµР»СЊ РІ РЅР°СЃС‚СЂРѕР№РєРµ РїРѕРґСЃРёСЃС‚РµРјС‹!",TITLEAPP,48)
     Break(.F.)
   endif
 
@@ -824,24 +824,24 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
  oStr:GoTop()
  do case
    case (::mAliasInv)->SUM_A == 0 .And. ::TAX_STR:Eof()
-     cMsg := "Сумма по документу равна 0. " + CRLF
-     cMsg += "У счета-фактуры нет строк. "
+     cMsg := "РЎСѓРјРјР° РїРѕ РґРѕРєСѓРјРµРЅС‚Сѓ СЂР°РІРЅР° 0. " + CRLF
+     cMsg += "РЈ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹ РЅРµС‚ СЃС‚СЂРѕРє. "
   case (::mAliasInv)->SUM_A == 0
-     cMsg := "Сумма по документу равна 0. "
+     cMsg := "РЎСѓРјРјР° РїРѕ РґРѕРєСѓРјРµРЅС‚Сѓ СЂР°РІРЅР° 0. "
   case (::mAliasStr)->(Eof()) //::TAX_STR:Eof()
-     cMsg := "У счета-фактуры нет строк. "
+     cMsg := "РЈ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹ РЅРµС‚ СЃС‚СЂРѕРє. "
 
  endcase
  if !Empty(cMsg) .And. !::mlRePlaceMod
-   cMsg := cMsg + CRLF + "Продолжить сохранение?"
+   cMsg := cMsg + CRLF + "РџСЂРѕРґРѕР»Р¶РёС‚СЊ СЃРѕС…СЂР°РЅРµРЅРёРµ?"
    if (messagebox(cMsg,TITLEAPP,36)== 7)
      Break(.F.)
    endif
  endif
 
- // не проверяем у строк возможность сохранения - проверяли при работе со строками
+ // РЅРµ РїСЂРѕРІРµСЂСЏРµРј Сѓ СЃС‚СЂРѕРє РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ СЃРѕС…СЂР°РЅРµРЅРёСЏ - РїСЂРѕРІРµСЂСЏР»Рё РїСЂРё СЂР°Р±РѕС‚Рµ СЃРѕ СЃС‚СЂРѕРєР°РјРё
  oStr:mDocSave := .T. //::Tax_Str:mDocSave := .T.
- // Проверим строки озданные по документам
+ // РџСЂРѕРІРµСЂРёРј СЃС‚СЂРѕРєРё РѕР·РґР°РЅРЅС‹Рµ РїРѕ РґРѕРєСѓРјРµРЅС‚Р°Рј
 
   n := (::mAliasStr)->(RecNo())
   (::mAliasStr)->(DbGoTop()) //::DS:MoveFirst()
@@ -855,16 +855,16 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
   endif
   do while !(::mAliasStr)->(Eof())
     do case
-      case ((::mAliasStr)->STR_TP == "2") .And. !((::cWa)->Move_Tp $ "ПР,ПП")
+      case ((::mAliasStr)->STR_TP == "2") .And. !((::cWa)->Move_Tp $ "РџР ,РџРџ")
         l2 := .T.
-      case (::mAliasStr)->STR_TP == "3" .And. !((::cWa)->Move_Tp $ "ПР,ПП")
+      case (::mAliasStr)->STR_TP == "3" .And. !((::cWa)->Move_Tp $ "РџР ,РџРџ")
         l3 := .T.
-      case (::mAliasStr)->STR_TP == "4" .And. !((::cWa)->Move_Tp $ "ПР,ПП")
+      case (::mAliasStr)->STR_TP == "4" .And. !((::cWa)->Move_Tp $ "РџР ,РџРџ")
         l4 := .T.
-      case (::mAliasStr)->STR_TP == "5" .And. !((::cWa)->Move_Tp $ "ПР,ПП")
+      case (::mAliasStr)->STR_TP == "5" .And. !((::cWa)->Move_Tp $ "РџР ,РџРџ")
         l5 := .T.
     endcase
-    if (::mAliasStr)->STR_SRC //по документу
+    if (::mAliasStr)->STR_SRC //РїРѕ РґРѕРєСѓРјРµРЅС‚Сѓ
       if l2 .Or. l3
         lDocSclad := .T.
       endif
@@ -872,7 +872,7 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
     if !Empty((::cWa)->SFK_ID)
       oStr:ValidateRecordBeforeSaveNew(.T.,.F.)
     else
-      oStr:ValidateRecordBeforeSaveNew(.T.)// не выдавать сообщения на каждой записи
+      oStr:ValidateRecordBeforeSaveNew(.T.)// РЅРµ РІС‹РґР°РІР°С‚СЊ СЃРѕРѕР±С‰РµРЅРёСЏ РЅР° РєР°Р¶РґРѕР№ Р·Р°РїРёСЃРё
     endif
     if Len(oStr:aMsqNotSave) > 0
       for i := 1 to len(oStr:aMsqNotSave)
@@ -931,16 +931,16 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
 
  ////////////
 
-  //проверяем обязательные и зависимые поля
+  //РїСЂРѕРІРµСЂСЏРµРј РѕР±СЏР·Р°С‚РµР»СЊРЅС‹Рµ Рё Р·Р°РІРёСЃРёРјС‹Рµ РїРѕР»СЏ
 
  if Empty((::mAliasInv)->TI_CTG)
-   AADD(sMess,"Не определена категория счета-фактуры!")
+   AADD(sMess,"РќРµ РѕРїСЂРµРґРµР»РµРЅР° РєР°С‚РµРіРѕСЂРёСЏ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!")
  endif
  if Empty((::mAliasInv)->MOVE_TP)
-   AADD(sMess,"Не определен вид движения счета-фактуры!")
+   AADD(sMess,"РќРµ РѕРїСЂРµРґРµР»РµРЅ РІРёРґ РґРІРёР¶РµРЅРёСЏ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!")
  endif
  if Empty((::mAliasInv)->DOC_TP)
-    AADD(sMess,"Не определен тип документа!")
+    AADD(sMess,"РќРµ РѕРїСЂРµРґРµР»РµРЅ С‚РёРї РґРѕРєСѓРјРµРЅС‚Р°!")
  endif
  if !Empty((::mAliasInv)->DOC_NUM) .Or. !Empty((::mAliasInv)->REG_NUM)
    //tbTax := CreateDbRecord(B6_DBF_PATH + "Tax\Tax_inv.Dbf")
@@ -950,23 +950,23 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
  endif
 
  if Empty((::mAliasInv)->DOC_DATE)
-   AADD(sMess,"Не определена дата счета-фактуры!")
+   AADD(sMess,"РќРµ РѕРїСЂРµРґРµР»РµРЅР° РґР°С‚Р° СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!")
  endif
  // pg 29370
  //  pg 30312
  if (::mAliasInv)->KORR .Or. (::mAliasInv)->DEF
    if (::mParamIni[10] > (::mAliasInv)->DOC_DATE)
      if (::mAliasInv)->KORR
-       AADD(sMess,"Дата корректировочного счет-фактуры меньше даты начала работы приложения книга покупок-продаж.")
+       AADD(sMess,"Р”Р°С‚Р° РєРѕСЂСЂРµРєС‚РёСЂРѕРІРѕС‡РЅРѕРіРѕ СЃС‡РµС‚-С„Р°РєС‚СѓСЂС‹ РјРµРЅСЊС€Рµ РґР°С‚С‹ РЅР°С‡Р°Р»Р° СЂР°Р±РѕС‚С‹ РїСЂРёР»РѕР¶РµРЅРёСЏ РєРЅРёРіР° РїРѕРєСѓРїРѕРє-РїСЂРѕРґР°Р¶.")
      else
-       AADD(sMess,"Дата исправительного счет-фактуры меньше даты начала работы приложения книга покупок-продаж.")
+       AADD(sMess,"Р”Р°С‚Р° РёСЃРїСЂР°РІРёС‚РµР»СЊРЅРѕРіРѕ СЃС‡РµС‚-С„Р°РєС‚СѓСЂС‹ РјРµРЅСЊС€Рµ РґР°С‚С‹ РЅР°С‡Р°Р»Р° СЂР°Р±РѕС‚С‹ РїСЂРёР»РѕР¶РµРЅРёСЏ РєРЅРёРіР° РїРѕРєСѓРїРѕРє-РїСЂРѕРґР°Р¶.")
      endif
    endif
  else
 
- if !::mlRePlaceMod .And. (::mParamIni[10] > (::mAliasInv)->DOC_DATE) .And. ::mlHandSum /*((::mAliasInv)->MOVE_TP $ "ПР,ПП") .And. (::mParamIni[10] > (::mAliasInv)->DOC_DATE)*/
+ if !::mlRePlaceMod .And. (::mParamIni[10] > (::mAliasInv)->DOC_DATE) .And. ::mlHandSum /*((::mAliasInv)->MOVE_TP $ "РџР ,РџРџ") .And. (::mParamIni[10] > (::mAliasInv)->DOC_DATE)*/
    if (::mAliasInv)->SUM_BOOK = 0
-     if (::mAliasInv)->MOVE_TP $ "ПР,ПП"
+     if (::mAliasInv)->MOVE_TP $ "РџР ,РџРџ"
        aRet :=  RunForm('tax\frmTaxAvSum',.T.,{(::mAliasInv)->SUM_A,0,(::mAliasInv)->SUM_A,.T.,0,0},,.T.)
        if len(aRet) > 0
          if aRet[1] > 0
@@ -993,27 +993,27 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
        endif
      endif
    endif
-   //AADD(sMess,"Дата счет-фактуры меньше даты начала работы приложения книга покупок-продаж.")
+   //AADD(sMess,"Р”Р°С‚Р° СЃС‡РµС‚-С„Р°РєС‚СѓСЂС‹ РјРµРЅСЊС€Рµ РґР°С‚С‹ РЅР°С‡Р°Р»Р° СЂР°Р±РѕС‚С‹ РїСЂРёР»РѕР¶РµРЅРёСЏ РєРЅРёРіР° РїРѕРєСѓРїРѕРє-РїСЂРѕРґР°Р¶.")
  endif
 
  endif
 
  If !Empty((::mAliasInv)->REG_DATE)
    if (::mAliasInv)->REG_DATE < (::mAliasInv)->DOC_DATE
-     AADD(sMess,'Дата регистрации меньше даты документа!')
+     AADD(sMess,'Р”Р°С‚Р° СЂРµРіРёСЃС‚СЂР°С†РёРё РјРµРЅСЊС€Рµ РґР°С‚С‹ РґРѕРєСѓРјРµРЅС‚Р°!')
    endif
  endif
 
  if Empty((::mAliasInv)->DOC_NUM)
-   AADD(sMess,"Не определен номер счета-фактуры!")
+   AADD(sMess,"РќРµ РѕРїСЂРµРґРµР»РµРЅ РЅРѕРјРµСЂ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!")
  elseif !Empty((::mAliasInv)->DOC_DATE)
- // Проверить уникальность
+ // РџСЂРѕРІРµСЂРёС‚СЊ СѓРЅРёРєР°Р»СЊРЅРѕСЃС‚СЊ
    if !::CheckUniqueNum(.F.,@cMsg)
      AADD(sMess,cMsg)
    endif
  endif
  if Empty((::mAliasInv)->REG_NUM)
-   AADD(sMess,"Не определен регистрационный номер счета-фактуры!")
+   AADD(sMess,"РќРµ РѕРїСЂРµРґРµР»РµРЅ СЂРµРіРёСЃС‚СЂР°С†РёРѕРЅРЅС‹Р№ РЅРѕРјРµСЂ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!")
  elseif !Empty((::mAliasInv)->REG_DATE)
    if !::CheckUniqueNum(.T.,@cMsg)
      AADD(sMess,cMsg)
@@ -1021,31 +1021,31 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
  endif
 
  if Empty((::mAliasInv)->ENT_ID)
-   AADD(sMess,"Не определено собственное предприятие счета-фактуры!")
+   AADD(sMess,"РќРµ РѕРїСЂРµРґРµР»РµРЅРѕ СЃРѕР±СЃС‚РІРµРЅРЅРѕРµ РїСЂРµРґРїСЂРёСЏС‚РёРµ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!")
  endif
  if Empty((::mAliasInv)->PRT_ID)
-   AADD(sMess,"Не определен партнер счета-фактуры!")
+   AADD(sMess,"РќРµ РѕРїСЂРµРґРµР»РµРЅ РїР°СЂС‚РЅРµСЂ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!")
  endif
  if !((::mAliasInv)->PRT_TP $ "1,2")
-     AADD(sMess,"тип партнера счета-фактуры должен быть партнер или сотрудник!")
+     AADD(sMess,"С‚РёРї РїР°СЂС‚РЅРµСЂР° СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РїР°СЂС‚РЅРµСЂ РёР»Рё СЃРѕС‚СЂСѓРґРЅРёРє!")
  else
    if ((::mAliasInv)->PRT_TP == "2") .And. ((::mAliasInv)->TI_CTG == "1")
-     AADD(sMess,"тип партнера приходного счета-фактуры должен быть партнер!")
+     AADD(sMess,"С‚РёРї РїР°СЂС‚РЅРµСЂР° РїСЂРёС…РѕРґРЅРѕРіРѕ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РїР°СЂС‚РЅРµСЂ!")
    endif
  endif
 
  if !::CheckObl()
-     AADD(sMess,"не введен этап договора!")
+     AADD(sMess,"РЅРµ РІРІРµРґРµРЅ СЌС‚Р°Рї РґРѕРіРѕРІРѕСЂР°!")
  endif
 
  if (::mAliasInv)->IS_COMB
    if Empty((::mAliasInv)->SFMD_ID) .And. Empty((::mAliasInv)->MD_ID)
-     AADD(sMess,"в сводном счете-фактуре  должны быть заполнены поля группы Посредник")
+     AADD(sMess,"РІ СЃРІРѕРґРЅРѕРј СЃС‡РµС‚Рµ-С„Р°РєС‚СѓСЂРµ  РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ Р·Р°РїРѕР»РЅРµРЅС‹ РїРѕР»СЏ РіСЂСѓРїРїС‹ РџРѕСЃСЂРµРґРЅРёРє")
    endif
  endif
 
  /*
- // Проверяем обязательные параметры
+ // РџСЂРѕРІРµСЂСЏРµРј РѕР±СЏР·Р°С‚РµР»СЊРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹
   aMsgMust := {}
   if CheckMustPrm(::PRM,@aMsgMust)
     n := len(aMsgMust)
@@ -1055,10 +1055,10 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
       next
     endif
   else
-    messagebox("Не удалось проверить дополнительные параметры! Повторите сохранение!",TITLEAPP,16)
+    messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ РїСЂРѕРІРµСЂРёС‚СЊ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹! РџРѕРІС‚РѕСЂРёС‚Рµ СЃРѕС…СЂР°РЅРµРЅРёРµ!",TITLEAPP,16)
     Break(.F.)
   endif
-  // Проверяем обязательные измерения
+  // РџСЂРѕРІРµСЂСЏРµРј РѕР±СЏР·Р°С‚РµР»СЊРЅС‹Рµ РёР·РјРµСЂРµРЅРёСЏ
   aMsgMust := {}
  */
  if len(sMess)>0
@@ -1066,7 +1066,7 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
    Break(.F.)
  endif
  //////////
- // Если комментарий к строке пустой - удалим строку
+ // Р•СЃР»Рё РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє СЃС‚СЂРѕРєРµ РїСѓСЃС‚РѕР№ - СѓРґР°Р»РёРј СЃС‚СЂРѕРєСѓ
  cAlias  := oStr:CommentM:cWa
  (cAlias)->(DbGoTop())
  do while !(cAlias)->(Eof())
@@ -1091,16 +1091,16 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
  enddo
  //////////
  k := len(::mEditValue)
- // mlRePlaceMod init .F.  // При замене налоговой модели сохраняем если изменились параметрыс-ф
+ // mlRePlaceMod init .F.  // РџСЂРё Р·Р°РјРµРЅРµ РЅР°Р»РѕРіРѕРІРѕР№ РјРѕРґРµР»Рё СЃРѕС…СЂР°РЅСЏРµРј РµСЃР»Рё РёР·РјРµРЅРёР»РёСЃСЊ РїР°СЂР°РјРµС‚СЂС‹СЃ-С„
  // mlReCreateBook
  ::mlReCreateBook := .F.
  if k > 0
-   //Проверим изменение сумм по с-ф при редактировании
+   //РџСЂРѕРІРµСЂРёРј РёР·РјРµРЅРµРЅРёРµ СЃСѓРјРј РїРѕ СЃ-С„ РїСЂРё СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё
    if !::BOOK:Eof() .Or. !::BOOKST:Eof()
      //48934
-     //Если  внесены изменения в любые строки
-     //счета-фактуры, то при сохранении с-ф или
-     //при попытке создать любую регистрационную записи по с-ф  определяется  наличие по нему записей в книгу
+     //Р•СЃР»Рё  РІРЅРµСЃРµРЅС‹ РёР·РјРµРЅРµРЅРёСЏ РІ Р»СЋР±С‹Рµ СЃС‚СЂРѕРєРё
+     //СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹, С‚Рѕ РїСЂРё СЃРѕС…СЂР°РЅРµРЅРёРё СЃ-С„ РёР»Рё
+     //РїСЂРё РїРѕРїС‹С‚РєРµ СЃРѕР·РґР°С‚СЊ Р»СЋР±СѓСЋ СЂРµРіРёСЃС‚СЂР°С†РёРѕРЅРЅСѓСЋ Р·Р°РїРёСЃРё РїРѕ СЃ-С„  РѕРїСЂРµРґРµР»СЏРµС‚СЃСЏ  РЅР°Р»РёС‡РёРµ РїРѕ РЅРµРјСѓ Р·Р°РїРёСЃРµР№ РІ РєРЅРёРіСѓ
 
      if lDocSclad .And. ::mlEditStr
        if ::mlRePlaceMod
@@ -1133,12 +1133,12 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
            endif
            ::BOOKST:Skip(1)
          enddo
-         cMsg := "По счет - фактуре на основе первичных документов" + chr(13) + chr(10)
-         cMsg += "сформированы записи в книгу покупок( продаж)." + chr(13) + chr(10)
-         cMsg += "После внесения изменений в счет-фактуру их данные стали неверными"
+         cMsg := "РџРѕ СЃС‡РµС‚ - С„Р°РєС‚СѓСЂРµ РЅР° РѕСЃРЅРѕРІРµ РїРµСЂРІРёС‡РЅС‹С… РґРѕРєСѓРјРµРЅС‚РѕРІ" + chr(13) + chr(10)
+         cMsg += "СЃС„РѕСЂРјРёСЂРѕРІР°РЅС‹ Р·Р°РїРёСЃРё РІ РєРЅРёРіСѓ РїРѕРєСѓРїРѕРє( РїСЂРѕРґР°Р¶)." + chr(13) + chr(10)
+         cMsg += "РџРѕСЃР»Рµ РІРЅРµСЃРµРЅРёСЏ РёР·РјРµРЅРµРЅРёР№ РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ РёС… РґР°РЅРЅС‹Рµ СЃС‚Р°Р»Рё РЅРµРІРµСЂРЅС‹РјРё"
 
          if lRecDoc
-           nRet := nRet := D_CUSTOMMSG("Внимание",cMsg,"'Переформировать' 0 'Удалить' 1 ",0,.T.)
+           nRet := nRet := D_CUSTOMMSG("Р’РЅРёРјР°РЅРёРµ",cMsg,"'РџРµСЂРµС„РѕСЂРјРёСЂРѕРІР°С‚СЊ' 0 'РЈРґР°Р»РёС‚СЊ' 1 ",0,.T.)
            if nRet == 0
              if !CanEditProvodka(.F.)
                RightMessage()
@@ -1154,9 +1154,9 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
          endif
 
          if !Empty(cMoveTp)
-           cMsg := "По счету-фактуре  есть записи без" + chr(13) + chr(10) +  "первичных документов:" + chr(13) + chr(10)
+           cMsg := "РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ  РµСЃС‚СЊ Р·Р°РїРёСЃРё Р±РµР·" + chr(13) + chr(10) +  "РїРµСЂРІРёС‡РЅС‹С… РґРѕРєСѓРјРµРЅС‚РѕРІ:" + chr(13) + chr(10)
            cMsg += cMoveTp + chr(13) + chr(10)
-           cMsg += "Они будут удалены." + chr(13) + chr(10) + "Их необходимо переформировать вручную."
+           cMsg += "РћРЅРё Р±СѓРґСѓС‚ СѓРґР°Р»РµРЅС‹." + chr(13) + chr(10) + "РС… РЅРµРѕР±С…РѕРґРёРјРѕ РїРµСЂРµС„РѕСЂРјРёСЂРѕРІР°С‚СЊ РІСЂСѓС‡РЅСѓСЋ."
            messagebox(cMsg,TITLEAPP,48)
          endif
          ::mDelBook := .T.
@@ -1170,13 +1170,13 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
             ::mlReCreateBook := .T.
           else
             if len(::aMsqNotSave) > 0
-              AADD(::aMsqNotSave,"По счету-фактуре созданы записи в книгу. Их необходимо удалить.")
+              AADD(::aMsqNotSave,"РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ СЃРѕР·РґР°РЅС‹ Р·Р°РїРёСЃРё РІ РєРЅРёРіСѓ. РС… РЅРµРѕР±С…РѕРґРёРјРѕ СѓРґР°Р»РёС‚СЊ.")
               Break(.F.)
             else
               if ::mDelRecBook
                 ::mDelBook := .T.
               else
-                if messagebox("По счету-фактуре созданы записи в книгу." + chr(13) + chr(10) + "Их необходимо удалить."+ chr(13) + chr(10) +"Удалить?",TITLEAPP,36) == 6
+                if messagebox("РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ СЃРѕР·РґР°РЅС‹ Р·Р°РїРёСЃРё РІ РєРЅРёРіСѓ." + chr(13) + chr(10) + "РС… РЅРµРѕР±С…РѕРґРёРјРѕ СѓРґР°Р»РёС‚СЊ."+ chr(13) + chr(10) +"РЈРґР°Р»РёС‚СЊ?",TITLEAPP,36) == 6
                   if !CanDeleteProvodka(.T.)
                     Break(.F.)
                   endif
@@ -1216,19 +1216,19 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
        (::mAliasSum)->(OrdSetFocus(cOldTag))
        (::mAliasSum)->(DbGoTo(nRecNo))
 
-       if j <> k // добавилась или удалилась строка подналог
+       if j <> k // РґРѕР±Р°РІРёР»Р°СЃСЊ РёР»Рё СѓРґР°Р»РёР»Р°СЃСЊ СЃС‚СЂРѕРєР° РїРѕРґРЅР°Р»РѕРі
          if ::mlRePlaceMod
            ::mlReCreateBook := .T.
          else
            if len(::aMsqNotSave) > 0
-              AADD(::aMsqNotSave,"По счету-фактуре созданы записи в книгу. Их необходимо удалить.")
+              AADD(::aMsqNotSave,"РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ СЃРѕР·РґР°РЅС‹ Р·Р°РїРёСЃРё РІ РєРЅРёРіСѓ. РС… РЅРµРѕР±С…РѕРґРёРјРѕ СѓРґР°Р»РёС‚СЊ.")
               Break(.F.)
            else
              if ::mDelRecBook
                 ::mDelBook := .T.
              endif
              if !::mDelBook
-               if messagebox("По счету-фактуре созданы записи в книгу." + chr(13) + chr(10) + "Их необходимо удалить."+ chr(13) + chr(10) +"Удалить?",TITLEAPP,36) == 6
+               if messagebox("РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ СЃРѕР·РґР°РЅС‹ Р·Р°РїРёСЃРё РІ РєРЅРёРіСѓ." + chr(13) + chr(10) + "РС… РЅРµРѕР±С…РѕРґРёРјРѕ СѓРґР°Р»РёС‚СЊ."+ chr(13) + chr(10) +"РЈРґР°Р»РёС‚СЊ?",TITLEAPP,36) == 6
                  if !CanDeleteProvodka(.T.)
                    Break(.F.)
                  endif
@@ -1238,7 +1238,7 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
                endif
              endif
            endif
-           //AADD(::aMsqNotSave,"По счету-фактуре созданы записи в книгу. Их необходимо удалить.")
+           //AADD(::aMsqNotSave,"РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ СЃРѕР·РґР°РЅС‹ Р·Р°РїРёСЃРё РІ РєРЅРёРіСѓ. РС… РЅРµРѕР±С…РѕРґРёРјРѕ СѓРґР°Р»РёС‚СЊ.")
            //::mDelBook := .T.
            //Break(.F.)
          endif
@@ -1248,18 +1248,18 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
             if ::mlRePlaceMod
               ::mlReCreateBook := .T.
             else
-              //AADD(::aMsqNotSave,"По счету-фактуре созданы записи в книгу. Их необходимо удалить.")
+              //AADD(::aMsqNotSave,"РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ СЃРѕР·РґР°РЅС‹ Р·Р°РїРёСЃРё РІ РєРЅРёРіСѓ. РС… РЅРµРѕР±С…РѕРґРёРјРѕ СѓРґР°Р»РёС‚СЊ.")
               //::mDelBook := .T.
               //Break(.F.)
               if len(::aMsqNotSave) > 0
-                AADD(::aMsqNotSave,"По счету-фактуре созданы записи в книгу. Их необходимо удалить.")
+                AADD(::aMsqNotSave,"РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ СЃРѕР·РґР°РЅС‹ Р·Р°РїРёСЃРё РІ РєРЅРёРіСѓ. РС… РЅРµРѕР±С…РѕРґРёРјРѕ СѓРґР°Р»РёС‚СЊ.")
                 Break(.F.)
               else
                 if ::mDelRecBook
                    ::mDelBook := .T.
                 endif
                 if !::mDelBook
-                  if messagebox("По счету-фактуре созданы записи в книгу." + chr(13) + chr(10) + "Их необходимо удалить."+ chr(13) + chr(10) +"Удалить?",TITLEAPP,36) == 6
+                  if messagebox("РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ СЃРѕР·РґР°РЅС‹ Р·Р°РїРёСЃРё РІ РєРЅРёРіСѓ." + chr(13) + chr(10) + "РС… РЅРµРѕР±С…РѕРґРёРјРѕ СѓРґР°Р»РёС‚СЊ."+ chr(13) + chr(10) +"РЈРґР°Р»РёС‚СЊ?",TITLEAPP,36) == 6
                     if !CanDeleteProvodka(.T.)
                       Break(.F.)
                     endif
@@ -1276,13 +1276,13 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
      endif
       if !::BOOK:Eof() .Or. !::BOOKST:Eof()
         if !(::mEditValue[3] == (::mAliasInv)->DOC_NUM)
-         //Нужно внести изменения в книгу если там есть записи
+         //РќСѓР¶РЅРѕ РІРЅРµСЃС‚Рё РёР·РјРµРЅРµРЅРёСЏ РІ РєРЅРёРіСѓ РµСЃР»Рё С‚Р°Рј РµСЃС‚СЊ Р·Р°РїРёСЃРё
            if !::Book:Eof()
              cAlias := ::Book:Ds:Alias()
              if (cAlias)->(DbRLock((cAlias)->(RecNo())))
                (cAlias)->SF_NUM := (::mAliasInv)->DOC_NUM
              else
-               AADD(::aMsqNotSave,"Не удалось изменить в записи в книгу номер счета-фактуры.")
+               AADD(::aMsqNotSave,"РќРµ СѓРґР°Р»РѕСЃСЊ РёР·РјРµРЅРёС‚СЊ РІ Р·Р°РїРёСЃРё РІ РєРЅРёРіСѓ РЅРѕРјРµСЂ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹.")
                Break(.F.)
              endif
            endif
@@ -1291,7 +1291,7 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
              if (cAlias)->(DbRLock((cAlias)->(RecNo())))
                (cAlias)->ST_NUM := (::mAliasInv)->DOC_NUM
              else
-               AADD(::aMsqNotSave,"Не удалось изменить в записи в книгу номер счета-фактуры.")
+               AADD(::aMsqNotSave,"РќРµ СѓРґР°Р»РѕСЃСЊ РёР·РјРµРЅРёС‚СЊ РІ Р·Р°РїРёСЃРё РІ РєРЅРёРіСѓ РЅРѕРјРµСЂ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹.")
                Break(.F.)
              endif
            endif
@@ -1301,9 +1301,9 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
  endif
 
       /////////////
- //создание или синхронизация карточки
+ //СЃРѕР·РґР°РЅРёРµ РёР»Рё СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёСЏ РєР°СЂС‚РѕС‡РєРё
  ////////////
-   if /*!_IS_UDAL  .And.*/ !(::mAliasInv)->MOVE_TP $ {"ПП","ПР"}
+   if /*!_IS_UDAL  .And.*/ !(::mAliasInv)->MOVE_TP $ {"РџРџ","РџР "}
      if !::CheckCard()
        Break(.F.)
      endif
@@ -1313,8 +1313,8 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
    j101 := j201 := j301 := j501 := j901 := j1201 := j1701 := jPM01 := jPM02 := 0
    if m > 0
      j := len(::maTbDoc)
-     // нужно произвести отметки в связанных документах
-     //Отсортируем по журналу и д-ту сначала строки и последний сам документ
+     // РЅСѓР¶РЅРѕ РїСЂРѕРёР·РІРµСЃС‚Рё РѕС‚РјРµС‚РєРё РІ СЃРІСЏР·Р°РЅРЅС‹С… РґРѕРєСѓРјРµРЅС‚Р°С…
+     //РћС‚СЃРѕСЂС‚РёСЂСѓРµРј РїРѕ Р¶СѓСЂРЅР°Р»Сѓ Рё Рґ-С‚Сѓ СЃРЅР°С‡Р°Р»Р° СЃС‚СЂРѕРєРё Рё РїРѕСЃР»РµРґРЅРёР№ СЃР°Рј РґРѕРєСѓРјРµРЅС‚
      ::aSFDOC := ASort(::aSFDOC,,,{|aX,aY|aX[_KEY] > aY[_KEY]})
      cKey := " "
      nJrnReg := "" //0
@@ -1388,26 +1388,26 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
            endif
          endif
 
-         if nJrnReg $ {"0101","0201","PM01","PM02"} // без строк
+         if nJrnReg $ {"0101","0201","PM01","PM02"} // Р±РµР· СЃС‚СЂРѕРє
            if ::aSFDOC[k][_STATUS] == 1 .And. ::aSFDOC[k][_DEL] == .F.
-           // Отметим новый
+           // РћС‚РјРµС‚РёРј РЅРѕРІС‹Р№
               if (::maTbDoc[ntbDoc][2])->(DbSeek(cKey))
                 (::maTbDoc[ntbDoc][2])->&(::aTab[nTab][4]) := ::aSFDOC[k][_SFID]
               endif
            endif
            if !(::aSFDOC[k][_STATUS] == 1) .And. ::aSFDOC[k][_DEL] == .T.
-           // Удалим отметку в старом
+           // РЈРґР°Р»РёРј РѕС‚РјРµС‚РєСѓ РІ СЃС‚Р°СЂРѕРј
              if (::maTbDoc[ntbDoc][2])->(DbSeek(cKey))
                (::maTbDoc[ntbDoc][2])->&(::aTab[nTab][4]) := Space(22)
              endif
            endif
-         else // со строками
+         else // СЃРѕ СЃС‚СЂРѕРєР°РјРё
            if ::aSFDOC[k][_DOCID] == ::aSFDOC[k][_DOCSTRID]
-           //Документ
+           //Р”РѕРєСѓРјРµРЅС‚
              if lReg
-             //Есть строки которые зарегистрировали
+             //Р•СЃС‚СЊ СЃС‚СЂРѕРєРё РєРѕС‚РѕСЂС‹Рµ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°Р»Рё
                if ::aSFDOC[k][_STATUS] == 1
-               // новый документ нужно зарегистрировать
+               // РЅРѕРІС‹Р№ РґРѕРєСѓРјРµРЅС‚ РЅСѓР¶РЅРѕ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°С‚СЊ
                  if (::maTbDoc[ntbDoc][2])->(DbSeek(cKey))
                    (::maTbDoc[ntbDoc][2])->&(::aTab[nTab][4]) := ::aSFDOC[k][_SFID]
                    if nJrnReg == "1701"
@@ -1420,9 +1420,9 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
                  endif
                endif
              else
-             //нет зарегистрированных строк
+             //РЅРµС‚ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅРЅС‹С… СЃС‚СЂРѕРє
                if !(::aSFDOC[k][_STATUS] == 1)
-               // документ старый - нужно разрегистрировать
+               // РґРѕРєСѓРјРµРЅС‚ СЃС‚Р°СЂС‹Р№ - РЅСѓР¶РЅРѕ СЂР°Р·СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°С‚СЊ
                  if (::maTbDoc[ntbDoc][2])->(DbSeek(cKey))
                    (::maTbDoc[ntbDoc][2])->&(::aTab[nTab][4]) := Space(22)
                    if nJrnReg == "1701"
@@ -1440,7 +1440,7 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
              endif
            else
              if ::aSFDOC[k][_STATUS] == 1 .And. ::aSFDOC[k][_DEL] == .F.
-             // Добавилась строка и не удаленная
+             // Р”РѕР±Р°РІРёР»Р°СЃСЊ СЃС‚СЂРѕРєР° Рё РЅРµ СѓРґР°Р»РµРЅРЅР°СЏ
                lReg := .T.
                if (::maTbDoc[ntbDoc][5])->(DbSeek(::aSFDOC[k][_DOCSTRID]))
                   if (::maTbDoc[ntbDoc][5])->(DbRlock())
@@ -1453,7 +1453,7 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
                if ::aSFDOC[k][_DEL] == .F.
                  lReg := .T.
                  if ::aSFDOC[k][_STATUS] == 3
-                 // строку перевыбрали - нужно перерегистрить
+                 // СЃС‚СЂРѕРєСѓ РїРµСЂРµРІС‹Р±СЂР°Р»Рё - РЅСѓР¶РЅРѕ РїРµСЂРµСЂРµРіРёСЃС‚СЂРёС‚СЊ
                    if (::maTbDoc[ntbDoc][5])->(DbSeek(::aSFDOC[k][_DOCSTRID]))
                      if (::maTbDoc[ntbDoc][5])->(DbRlock())
                        (::maTbDoc[ntbDoc][5])->&(::aTab[nTab][9]) := ::aSFDOC[k][_SFSTRID]
@@ -1462,7 +1462,7 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
                    endif
                  endif
                else
-               // строку нужно разрегистрить
+               // СЃС‚СЂРѕРєСѓ РЅСѓР¶РЅРѕ СЂР°Р·СЂРµРіРёСЃС‚СЂРёС‚СЊ
                  if (::maTbDoc[ntbDoc][5])->(DbSeek(::aSFDOC[k][_DOCSTRID]))
                    if (::maTbDoc[ntbDoc][5])->(DbRlock())
                      (::maTbDoc[ntbDoc][5])->&(::aTab[nTab][9]) := Space(22)
@@ -1478,8 +1478,8 @@ Local lRecDoc := .F., lRecNoDoc := .F. , lDocSclad := .F.,cMoveTp := ""
    endif
 
 
-   if /*!_IS_UDAL  .And.*/ !(::mAliasInv)->MOVE_TP $ {"ПП","ПР"}  .And. ::CardYes()
-    // Проверяем регистацию документов
+   if /*!_IS_UDAL  .And.*/ !(::mAliasInv)->MOVE_TP $ {"РџРџ","РџР "}  .And. ::CardYes()
+    // РџСЂРѕРІРµСЂСЏРµРј СЂРµРіРёСЃС‚Р°С†РёСЋ РґРѕРєСѓРјРµРЅС‚РѕРІ
      if !(ValType(::mTbApReg) == "O")
        ::mTbApReg := CreateDbRecord(B6_DBF_PATH + "AP_REG.dbf", "CDPS")
      endif
@@ -1534,14 +1534,14 @@ Local cKey,nJrnReg,nTbDoc,nTab ,cCntDoc
  //altd()
   (::mTbInv)->(OrdSetFocus("TAG_SFD"))
   if (::mTbInv)->(DbSeek((::cWa)->DOC_ID))
-    messagebox("По счету-фактуре есть исправительный счет-фактура.",TITLEAPP,48)
+    messagebox("РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ РµСЃС‚СЊ РёСЃРїСЂР°РІРёС‚РµР»СЊРЅС‹Р№ СЃС‡РµС‚-С„Р°РєС‚СѓСЂР°.",TITLEAPP,48)
     Break(.F.)
   endif
 
   ::TAX_STR:GoTop()
   Do While !(::mAliasStr)->(Eof())
     if (::mAliasStr)->STR_V == "C"
-      messagebox("По счету-фактуре есть откорректированные строки.",TITLEAPP,48)
+      messagebox("РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ РµСЃС‚СЊ РѕС‚РєРѕСЂСЂРµРєС‚РёСЂРѕРІР°РЅРЅС‹Рµ СЃС‚СЂРѕРєРё.",TITLEAPP,48)
       Break(.F.)
     endif
     (::mAliasStr)->(DbSkip(1))
@@ -1556,9 +1556,9 @@ Local cKey,nJrnReg,nTbDoc,nTab ,cCntDoc
    //endif
     /*
    if !::BOOK:EOF() .Or. !::BOOKST:EOF()
-     cMsg += "По счету-фактуре есть регистрационные записи в книгу." + CRLF
-     cMsg += "Вместе со счетом-фактурой будут удалены записи в книге." + CRLF
-     cMsg += "Удалить счет-фактуру?"
+     cMsg += "РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ РµСЃС‚СЊ СЂРµРіРёСЃС‚СЂР°С†РёРѕРЅРЅС‹Рµ Р·Р°РїРёСЃРё РІ РєРЅРёРіСѓ." + CRLF
+     cMsg += "Р’РјРµСЃС‚Рµ СЃРѕ СЃС‡РµС‚РѕРј-С„Р°РєС‚СѓСЂРѕР№ Р±СѓРґСѓС‚ СѓРґР°Р»РµРЅС‹ Р·Р°РїРёСЃРё РІ РєРЅРёРіРµ." + CRLF
+     cMsg += "РЈРґР°Р»РёС‚СЊ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ?"
      r :=messagebox(cMsg,TITLEAPP,36)
      if !(r == 6)
        Break(.F.)
@@ -1578,10 +1578,10 @@ Local cKey,nJrnReg,nTbDoc,nTab ,cCntDoc
      Break(.F.)
    endif
 
-   // Удалим если нужно карточку созданную по с-ф
+   // РЈРґР°Р»РёРј РµСЃР»Рё РЅСѓР¶РЅРѕ РєР°СЂС‚РѕС‡РєСѓ СЃРѕР·РґР°РЅРЅСѓСЋ РїРѕ СЃ-С„
    //if !_IS_UDAL
      if !DelCardBrg((::mAliasInv)->DOC_ID  )
-       Messagebox("По счету/фактуре существует карточка расчета с партнером. Удалить документ нельзя",TITLEAPP,48)
+       Messagebox("РџРѕ СЃС‡РµС‚Сѓ/С„Р°РєС‚СѓСЂРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ РєР°СЂС‚РѕС‡РєР° СЂР°СЃС‡РµС‚Р° СЃ РїР°СЂС‚РЅРµСЂРѕРј. РЈРґР°Р»РёС‚СЊ РґРѕРєСѓРјРµРЅС‚ РЅРµР»СЊР·СЏ",TITLEAPP,48)
        Break(.F.)
      endif
    //endif
@@ -1589,8 +1589,8 @@ Local cKey,nJrnReg,nTbDoc,nTab ,cCntDoc
 
    if m > 0
      j := len(::maTbDoc)
-     // нужно произвести отметки в связанных документах
-     //Отсортируем по журналу и д-ту сначала строки и последний сам документ
+     // РЅСѓР¶РЅРѕ РїСЂРѕРёР·РІРµСЃС‚Рё РѕС‚РјРµС‚РєРё РІ СЃРІСЏР·Р°РЅРЅС‹С… РґРѕРєСѓРјРµРЅС‚Р°С…
+     //РћС‚СЃРѕСЂС‚РёСЂСѓРµРј РїРѕ Р¶СѓСЂРЅР°Р»Сѓ Рё Рґ-С‚Сѓ СЃРЅР°С‡Р°Р»Р° СЃС‚СЂРѕРєРё Рё РїРѕСЃР»РµРґРЅРёР№ СЃР°Рј РґРѕРєСѓРјРµРЅС‚
      ::aSFDOC := ASort(::aSFDOC,,,{|aX,aY|aX[_KEY] < aY[_KEY]})
      cKey := " "
      nJrnReg := "" //0
@@ -1626,7 +1626,7 @@ Local cKey,nJrnReg,nTbDoc,nTab ,cCntDoc
          endif
 
          if ::aSFDOC[k][_DOCID] == ::aSFDOC[k][_DOCSTRID]
-            // документ старый - нужно разрегистрировать
+            // РґРѕРєСѓРјРµРЅС‚ СЃС‚Р°СЂС‹Р№ - РЅСѓР¶РЅРѕ СЂР°Р·СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°С‚СЊ
               if (::maTbDoc[ntbDoc][2])->(DbSeek(cKey))
                  (::maTbDoc[ntbDoc][2])->&(::aTab[nTab][4]) := Space(22)
                  if nJrnReg == "1701"
@@ -1641,7 +1641,7 @@ Local cKey,nJrnReg,nTbDoc,nTab ,cCntDoc
               endif
 
          else
-             // строку нужно разрегистрить
+             // СЃС‚СЂРѕРєСѓ РЅСѓР¶РЅРѕ СЂР°Р·СЂРµРіРёСЃС‚СЂРёС‚СЊ
              if (::maTbDoc[ntbDoc][5])->(DbSeek(::aSFDOC[k][_DOCSTRID]))
                 if (::maTbDoc[ntbDoc][5])->(DbRlock())
                   (::maTbDoc[ntbDoc][5])->&(::aTab[nTab][9]) := Space(22)
@@ -1656,7 +1656,7 @@ Local cKey,nJrnReg,nTbDoc,nTab ,cCntDoc
    /*
    dbSfDoc := ::SFDOC:DS
    cAlSfDoc := dbSfDoc:Alias()
-   // Есть документы по с-ф
+   // Р•СЃС‚СЊ РґРѕРєСѓРјРµРЅС‚С‹ РїРѕ СЃ-С„
    dbSfDoc:SetOrder("TAG_SFDOC")
    dbSfDoc:Scope((::mAliasInv)->DOC_ID,(::mAliasInv)->DOC_ID,"TAG_SFDOC")
    dbSfDoc:GoTop()
@@ -1669,12 +1669,12 @@ Local cKey,nJrnReg,nTbDoc,nTab ,cCntDoc
    endif
    nJrn := 0
    Do While !dbSfDoc:Eof()
-   // Это документ
+   // Р­С‚Рѕ РґРѕРєСѓРјРµРЅС‚
      if (cAlSfDoc)->DOC_ID == (cAlSfDoc)->DOCSTR_ID
 
        if !(nJrn == (cAlSfDoc)->JRN_ID)
           nJrn := (cAlSfDoc)->JRN_ID
-         // Определяем для журнала параметры нахождения строк документа
+         // РћРїСЂРµРґРµР»СЏРµРј РґР»СЏ Р¶СѓСЂРЅР°Р»Р° РїР°СЂР°РјРµС‚СЂС‹ РЅР°С…РѕР¶РґРµРЅРёСЏ СЃС‚СЂРѕРє РґРѕРєСѓРјРµРЅС‚Р°
           For i := 1 to len(::maTbDoc)
             if nJrn == ::maTbDoc[i][1]
               if !(::maTbDoc[i][1] $ {101,201})
@@ -1697,7 +1697,7 @@ Local cKey,nJrnReg,nTbDoc,nTab ,cCntDoc
          next
        endif
        if !(nJrn $ {101,201})
-         //Документы имеют строки
+         //Р”РѕРєСѓРјРµРЅС‚С‹ РёРјРµСЋС‚ СЃС‚СЂРѕРєРё
          l := len(::maTbStr)
          IF !::ClearMarkForStrDocm((cAlSfDoc)->DOC_ID,cTbName,cTagDoc,cFieldName,,,::maTbStr[l])
             Break(.F.)
@@ -1740,37 +1740,37 @@ METHOD clsTax_Inv:DOC_ID(value)
   ENDIF
 RETURN (::mAliasInv)->DOC_ID //::DS:DOC_ID
 
-METHOD clsTax_Inv:TI_CTG(value)    // C(01)    Категория счета-фактуры
+METHOD clsTax_Inv:TI_CTG(value)    // C(01)    РљР°С‚РµРіРѕСЂРёСЏ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹
   IF (NIL <> value .AND. 0 <> ::EditMode)
     IF value $ {'1','2'}
       ::DS:FieldValue("TI_CTG", value)
     ELSE
-      MessageBox('Неверна категория счет-фактуры',TITLEAPP,48)
+      MessageBox('РќРµРІРµСЂРЅР° РєР°С‚РµРіРѕСЂРёСЏ СЃС‡РµС‚-С„Р°РєС‚СѓСЂС‹',TITLEAPP,48)
     ENDIF
   ENDIF
 RETURN (::mAliasInv)->TI_CTG
 
-METHOD clsTax_Inv:MOVE_TP(value)   // C(02)    Вид движения счета-фактуры
+METHOD clsTax_Inv:MOVE_TP(value)   // C(02)    Р’РёРґ РґРІРёР¶РµРЅРёСЏ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹
   IF (NIL <> value .AND. 0 <> ::EditMode)
     ::DS:FieldValue("MOVE_TP", value)
   ENDIF
 RETURN (::mAliasInv)->MOVE_TP
 /*
-METHOD clsTax_Inv:STR_TP(value)    // C(01)    Тип строк
+METHOD clsTax_Inv:STR_TP(value)    // C(01)    РўРёРї СЃС‚СЂРѕРє
   IF (NIL <> value .AND. 0 <> ::EditMode)
     ::DS:FieldValue("STR_TP",value)
   ENDIF
 RETURN (::mAliasInv)->STR_TP
 */
 /*
-METHOD clsTax_Inv:STRTPNAME()    // C(20)    Тип строк
+METHOD clsTax_Inv:STRTPNAME()    // C(20)    РўРёРї СЃС‚СЂРѕРє
 local s := ""
   if (::STPTP)->(DbSeek((::mAliasInv)->STR_TP))
     s :=  (::STPTP)->STR_NAME
   endif
 RETURN s
  */
-METHOD clsTax_Inv:DOC_TP(value)    // N(10,0)  Вид документа
+METHOD clsTax_Inv:DOC_TP(value)    // N(10,0)  Р’РёРґ РґРѕРєСѓРјРµРЅС‚Р°
 local OldTp
   IF (NIL <> value .AND. 0 <> ::EditMode)
     //altd()
@@ -1800,7 +1800,7 @@ RETURN (::mAliasInv)->DOC_TP
 METHOD clsTax_Inv:CODE_TP()
 RETURN (::mAliasInv)->CODE_TP
 
-METHOD clsTax_Inv:DOC_NUM(value)   // C(06)    Номер документа
+METHOD clsTax_Inv:DOC_NUM(value)   // C(06)    РќРѕРјРµСЂ РґРѕРєСѓРјРµРЅС‚Р°
 Local nLen
   IF (NIL <> value .AND. 0 <> ::EditMode)
     if !::IsGenDocNum
@@ -1817,12 +1817,12 @@ Local nLen
   ENDIF
 RETURN (::mAliasInv)->DOC_NUM
 
-METHOD clsTax_Inv:DOC_DATE(value)  // D        Дата документа
+METHOD clsTax_Inv:DOC_DATE(value)  // D        Р”Р°С‚Р° РґРѕРєСѓРјРµРЅС‚Р°
 local OldYear
   IF (NIL <> value .AND. 0 <> ::EditMode)
     //pg 29370
-    //if !Empty(value) .And. ((::mAliasInv)->MOVE_TP $ "ПР,ПП") .And. (::mParamIni[10] > value)
-    //  messagebox("Дата счет-фактуры меньше даты начала работы приложения книга покупок-продаж.",TITLEAPP,48)
+    //if !Empty(value) .And. ((::mAliasInv)->MOVE_TP $ "РџР ,РџРџ") .And. (::mParamIni[10] > value)
+    //  messagebox("Р”Р°С‚Р° СЃС‡РµС‚-С„Р°РєС‚СѓСЂС‹ РјРµРЅСЊС€Рµ РґР°С‚С‹ РЅР°С‡Р°Р»Р° СЂР°Р±РѕС‚С‹ РїСЂРёР»РѕР¶РµРЅРёСЏ РєРЅРёРіР° РїРѕРєСѓРїРѕРє-РїСЂРѕРґР°Р¶.",TITLEAPP,48)
     //else
       OldYear := Upper(AllTrim(Left(DTOS((::mAliasInv)->DOC_DATE),4)))
       ::DS:FieldValue("DOC_DATE", value)
@@ -1844,15 +1844,15 @@ local OldYear
   ENDIF
 RETURN (::mAliasInv)->DOC_DATE
 
-METHOD clsTax_Inv:REG_NUM(value)   // C(06)    Номер документа
+METHOD clsTax_Inv:REG_NUM(value)   // C(06)    РќРѕРјРµСЂ РґРѕРєСѓРјРµРЅС‚Р°
   IF (NIL <> value .AND. 0 <> ::EditMode)
     // 39947
-    // 2. После выхода с корректировкой из поля
-    // "Дата регистрации" программа проверяет рег. номер
-    // (номер может быть уже изменен вручную, что не запрещено)
-    // на уникальность в пределах года регистрации:
-    // ТОЛЬКО если номер не уникален, его меняют!!!
-    // Если рег.номер уникален в пределах года его менять не надо - обычный случай ручной правки номера после его первичного формирования.
+    // 2. РџРѕСЃР»Рµ РІС‹С…РѕРґР° СЃ РєРѕСЂСЂРµРєС‚РёСЂРѕРІРєРѕР№ РёР· РїРѕР»СЏ
+    // "Р”Р°С‚Р° СЂРµРіРёСЃС‚СЂР°С†РёРё" РїСЂРѕРіСЂР°РјРјР° РїСЂРѕРІРµСЂСЏРµС‚ СЂРµРі. РЅРѕРјРµСЂ
+    // (РЅРѕРјРµСЂ РјРѕР¶РµС‚ Р±С‹С‚СЊ СѓР¶Рµ РёР·РјРµРЅРµРЅ РІСЂСѓС‡РЅСѓСЋ, С‡С‚Рѕ РЅРµ Р·Р°РїСЂРµС‰РµРЅРѕ)
+    // РЅР° СѓРЅРёРєР°Р»СЊРЅРѕСЃС‚СЊ РІ РїСЂРµРґРµР»Р°С… РіРѕРґР° СЂРµРіРёСЃС‚СЂР°С†РёРё:
+    // РўРћР›Р¬РљРћ РµСЃР»Рё РЅРѕРјРµСЂ РЅРµ СѓРЅРёРєР°Р»РµРЅ, РµРіРѕ РјРµРЅСЏСЋС‚!!!
+    // Р•СЃР»Рё СЂРµРі.РЅРѕРјРµСЂ СѓРЅРёРєР°Р»РµРЅ РІ РїСЂРµРґРµР»Р°С… РіРѕРґР° РµРіРѕ РјРµРЅСЏС‚СЊ РЅРµ РЅР°РґРѕ - РѕР±С‹С‡РЅС‹Р№ СЃР»СѓС‡Р°Р№ СЂСѓС‡РЅРѕР№ РїСЂР°РІРєРё РЅРѕРјРµСЂР° РїРѕСЃР»Рµ РµРіРѕ РїРµСЂРІРёС‡РЅРѕРіРѕ С„РѕСЂРјРёСЂРѕРІР°РЅРёСЏ.
     //46054
     value := Padr(Alltrim(value),6)
     value := ObrabotkaNom(value,,.T.)
@@ -1861,7 +1861,7 @@ METHOD clsTax_Inv:REG_NUM(value)   // C(06)    Номер документа
   ENDIF
 RETURN (::mAliasInv)->REG_NUM
 
-METHOD clsTax_Inv:REG_DATE(value)  // D        Дата регистрации
+METHOD clsTax_Inv:REG_DATE(value)  // D        Р”Р°С‚Р° СЂРµРіРёСЃС‚СЂР°С†РёРё
 local OldYear
   IF (NIL <> value .AND. 0 <> ::EditMode)
     OldYear := Upper(AllTrim(Left(DTOS((::mAliasInv)->REG_DATE),4)))
@@ -1875,9 +1875,9 @@ local OldYear
   ENDIF
 RETURN (::mAliasInv)->REG_DATE
 /*
-METHOD clsTax_Inv:DEP_DATE(value)  // D        Дата начала амортизации
+METHOD clsTax_Inv:DEP_DATE(value)  // D        Р”Р°С‚Р° РЅР°С‡Р°Р»Р° Р°РјРѕСЂС‚РёР·Р°С†РёРё
   IF (NIL <> value .AND. 0 <> ::EditMode)
-    if (::mAliasInv)->MOVE_TP == 'КС'
+    if (::mAliasInv)->MOVE_TP == 'РљРЎ'
       ::DS:FieldValue("DEP_DATE", value)
     endif
   ENDIF
@@ -1903,13 +1903,13 @@ METHOD clsTax_Inv:MET_FORM(value)
   ENDIF
 RETURN (::mAliasInv)->MET_FORM
 
-METHOD clsTax_Inv:ENT_ID(value)  // n10 идентификатор фирмы
+METHOD clsTax_Inv:ENT_ID(value)  // n10 РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С„РёСЂРјС‹
   IF (NIL <> value .AND. 0 <> ::EditMode)
     ::DS:FieldValue("ENT_ID", value)
   ENDIF
 RETURN (::mAliasInv)->ENT_ID
 
-METHOD clsTax_Inv:ENT_LOC(value)  // n10 идентификатор фирмы
+METHOD clsTax_Inv:ENT_LOC(value)  // n10 РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С„РёСЂРјС‹
   IF (NIL <> value .AND. 0 <> ::EditMode)
     ::DS:FieldValue("ENT_LOC", value)
   ENDIF
@@ -1918,7 +1918,7 @@ RETURN (::mAliasInv)->ENT_LOC
 METHOD clsTax_Inv:ENT_LOCNAME()
 Return  ::GetAddrName(.T.)
 
-METHOD clsTax_Inv:ENT_CODE()  // C(06)    Код собственного предприятия
+METHOD clsTax_Inv:ENT_CODE()  // C(06)    РљРѕРґ СЃРѕР±СЃС‚РІРµРЅРЅРѕРіРѕ РїСЂРµРґРїСЂРёСЏС‚РёСЏ
 local s,cValue
   s := ""
   cValue := ""
@@ -1940,7 +1940,7 @@ local s,cValue
   endif
 RETURN s
 
-METHOD clsTax_Inv:ENT_ADDRID(value)  // n10 идентификатор фирмы
+METHOD clsTax_Inv:ENT_ADDRID(value)  // n10 РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С„РёСЂРјС‹
 Local lPol := if((::mAliasInv)->TI_CTG == "1", .T.,.F.)
 local cCodeGr := ""
   IF (NIL <> value .AND. 0 <> ::EditMode)
@@ -1955,7 +1955,7 @@ local cCodeGr := ""
   ENDIF
 RETURN (::mAliasInv)->ENT_ADDRID
 
-METHOD clsTax_Inv:ENT_ADDRCODE()  // C(06)    Код собственного предприятия
+METHOD clsTax_Inv:ENT_ADDRCODE()  // C(06)    РљРѕРґ СЃРѕР±СЃС‚РІРµРЅРЅРѕРіРѕ РїСЂРµРґРїСЂРёСЏС‚РёСЏ
 local s,cValue
   s := ""
   cValue := ""
@@ -1980,7 +1980,7 @@ RETURN s
 METHOD clsTax_Inv:PRT_TP(value)
   IF (NIL <> value .AND. 0 <> ::EditMode )
     if !(value == "2" .And. (::mAliasInv)->TI_CTG == "1")
-    //сотрудник может быть только на продаже
+    //СЃРѕС‚СЂСѓРґРЅРёРє РјРѕР¶РµС‚ Р±С‹С‚СЊ С‚РѕР»СЊРєРѕ РЅР° РїСЂРѕРґР°Р¶Рµ
       ::DS:FieldValue("PRT_TP", value)
       if value == "2"
         ::DS:FieldValue("PRT_LOC", "")
@@ -1988,13 +1988,13 @@ METHOD clsTax_Inv:PRT_TP(value)
         ::DS:FieldValue("CNT_TYPE", "")
         ::DS:FieldValue("CNT_DOC_ID", "")
         ::DS:FieldValue("ID_OBL","")
-      //для сотрудника очищаем поля грузополучатель, основание, тип основания
+      //РґР»СЏ СЃРѕС‚СЂСѓРґРЅРёРєР° РѕС‡РёС‰Р°РµРј РїРѕР»СЏ РіСЂСѓР·РѕРїРѕР»СѓС‡Р°С‚РµР»СЊ, РѕСЃРЅРѕРІР°РЅРёРµ, С‚РёРї РѕСЃРЅРѕРІР°РЅРёСЏ
       endif
     endif
   ENDIF
 Return (::mAliasInv)->PRT_TP
 
-METHOD clsTax_Inv:PRT_ID(value)  // C(06)    Код партнера
+METHOD clsTax_Inv:PRT_ID(value)  // C(06)    РљРѕРґ РїР°СЂС‚РЅРµСЂР°
 Local oldPrt := (::mAliasInv)->PRT_ID
 Local lRet,cCnt := "",aParam := {}
 local sMess := ""
@@ -2004,11 +2004,11 @@ local sMess := ""
       ::DS:FieldValue("PRT_ID", value)
       if ::TI_CTG == "1"
         if !::CheckUniqueNum(.F.,@sMess)
-          Messagebox(sMess, 'БЭCT-5', 48)
+          Messagebox(sMess, 'Р‘Р­CT-5', 48)
         endif
       endif
       (::mAliasInv)->CNT_DOC_ID := Space(22)
-      //И этапы тоже
+      //Р СЌС‚Р°РїС‹ С‚РѕР¶Рµ
       (::mAliasInv)->ID_OBL := ''
       //if !_IS_UDAL
         if TakePartnerParamForAP(value,Val((::mAliasInv)->TI_CTG),@aParam,@lRet)
@@ -2058,7 +2058,7 @@ local s,cValue
   endif
 RETURN s
 
-METHOD clsTax_Inv:PRT_ADDRID(value)  // C(06)    Код партнера
+METHOD clsTax_Inv:PRT_ADDRID(value)  // C(06)    РљРѕРґ РїР°СЂС‚РЅРµСЂР°
 Local oldADDRID := (::mAliasInv)->PRT_ADDRID
 Local lPol := if((::mAliasInv)->TI_CTG == "1", .F.,.T.)
   IF (NIL <> value .AND. 0 <> ::EditMode)
@@ -2092,7 +2092,7 @@ local s,cValue
   endif
 RETURN s
 
-METHOD clsTax_Inv:VAL_ID(value)  // N(10)    ID валюты
+METHOD clsTax_Inv:VAL_ID(value)  // N(10)    ID РІР°Р»СЋС‚С‹
 
   IF (NIL <> value .AND. 0 <> ::EditMode .And. !::mlRegDoc)
     ::DS:FieldValue("VAL_ID", value)
@@ -2109,14 +2109,14 @@ RETURN (::mAliasInv)->VAL_ID
 METHOD clsTax_Inv:VALMAIN()
 RETURN ::mVAL_ID
 
-METHOD clsTax_Inv:VALCODE()  // C(03)    Код валюты
+METHOD clsTax_Inv:VALCODE()  // C(03)    РљРѕРґ РІР°Р»СЋС‚С‹
 local s
   if (DIC_VALUTA)->(DbSeek((::mAliasInv)->VAL_ID))
     s := (DIC_VALUTA)->CODE
   endif
 RETURN s
 
-METHOD clsTax_Inv:VAL_RATE(value)  // N(19,5)  Курс на дату регистрации?
+METHOD clsTax_Inv:VAL_RATE(value)  // N(19,5)  РљСѓСЂСЃ РЅР° РґР°С‚Сѓ СЂРµРіРёСЃС‚СЂР°С†РёРё?
   IF (NIL <> value .AND. 0 <> ::EditMode)
     if value > 0
       if (::mAliasInv)->VAL_ID == ::mVAL_ID
@@ -2124,24 +2124,24 @@ METHOD clsTax_Inv:VAL_RATE(value)  // N(19,5)  Курс на дату регистрации?
       endif
       ::DS:FieldValue("VAL_RATE", value)
     else
-      Messagebox('Значеник курса должно быть больше 0.00 !',TITLEAPP,48)
+      Messagebox('Р—РЅР°С‡РµРЅРёРє РєСѓСЂСЃР° РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ Р±РѕР»СЊС€Рµ 0.00 !',TITLEAPP,48)
     endif
   ENDIF
 RETURN (::mAliasInv)->VAL_RATE
 
-METHOD clsTax_Inv:SUM_NNDS()  // N(19,4)  Сумма в валюте без НДС
+METHOD clsTax_Inv:SUM_NNDS()  // N(19,4)  РЎСѓРјРјР° РІ РІР°Р»СЋС‚Рµ Р±РµР· РќР”РЎ
 
 RETURN (::mAliasInv)->SUM_NNDS
 
-METHOD clsTax_Inv:SUM_NDS()   // N(19,4)  Сумма НДС в валюте
+METHOD clsTax_Inv:SUM_NDS()   // N(19,4)  РЎСѓРјРјР° РќР”РЎ РІ РІР°Р»СЋС‚Рµ
 
 RETURN (::mAliasInv)->SUM_NDS
 
-METHOD clsTax_Inv:SUM_A()     // N(19,4)  Сумма в валюте с НДС
+METHOD clsTax_Inv:SUM_A()     // N(19,4)  РЎСѓРјРјР° РІ РІР°Р»СЋС‚Рµ СЃ РќР”РЎ
 
 RETURN (::mAliasInv)->SUM_A
 
-METHOD clsTax_Inv:SUM_BOOK(value)  // N(19,4)  Сумма по книге в валюте?
+METHOD clsTax_Inv:SUM_BOOK(value)  // N(19,4)  РЎСѓРјРјР° РїРѕ РєРЅРёРіРµ РІ РІР°Р»СЋС‚Рµ?
   IF (NIL <> value .AND. 0 <> ::EditMode)
     //if (DIC_VALUTA)->(DbSeek((::mAliasInv)->VAL_ID))
       value:=BS_ROUND(value,::mRound/*(DIC_VALUTA)->ACCURACY*/)
@@ -2189,25 +2189,25 @@ RETURN (::mAliasInv)->ST_SUM
 METHOD clsTax_Inv:STSUM()
 Return (::mAliasInv)->SUM_BOOK - (::mAliasInv)->ST_SUM
 
-METHOD clsTax_Inv:COMMENT_m(value) // M        Комментарий
+METHOD clsTax_Inv:COMMENT_m(value) // M        РљРѕРјРјРµРЅС‚Р°СЂРёР№
   IF (NIL <> value .AND. 0 <> ::EditMode)
     ::DS:FieldValue("COMMENT_m", value)
   ENDIF
 RETURN (::mAliasInv)->COMMENT_m
 
-METHOD clsTax_Inv:COMPL_m(value)   // M        Дополнение
+METHOD clsTax_Inv:COMPL_m(value)   // M        Р”РѕРїРѕР»РЅРµРЅРёРµ
   IF (NIL <> value .AND. 0 <> ::EditMode)
     ::DS:FieldValue("COMPL_m", value)
   ENDIF
 RETURN (::mAliasInv)->COMPL_m
 
-METHOD clsTax_Inv:PAY_COMM(value)   // M        Пладежный документ - текст
+METHOD clsTax_Inv:PAY_COMM(value)   // M        РџР»Р°РґРµР¶РЅС‹Р№ РґРѕРєСѓРјРµРЅС‚ - С‚РµРєСЃС‚
   IF (NIL <> value .AND. 0 <> ::EditMode)
     ::DS:FieldValue("PAY_COMM", value)
   ENDIF
 RETURN (::mAliasInv)->PAY_COMM
 
-METHOD clsTax_Inv:ACNT_ID(value)      // C(16)    Счет
+METHOD clsTax_Inv:ACNT_ID(value)      // C(16)    РЎС‡РµС‚
 Local cOldAcnt := Upper((::mAliasInv)->ACNT_ID)
   IF (NIL <> value .AND. ::EditMode<>0 )
     if !(Upper(alltrim( (::mAliasInv)->ACNT_ID )) == Upper(alltrim(value))) .and. CorrectSchet(value)
@@ -2217,7 +2217,7 @@ Local cOldAcnt := Upper((::mAliasInv)->ACNT_ID)
   ENDIF
 RETURN (::mAliasInv)->ACNT_ID
 
-METHOD clsTax_Inv:ACNTNAME()     // Счет
+METHOD clsTax_Inv:ACNTNAME()     // РЎС‡РµС‚
 local s,cValue
   s := ""
   cValue := ""
@@ -2229,7 +2229,7 @@ local s,cValue
 RETURN s
 
 
-METHOD clsTax_Inv:ANALIT(value)    // C(24)    Аналитика
+METHOD clsTax_Inv:ANALIT(value)    // C(24)    РђРЅР°Р»РёС‚РёРєР°
   IF (NIL <> value .AND. 0 <> ::EditMode)
     ::DS:FieldValue("ANALIT", value)
   ENDIF
@@ -2288,7 +2288,7 @@ local cKey := "", oldValue := (::mAliasInv)->SFK_ID
 local lRet := .F.,RetValue := ""
 Local cAlFrom := ""
   IF (NIL <> value .AND. 0 <> ::EditMode .And. !(oldValue == value) )
-    // Пропишем значения из корректируемого с-ф
+    // РџСЂРѕРїРёС€РµРј Р·РЅР°С‡РµРЅРёСЏ РёР· РєРѕСЂСЂРµРєС‚РёСЂСѓРµРјРѕРіРѕ СЃ-С„
     cKey := value
     ::DelAllStr()
     if ::mCreateFromArc
@@ -2299,9 +2299,9 @@ Local cAlFrom := ""
     if !Empty(cKey)
       (cAlFrom)->(OrdSetFocus("TAG_ID"))
       if (cAlFrom)->(DbSeek(cKey))
-        /*  49664 корректировочный для корректировочного
+        /*  49664 РєРѕСЂСЂРµРєС‚РёСЂРѕРІРѕС‡РЅС‹Р№ РґР»СЏ РєРѕСЂСЂРµРєС‚РёСЂРѕРІРѕС‡РЅРѕРіРѕ
         if (cAlFrom)->KORR
-          messagebox("Для корректировочного счет-фактуры корректировочный счет-фактура не создается.",TITLEAPP,48)
+          messagebox("Р”Р»СЏ РєРѕСЂСЂРµРєС‚РёСЂРѕРІРѕС‡РЅРѕРіРѕ СЃС‡РµС‚-С„Р°РєС‚СѓСЂС‹ РєРѕСЂСЂРµРєС‚РёСЂРѕРІРѕС‡РЅС‹Р№ СЃС‡РµС‚-С„Р°РєС‚СѓСЂР° РЅРµ СЃРѕР·РґР°РµС‚СЃСЏ.",TITLEAPP,48)
           RETURN (::mAliasInv)->SFK_ID
         endif
         */
@@ -2368,7 +2368,7 @@ local cAlStCom, cAlStComOld,cAlSf,CSTRID
   IF (NIL <> value .AND. 0 <> ::EditMode )
     ::DS:FieldValue("SFMD_ID", value)
     if ::TAX_STR:EOF() .And. !Empty(value) .And. !::mlKorr .And. !::mlIspr
-    //Перенесем значения из выбранного с-ф
+    //РџРµСЂРµРЅРµСЃРµРј Р·РЅР°С‡РµРЅРёСЏ РёР· РІС‹Р±СЂР°РЅРЅРѕРіРѕ СЃ-С„
       cKey := value
       cAlFrom := ::mTbInv
       (cAlFrom)->(OrdSetFocus("TAG_ID"))
@@ -2505,7 +2505,7 @@ local cKey := "", oldValue := (::mAliasInv)->SFD_ID
 local oSf,cAlSf,oStr,cStrId,oSum,oCom,cAlStCom,cAlStComOld
 local aStr := {},i,cAlFrom := ""
   IF (NIL <> value .AND. 0 <> ::EditMode .And. !(oldValue == value) )
-    // Пропишем значения из корректируемого с-ф
+    // РџСЂРѕРїРёС€РµРј Р·РЅР°С‡РµРЅРёСЏ РёР· РєРѕСЂСЂРµРєС‚РёСЂСѓРµРјРѕРіРѕ СЃ-С„
     ::DelAllStr()
     ::aStrS := {}
     cKey := value
@@ -2864,8 +2864,8 @@ RETURN (::mAliasInv)->FROM_ARC
 
 ///////////////////////////
 // PG
-// Создание рекордсета на справочник партнеров при открытии С-Ф
-// код возврата - успешно Т иначе F
+// РЎРѕР·РґР°РЅРёРµ СЂРµРєРѕСЂРґСЃРµС‚Р° РЅР° СЃРїСЂР°РІРѕС‡РЅРёРє РїР°СЂС‚РЅРµСЂРѕРІ РїСЂРё РѕС‚РєСЂС‹С‚РёРё РЎ-Р¤
+// РєРѕРґ РІРѕР·РІСЂР°С‚Р° - СѓСЃРїРµС€РЅРѕ Рў РёРЅР°С‡Рµ F
 /////////////////////////
 METHOD clsTax_Inv:Open()
 local lRet
@@ -2976,8 +2976,8 @@ Local i
 Return .T.
 //////////////////////
 // PG
-// Удаление отметок в связанных документа после удаления С-Ф
-// и разблокирование этих документов
+// РЈРґР°Р»РµРЅРёРµ РѕС‚РјРµС‚РѕРє РІ СЃРІСЏР·Р°РЅРЅС‹С… РґРѕРєСѓРјРµРЅС‚Р° РїРѕСЃР»Рµ СѓРґР°Р»РµРЅРёСЏ РЎ-Р¤
+// Рё СЂР°Р·Р±Р»РѕРєРёСЂРѕРІР°РЅРёРµ СЌС‚РёС… РґРѕРєСѓРјРµРЅС‚РѕРІ
 ////////////////////
 
 METHOD clsTax_Inv:edit(x)
@@ -2992,7 +2992,7 @@ Local lRet := .F.
     lRet := .T.
   endif
 return lRet
-// lAll - Если Т - удаляем все записи
+// lAll - Р•СЃР»Рё Рў - СѓРґР°Р»СЏРµРј РІСЃРµ Р·Р°РїРёСЃРё
 METHOD clsTax_Inv:Delete(lAll)
 Local i,lRet := .T.  ,lRetAr := .T.
 Local oObjBook,cMsg ,r
@@ -3016,12 +3016,12 @@ local aUn := {} , cAlBook, cAlBkTax,cAlias,cAliasDop,cKey
      return .f.
    endif
    if lRetAr
-     messagebox("Счет-фактура в закрытом периоде.",TITLEAPP,48)
+     messagebox("РЎС‡РµС‚-С„Р°РєС‚СѓСЂР° РІ Р·Р°РєСЂС‹С‚РѕРј РїРµСЂРёРѕРґРµ.",TITLEAPP,48)
      return .f.
    endif
    lRet := .T.
    if !::BOOK:EOF() .Or. !::BOOKST:EOF()
-    //Проверим есть или нет анулированные записи
+    //РџСЂРѕРІРµСЂРёРј РµСЃС‚СЊ РёР»Рё РЅРµС‚ Р°РЅСѓР»РёСЂРѕРІР°РЅРЅС‹Рµ Р·Р°РїРёСЃРё
      oBook := ::BOOK:DS
      nRec := oBook:RecNo()
      oBook:GoTop()
@@ -3034,7 +3034,7 @@ local aUn := {} , cAlBook, cAlBkTax,cAlias,cAliasDop,cKey
            exit
          endif
        endif
-       //Проверим нет ли авансового с-ф в архивном периоде
+       //РџСЂРѕРІРµСЂРёРј РЅРµС‚ Р»Рё Р°РІР°РЅСЃРѕРІРѕРіРѕ СЃ-С„ РІ Р°СЂС…РёРІРЅРѕРј РїРµСЂРёРѕРґРµ
        if (::cWa)->FROM_ARC .And. (!Empty((::cWa)->SFD_ID) .Or. !Empty((::cWa)->SFK_ID) )
        else
          lRetAr := .F.
@@ -3043,7 +3043,7 @@ local aUn := {} , cAlBook, cAlBkTax,cAlias,cAliasDop,cKey
            Return .F.
          endif
          if lRetAr
-           messagebox("Запись в книгу в закрытом периоде.",TITLEAPP,48)
+           messagebox("Р—Р°РїРёСЃСЊ РІ РєРЅРёРіСѓ РІ Р·Р°РєСЂС‹С‚РѕРј РїРµСЂРёРѕРґРµ.",TITLEAPP,48)
            oBook:GoTo(nRec)
            Return .F.
          endif
@@ -3054,7 +3054,7 @@ local aUn := {} , cAlBook, cAlBkTax,cAlias,cAliasDop,cKey
        oBook:Skip(1)
      enddo
      if lUn .And. !lAll
-       messagebox("По счету-фактуре есть аннулированные записи в книге.",TITLEAPP,48)
+       messagebox("РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ РµСЃС‚СЊ Р°РЅРЅСѓР»РёСЂРѕРІР°РЅРЅС‹Рµ Р·Р°РїРёСЃРё РІ РєРЅРёРіРµ.",TITLEAPP,48)
        oBook:GoTo(nRec)
        Return .F.
      endif
@@ -3073,7 +3073,7 @@ local aUn := {} , cAlBook, cAlBkTax,cAlias,cAliasDop,cKey
            exit
          endif
        endif
-       //Проверим нет ли авансового с-ф в архивном периоде
+       //РџСЂРѕРІРµСЂРёРј РЅРµС‚ Р»Рё Р°РІР°РЅСЃРѕРІРѕРіРѕ СЃ-С„ РІ Р°СЂС…РёРІРЅРѕРј РїРµСЂРёРѕРґРµ
        if (::cWa)->FROM_ARC .And. (!Empty((::cWa)->SFD_ID) .Or. !Empty((::cWa)->SFK_ID) )
        else
          lRetAr := .F.
@@ -3082,7 +3082,7 @@ local aUn := {} , cAlBook, cAlBkTax,cAlias,cAliasDop,cKey
            Return .F.
          endif
          if lRetAr
-           messagebox("Запись в книгу в закрытом периоде.",TITLEAPP,48)
+           messagebox("Р—Р°РїРёСЃСЊ РІ РєРЅРёРіСѓ РІ Р·Р°РєСЂС‹С‚РѕРј РїРµСЂРёРѕРґРµ.",TITLEAPP,48)
            oBook:GoTo(nRec)
            Return .F.
          endif
@@ -3094,18 +3094,18 @@ local aUn := {} , cAlBook, cAlBkTax,cAlias,cAliasDop,cKey
        oBook:Skip(1)
      enddo
      if lUn .And. !lAll
-       messagebox("По счету-фактуре есть аннулированные записи в книге.",TITLEAPP,48)
+       messagebox("РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ РµСЃС‚СЊ Р°РЅРЅСѓР»РёСЂРѕРІР°РЅРЅС‹Рµ Р·Р°РїРёСЃРё РІ РєРЅРёРіРµ.",TITLEAPP,48)
        oBook:GoTo(nRec)
        Return .F.
      endif
      oBook:GoTo(nRec)
      if lSt
-       cMsg := "По счету-фактуре есть сторнирующие записи в книге." + CRLF
+       cMsg := "РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ РµСЃС‚СЊ СЃС‚РѕСЂРЅРёСЂСѓСЋС‰РёРµ Р·Р°РїРёСЃРё РІ РєРЅРёРіРµ." + CRLF
      else
-       cMsg := "По счету-фактуре есть регистрационные записи в книге." + CRLF
+       cMsg := "РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ РµСЃС‚СЊ СЂРµРіРёСЃС‚СЂР°С†РёРѕРЅРЅС‹Рµ Р·Р°РїРёСЃРё РІ РєРЅРёРіРµ." + CRLF
      endif
-     cMsg += "Вместе со счетом-фактурой будут удалены записи в книге." + CRLF
-     cMsg += "Удалить счет-фактуру?"
+     cMsg += "Р’РјРµСЃС‚Рµ СЃРѕ СЃС‡РµС‚РѕРј-С„Р°РєС‚СѓСЂРѕР№ Р±СѓРґСѓС‚ СѓРґР°Р»РµРЅС‹ Р·Р°РїРёСЃРё РІ РєРЅРёРіРµ." + CRLF
+     cMsg += "РЈРґР°Р»РёС‚СЊ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ?"
      if ::lMsgDelBook
        r :=messagebox(cMsg,TITLEAPP,36)
        if !(r == 6)
@@ -3120,7 +3120,7 @@ local aUn := {} , cAlBook, cAlBkTax,cAlias,cAliasDop,cKey
      trans_begin()
 
        oObjBook := clsTax_Book():New()
-       if (::cWa)->MOVE_TP $ {'ПР','ПП'}
+       if (::cWa)->MOVE_TP $ {'РџР ','РџРџ'}
          oObjBook:lSfStDel := .T.
        else
          oObjBook:lSfDel := .T.
@@ -3250,11 +3250,11 @@ local aUn := {} , cAlBook, cAlBkTax,cAlias,cAliasDop,cKey
 Return lRet
 ////////////////////
 //PG
-// Разблокировка связанных документов
-// Регистрация для групповых записей в Книгк П/П
-// и регистрация д-тов на основании которых создан Счет-Фактура
-// Создание для платежей авансовых записей в Книге П/П
-// Создание сторнирующих записей
+// Р Р°Р·Р±Р»РѕРєРёСЂРѕРІРєР° СЃРІСЏР·Р°РЅРЅС‹С… РґРѕРєСѓРјРµРЅС‚РѕРІ
+// Р РµРіРёСЃС‚СЂР°С†РёСЏ РґР»СЏ РіСЂСѓРїРїРѕРІС‹С… Р·Р°РїРёСЃРµР№ РІ РљРЅРёРіРє Рџ/Рџ
+// Рё СЂРµРіРёСЃС‚СЂР°С†РёСЏ Рґ-С‚РѕРІ РЅР° РѕСЃРЅРѕРІР°РЅРёРё РєРѕС‚РѕСЂС‹С… СЃРѕР·РґР°РЅ РЎС‡РµС‚-Р¤Р°РєС‚СѓСЂР°
+// РЎРѕР·РґР°РЅРёРµ РґР»СЏ РїР»Р°С‚РµР¶РµР№ Р°РІР°РЅСЃРѕРІС‹С… Р·Р°РїРёСЃРµР№ РІ РљРЅРёРіРµ Рџ/Рџ
+// РЎРѕР·РґР°РЅРёРµ СЃС‚РѕСЂРЅРёСЂСѓСЋС‰РёС… Р·Р°РїРёСЃРµР№
 METHOD clsTax_Inv:Save()
 local n,i,lRet := .F.,cPay := "0"//a,
 local cAlias,nReReg := 0,s,s1,oObjBook,aBook
@@ -3279,7 +3279,7 @@ local nRate , aRight := {}
 
   endif
   if ::mReMakeBook
-  // Проверим регистрацию по документу
+  // РџСЂРѕРІРµСЂРёРј СЂРµРіРёСЃС‚СЂР°С†РёСЋ РїРѕ РґРѕРєСѓРјРµРЅС‚Сѓ
     if len(::maReRegDoc)>0
       cAlias := ::Book:Ds:alias()
       (cAlias)->(DbGoTop())
@@ -3289,34 +3289,34 @@ local nRate , aRight := {}
           if ValType(::maReRegDoc[2]) == "N"
             nRate := iif(Empty((cAlias)->SRC_RATE),1,(cAlias)->SRC_RATE)
             if !(BS_ROUND((cAlias)->REC_SUM,::mRound) == BS_ROUND(::maReRegDoc[2]*nRate,::mRound))
-              s := "Регистрационная запись по "
+              s := "Р РµРіРёСЃС‚СЂР°С†РёРѕРЅРЅР°СЏ Р·Р°РїРёСЃСЊ РїРѕ "
               cJrn := (cAlias)->JRN_ID
               if cJrn $ "0301,0901,0904"
-                s := s + "накладной "
+                s := s + "РЅР°РєР»Р°РґРЅРѕР№ "
               else
-                s := s + "акту "
+                s := s + "Р°РєС‚Сѓ "
               endif
               s := s + chr(13) + chr(10)
               s := s + ::maReRegDoc[3] + chr(13) + chr(10)
-              s := s + "сформирована неверно."
-              s1 := "'Переформировать' 1 Default 'Удалить' 2 'Вернуться в счет-фактуру' 3"
-              nReReg := D_CUSTOMMSG("БЭСТ-5", s, s1, 3, .t.)
+              s := s + "СЃС„РѕСЂРјРёСЂРѕРІР°РЅР° РЅРµРІРµСЂРЅРѕ."
+              s1 := "'РџРµСЂРµС„РѕСЂРјРёСЂРѕРІР°С‚СЊ' 1 Default 'РЈРґР°Р»РёС‚СЊ' 2 'Р’РµСЂРЅСѓС‚СЊСЃСЏ РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ' 3"
+              nReReg := D_CUSTOMMSG("Р‘Р­РЎРў-5", s, s1, 3, .t.)
               if nReReg == 3
                 Return .F.
               endif
             endif
           else
-            s := "Регистрационная запись по "
+            s := "Р РµРіРёСЃС‚СЂР°С†РёРѕРЅРЅР°СЏ Р·Р°РїРёСЃСЊ РїРѕ "
             cJrn := (cAlias)->JRN_ID
             if cJrn $ "0301,0901,0904"
-              s := s + "накладной "
+              s := s + "РЅР°РєР»Р°РґРЅРѕР№ "
             else
-              s := s + "акту "
+              s := s + "Р°РєС‚Сѓ "
             endif
             s := s + chr(13) + chr(10)
-            s := s + "сформирована по удаляемому документу."
-              s1 := "'Удалить' 1 Default 'Вернуться в счет-фактуру' 2"
-              nReReg := D_CUSTOMMSG("БЭСТ-5", s, s1, 3, .t.)
+            s := s + "СЃС„РѕСЂРјРёСЂРѕРІР°РЅР° РїРѕ СѓРґР°Р»СЏРµРјРѕРјСѓ РґРѕРєСѓРјРµРЅС‚Сѓ."
+              s1 := "'РЈРґР°Р»РёС‚СЊ' 1 Default 'Р’РµСЂРЅСѓС‚СЊСЃСЏ РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ' 2"
+              nReReg := D_CUSTOMMSG("Р‘Р­РЎРў-5", s, s1, 3, .t.)
               if nReReg == 2
                 Return .F.
               else
@@ -3368,22 +3368,22 @@ local nRate , aRight := {}
     next
     ::DelAllRec()
   endif
- //Записи в книгу делаем только если они еще не создавались или добавляем строки
-  // если пересоздаем с-ф - все операции с записями
-  // будут выполнены потом
+ //Р—Р°РїРёСЃРё РІ РєРЅРёРіСѓ РґРµР»Р°РµРј С‚РѕР»СЊРєРѕ РµСЃР»Рё РѕРЅРё РµС‰Рµ РЅРµ СЃРѕР·РґР°РІР°Р»РёСЃСЊ РёР»Рё РґРѕР±Р°РІР»СЏРµРј СЃС‚СЂРѕРєРё
+  // РµСЃР»Рё РїРµСЂРµСЃРѕР·РґР°РµРј СЃ-С„ - РІСЃРµ РѕРїРµСЂР°С†РёРё СЃ Р·Р°РїРёСЃСЏРјРё
+  // Р±СѓРґСѓС‚ РІС‹РїРѕР»РЅРµРЅС‹ РїРѕС‚РѕРј
   if !(::mParamIni[_TAX_QUE] == "0")
     if !::mlRePlaceMod .And. !::mReMakeBook .And. !::mDelRecBook
       ::BOOK:GoTop()
-      if CanCreate("16",.f.) //после вызова из синьки нужно проверить
-        //   F - только для регистрации из формы   F - при добавлении строк - вс-ф по которому не было регистрации   рекно - добавленного документа - при создании в существующий
-        if ::mlCreateRec .And. (::mAliasInv)->MOVE_TP $ {"ЗК","ОТ","БП"} .And. ::mlReg .And. (::BOOK:Eof() .Or. !Empty(::mnRecAddDoc))
+      if CanCreate("16",.f.) //РїРѕСЃР»Рµ РІС‹Р·РѕРІР° РёР· СЃРёРЅСЊРєРё РЅСѓР¶РЅРѕ РїСЂРѕРІРµСЂРёС‚СЊ
+        //   F - С‚РѕР»СЊРєРѕ РґР»СЏ СЂРµРіРёСЃС‚СЂР°С†РёРё РёР· С„РѕСЂРјС‹   F - РїСЂРё РґРѕР±Р°РІР»РµРЅРёРё СЃС‚СЂРѕРє - РІСЃ-С„ РїРѕ РєРѕС‚РѕСЂРѕРјСѓ РЅРµ Р±С‹Р»Рѕ СЂРµРіРёСЃС‚СЂР°С†РёРё   СЂРµРєРЅРѕ - РґРѕР±Р°РІР»РµРЅРЅРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р° - РїСЂРё СЃРѕР·РґР°РЅРёРё РІ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№
+        if ::mlCreateRec .And. (::mAliasInv)->MOVE_TP $ {"Р—Рљ","РћРў","Р‘Рџ"} .And. ::mlReg .And. (::BOOK:Eof() .Or. !Empty(::mnRecAddDoc))
           GetRightTax(.F.,(::cWa)->TI_CTG,@aRight)
           if Len(aRight) == 1 .And. !aRight[1]
             lNewBook := .F.
           else
             if Len(aRight) > 1
               if !Empty(aRight[_NEW_])
-                if ("ОП" $ aRight[_NEW_]) .Or. ("ОТ" $ aRight[_NEW_])
+                if ("РћРџ" $ aRight[_NEW_]) .Or. ("РћРў" $ aRight[_NEW_])
                   lNewBook := .F.
                 endif
               endif
@@ -3394,19 +3394,19 @@ local nRate , aRight := {}
           endif
         endif
       //altd()
-        if ::mlCreateRec .And. ::BOOK:Eof() .And. (::mAliasInv)->MOVE_TP $ {"ПП","ПР"} //((::mAliasInv)->MOVE_TP $ {"ПП","ПР"} .Or. (::mAliasInv)->STR_TP  $ {"0","1"})
+        if ::mlCreateRec .And. ::BOOK:Eof() .And. (::mAliasInv)->MOVE_TP $ {"РџРџ","РџР "} //((::mAliasInv)->MOVE_TP $ {"РџРџ","РџР "} .Or. (::mAliasInv)->STR_TP  $ {"0","1"})
           GetRightTax(.F.,(::cWa)->TI_CTG ,@aRight)
           if Len(aRight) == 1 .And. !aRight[1]
             lNewBook := .F.
           else
             if Len(aRight) > 1
               if !Empty(aRight[_NEW_])
-                if (::cWa)->MOVE_TP == "ПР"
-                  if ("АУ" $ aRight[_NEW_]) .Or. ("АВ" $ aRight[_NEW_])
+                if (::cWa)->MOVE_TP == "РџР "
+                  if ("РђРЈ" $ aRight[_NEW_]) .Or. ("РђР’" $ aRight[_NEW_])
                     lNewBook := .F.
                   endif
                 else
-                  if ("ПЛ" $ aRight[_NEW_])
+                  if ("РџР›" $ aRight[_NEW_])
                     lNewBook := .F.
                   endif
                 endif
@@ -3423,14 +3423,14 @@ local nRate , aRight := {}
 
 
   /*
-  if ::BOOK:Eof() .And. ((::mAliasInv)->STR_TP  == "2") .And. ((::mAliasInv)->MOVE_TP  $ {"СЗ","СП"})
+  if ::BOOK:Eof() .And. ((::mAliasInv)->STR_TP  == "2") .And. ((::mAliasInv)->MOVE_TP  $ {"РЎР—","РЎРџ"})
     ::CreateStorno()
   endif
   */
   //::mNotEd := .F.
-  // очищаем массив RecNo заблокированных докумнтов
-  // что бы при взятии на редактирование был пустым
-  // раньше ачищать нельзя - используется в  CreateGroupRecInBook
+  // РѕС‡РёС‰Р°РµРј РјР°СЃСЃРёРІ RecNo Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРЅС‹С… РґРѕРєСѓРјРЅС‚РѕРІ
+  // С‡С‚Рѕ Р±С‹ РїСЂРё РІР·СЏС‚РёРё РЅР° СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ Р±С‹Р» РїСѓСЃС‚С‹Рј
+  // СЂР°РЅСЊС€Рµ Р°С‡РёС‰Р°С‚СЊ РЅРµР»СЊР·СЏ - РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ  CreateGroupRecInBook
   // CreateAVForBook , CreateStorno
 
   For i := 1 to len(::maTbDoc)
@@ -3486,7 +3486,7 @@ local nRate , aRight := {}
     next
 
     if nReReg == 1
-    // Переформировать
+    // РџРµСЂРµС„РѕСЂРјРёСЂРѕРІР°С‚СЊ
         RegInBookDocSf((::cWa)->Doc_Id,cDocId,cJrn,,,,cIdOper,.F.)
     endif
     end sequence
@@ -3499,9 +3499,9 @@ local nRate , aRight := {}
 Return .T.
 /////////////////////
 //PG
-// Заполнение значениями по умолчанию и переданными в создание параметрами
-// Создаем записи измерений и дополнительных полей
-// в зависимости от типа установленных в типе документа
+// Р—Р°РїРѕР»РЅРµРЅРёРµ Р·РЅР°С‡РµРЅРёСЏРјРё РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ Рё РїРµСЂРµРґР°РЅРЅС‹РјРё РІ СЃРѕР·РґР°РЅРёРµ РїР°СЂР°РјРµС‚СЂР°РјРё
+// РЎРѕР·РґР°РµРј Р·Р°РїРёСЃРё РёР·РјРµСЂРµРЅРёР№ Рё РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№
+// РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РёРїР° СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅС‹С… РІ С‚РёРїРµ РґРѕРєСѓРјРµРЅС‚Р°
 method clsTax_Inv:Append()
 local cKey,nDocType,nJrn,lPol,cNum := "",nNum := 1
 //Local cOrder ,cNumMax,nLen
@@ -3509,36 +3509,36 @@ local cPodrazd := "", lRet := .F. ,cMsg , cDocNum := ""
 
   cKey := ""
   if Empty(::mModId) .And. Empty(::mParamIni[4])
-    cMsg := "В настройке подсистемы Книга Покупок/Продаж " + CRLF
-    cMsg := cMsg + " не определена налоговая модель."
+    cMsg := "Р’ РЅР°СЃС‚СЂРѕР№РєРµ РїРѕРґСЃРёСЃС‚РµРјС‹ РљРЅРёРіР° РџРѕРєСѓРїРѕРє/РџСЂРѕРґР°Р¶ " + CRLF
+    cMsg := cMsg + " РЅРµ РѕРїСЂРµРґРµР»РµРЅР° РЅР°Р»РѕРіРѕРІР°СЏ РјРѕРґРµР»СЊ."
     messagebox(cMsg,TITLEAPP,48)
     Return .F.
   endif
   if Empty(::mDocType) .And. Empty(::mParamIni[_TAX_DOCTYPE])
-    cMsg := "В настройке подсистемы Книга Покупок/Продаж " + CRLF
-    cMsg := cMsg + " не определен тип документа."
+    cMsg := "Р’ РЅР°СЃС‚СЂРѕР№РєРµ РїРѕРґСЃРёСЃС‚РµРјС‹ РљРЅРёРіР° РџРѕРєСѓРїРѕРє/РџСЂРѕРґР°Р¶ " + CRLF
+    cMsg := cMsg + " РЅРµ РѕРїСЂРµРґРµР»РµРЅ С‚РёРї РґРѕРєСѓРјРµРЅС‚Р°."
     messagebox(cMsg,TITLEAPP,48)
     Return .F.
   endif
   /*
-  if ::mGroupSf .And. ::mTI_CTG == "1"// Получим номр для групповых приходных с-ф
+  if ::mGroupSf .And. ::mTI_CTG == "1"// РџРѕР»СѓС‡РёРј РЅРѕРјСЂ РґР»СЏ РіСЂСѓРїРїРѕРІС‹С… РїСЂРёС…РѕРґРЅС‹С… СЃ-С„
     cOrder := ::DS:SetOrder("TAG_NUMDT")
-    ::DS:Scope("1ГР","1ГР","TAG_NUMDT")
+    ::DS:Scope("1Р“Р ","1Р“Р ","TAG_NUMDT")
     ::DS:GoBottom()
     if ::DS:Eof() .Or. ::DS:Bof() .Or. Empty((::mAliasInv)->DOC_NUM)
-      cNum := "ГР" + "0000000000000000000001"
+      cNum := "Р“Р " + "0000000000000000000001"
     else
       cNumMax := (::mAliasInv)->DOC_NUM
       nNum := Val(Right(cNumMax,22))
       if Empty(nNum)
-        cNum := "ГР" + "0000000000000000000001"
+        cNum := "Р“Р " + "0000000000000000000001"
       else
         cNumMax := Alltrim(str(nNum + 1,22,0))
         nLen := Len(cNumMax)
         if nLen < 22
-          cNum := "ГР" + replicate("0",22-nLen) + cNumMax
+          cNum := "Р“Р " + replicate("0",22-nLen) + cNumMax
         else
-          cNum := "ГР" + cNumMax
+          cNum := "Р“Р " + cNumMax
         endif
       endif
     endif
@@ -3550,7 +3550,7 @@ local cPodrazd := "", lRet := .F. ,cMsg , cDocNum := ""
   ::CanAdd := CanCreate('16', .f.)
   if ::CanAdd
     if  Empty(::mMove_Tp) .or. Empty(::mTI_CTG)
-      MessageBox('Создание счета-фактуры. Не переданы параметры.',TITLEAPP,48)
+      MessageBox('РЎРѕР·РґР°РЅРёРµ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹. РќРµ РїРµСЂРµРґР°РЅС‹ РїР°СЂР°РјРµС‚СЂС‹.',TITLEAPP,48)
       return .f.
     endif
     ::CanAdd := CanActionMoveTpForTax(self,.T.,_NEW_,::mTI_CTG,::mMove_Tp)
@@ -3583,7 +3583,7 @@ local cPodrazd := "", lRet := .F. ,cMsg , cDocNum := ""
   //endif
 
   //(::mAliasInv)->DEP_DATE := Ctod("")
-  ::VAL_ID := ::mVAL_ID  // пишем через интерфейс
+  ::VAL_ID := ::mVAL_ID  // РїРёС€РµРј С‡РµСЂРµР· РёРЅС‚РµСЂС„РµР№СЃ
   (::mAliasInv)->VAL_RATE := 1
 
   (::mAliasInv)->SUM_NNDS := 0
@@ -3628,12 +3628,12 @@ local cPodrazd := "", lRet := .F. ,cMsg , cDocNum := ""
   if !::SetParamStrSum()
     Return .F.
   endif
-  if ::mMove_Tp $ "ПП,ПР"
+  if ::mMove_Tp $ "РџРџ,РџР "
     if !(::TAX_STR:TAXSTRSUM:maModStr[1][_SUMUSE] == "2")
-      messagebox("Налоговая модель для авансовых счетов фактур настроена некорректно.",TITLEAPP,48)
+      messagebox("РќР°Р»РѕРіРѕРІР°СЏ РјРѕРґРµР»СЊ РґР»СЏ Р°РІР°РЅСЃРѕРІС‹С… СЃС‡РµС‚РѕРІ С„Р°РєС‚СѓСЂ РЅР°СЃС‚СЂРѕРµРЅР° РЅРµРєРѕСЂСЂРµРєС‚РЅРѕ.",TITLEAPP,48)
     endif
   endif
-  //Заполним код подразделения
+  //Р—Р°РїРѕР»РЅРёРј РєРѕРґ РїРѕРґСЂР°Р·РґРµР»РµРЅРёСЏ
   if File(B6_DBF_PATH + "ufaschool.txt")
     lRet := .F.
     if LookUpSeek("tax\USER_PODR.dbf","TAG_USER",@lRet,Upper(m->B6_USER_NAME),"PODRAZD",@cPodrazd)
@@ -3685,8 +3685,8 @@ local cPodrazd := "", lRet := .F. ,cMsg , cDocNum := ""
   cKey := (::mAliasInv)->DOC_TP + left(DTOS((::mAliasInv)->REG_DATE),4)
   (::mAliasInv)->REG_NUM := ::NumRule(2):NWDoc(cKey,"SFREG")
   ::aSFDOC := {}
-  ::mCardId := Space(22)//  карточка
-  ::mCardPartner := Space(22)// партнер карточки расчетов
+  ::mCardId := Space(22)//  РєР°СЂС‚РѕС‡РєР°
+  ::mCardPartner := Space(22)// РїР°СЂС‚РЅРµСЂ РєР°СЂС‚РѕС‡РєРё СЂР°СЃС‡РµС‚РѕРІ
   ::mCardRecNo := 0
   ::mlSaveOnly := .F.
   //::mlCreateRec := .F.
@@ -3694,13 +3694,13 @@ return .T.
 
 ///////////
 //PG
-// Для установленного счета из плана счетов и идентификатора партнера
-// если для данного счета есть измерение еспользующее
-// справочник партнеров определяет значение кода сегмента аналитики и его полодение в
-// полной аналитике
-//  параметр lWrite ---
-// при обращении из других объектов не нужно писать в базу
-// Т - записываем F - нет
+// Р”Р»СЏ СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅРѕРіРѕ СЃС‡РµС‚Р° РёР· РїР»Р°РЅР° СЃС‡РµС‚РѕРІ Рё РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° РїР°СЂС‚РЅРµСЂР°
+// РµСЃР»Рё РґР»СЏ РґР°РЅРЅРѕРіРѕ СЃС‡РµС‚Р° РµСЃС‚СЊ РёР·РјРµСЂРµРЅРёРµ РµСЃРїРѕР»СЊР·СѓСЋС‰РµРµ
+// СЃРїСЂР°РІРѕС‡РЅРёРє РїР°СЂС‚РЅРµСЂРѕРІ РѕРїСЂРµРґРµР»СЏРµС‚ Р·РЅР°С‡РµРЅРёРµ РєРѕРґР° СЃРµРіРјРµРЅС‚Р° Р°РЅР°Р»РёС‚РёРєРё Рё РµРіРѕ РїРѕР»РѕРґРµРЅРёРµ РІ
+// РїРѕР»РЅРѕР№ Р°РЅР°Р»РёС‚РёРєРµ
+//  РїР°СЂР°РјРµС‚СЂ lWrite ---
+// РїСЂРё РѕР±СЂР°С‰РµРЅРёРё РёР· РґСЂСѓРіРёС… РѕР±СЉРµРєС‚РѕРІ РЅРµ РЅСѓР¶РЅРѕ РїРёСЃР°С‚СЊ РІ Р±Р°Р·Сѓ
+// Рў - Р·Р°РїРёСЃС‹РІР°РµРј F - РЅРµС‚
 METHOD clsTax_Inv:GetAnalit(lWrite)
 local  oErr,/*aAnalit,*/sAnalit:= ""
 Local cSchet
@@ -3766,9 +3766,9 @@ local lFirst := .T.,s,lRet
 
 
 
-    if ((tbDim)->SYS_ID == "0000000000000000000003" .And. (::mAliasInv)->PRT_TP == "1")  ;// 3  // есть измерение на справочнике партнеров
+    if ((tbDim)->SYS_ID == "0000000000000000000003" .And. (::mAliasInv)->PRT_TP == "1")  ;// 3  // РµСЃС‚СЊ РёР·РјРµСЂРµРЅРёРµ РЅР° СЃРїСЂР°РІРѕС‡РЅРёРєРµ РїР°СЂС‚РЅРµСЂРѕРІ
         .Or. ((tbDim)->SYS_ID == "0000000000000000000002" .And. (::mAliasInv)->PRT_TP == "2")
-       if lFirst .Or. (tbDim)->ISSYSTEM  // системная аналитика перетирает остальные
+       if lFirst .Or. (tbDim)->ISSYSTEM  // СЃРёСЃС‚РµРјРЅР°СЏ Р°РЅР°Р»РёС‚РёРєР° РїРµСЂРµС‚РёСЂР°РµС‚ РѕСЃС‚Р°Р»СЊРЅС‹Рµ
           s := (tbDim)->ALG_CODE
           cAnalitSys := ""
           if (tbDim)->ISSYSTEM
@@ -3844,11 +3844,11 @@ Return .T.
 //aParam
 ///////////////
 //PG
-// создает строки С-Ф на основании документов
-// aParam - массив RecNo документов на основании которых создавать
-// cStrTp - тип строки
-// lFromZakaz - T -  при пересоздании - аванс по заказу
-// Т - успешное выполнение
+// СЃРѕР·РґР°РµС‚ СЃС‚СЂРѕРєРё РЎ-Р¤ РЅР° РѕСЃРЅРѕРІР°РЅРёРё РґРѕРєСѓРјРµРЅС‚РѕРІ
+// aParam - РјР°СЃСЃРёРІ RecNo РґРѕРєСѓРјРµРЅС‚РѕРІ РЅР° РѕСЃРЅРѕРІР°РЅРёРё РєРѕС‚РѕСЂС‹С… СЃРѕР·РґР°РІР°С‚СЊ
+// cStrTp - С‚РёРї СЃС‚СЂРѕРєРё
+// lFromZakaz - T -  РїСЂРё РїРµСЂРµСЃРѕР·РґР°РЅРёРё - Р°РІР°РЅСЃ РїРѕ Р·Р°РєР°Р·Сѓ
+// Рў - СѓСЃРїРµС€РЅРѕРµ РІС‹РїРѕР»РЅРµРЅРёРµ
 /////////////
 Method clsTax_Inv:CreateStrForDoc(aParam,cStrTp,cJRN,lFromZakaz)
 local  oErr,nJrn,n,i,k ,cAlias,nRet
@@ -3860,25 +3860,25 @@ local lChangedDoc := .F.,lObjDoc := .F. ,oObjDoc := nil,aLock := {}
  if !(ValType(lFromZakaz) == "L") .Or.  !::mlRePlaceMod
    lFromZakaz := .F.
  endif
- if (Upper((::mAliasInv)->MOVE_TP) $ {'СЗ','СП'}) // записи сторно - суммы отрицательные
+ if (Upper((::mAliasInv)->MOVE_TP) $ {'РЎР—','РЎРџ'}) // Р·Р°РїРёСЃРё СЃС‚РѕСЂРЅРѕ - СЃСѓРјРјС‹ РѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹Рµ
    ::mMultyStorno := -1
  else
    ::mMultyStorno := 1
  endif
 
- if (Upper((::mAliasInv)->MOVE_TP) $ {'ПР','ПП'})
-   lAv := .T.  // Запись авансовая
+ if (Upper((::mAliasInv)->MOVE_TP) $ {'РџР ','РџРџ'})
+   lAv := .T.  // Р—Р°РїРёСЃСЊ Р°РІР°РЅСЃРѕРІР°СЏ
  else
    lAv := .F.
  endif
  ::mParamIni := {}
  if !GetParamIni((::mAliasInv)->TI_CTG,lAv,@::mParamIni)
-   messagebox("Не удалось инициализировать параметры настройки подсистемы КПП",TITLEAPP,48)
+   messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°С‚СЊ РїР°СЂР°РјРµС‚СЂС‹ РЅР°СЃС‚СЂРѕР№РєРё РїРѕРґСЃРёСЃС‚РµРјС‹ РљРџРџ",TITLEAPP,48)
    Break(.F.)
  endif
 
  if Empty(::mParamIni[4])
-   messagebox("Не определена налоговая модель в настройке подсистемы!",TITLEAPP,48)
+   messagebox("РќРµ РѕРїСЂРµРґРµР»РµРЅР° РЅР°Р»РѕРіРѕРІР°СЏ РјРѕРґРµР»СЊ РІ РЅР°СЃС‚СЂРѕР№РєРµ РїРѕРґСЃРёСЃС‚РµРјС‹!",TITLEAPP,48)
    Break(.F.)
  endif
  /*
@@ -3887,7 +3887,7 @@ local lChangedDoc := .F.,lObjDoc := .F. ,oObjDoc := nil,aLock := {}
  endif
  */
  if (::mAliasInv)->Val_Id == ::mVal_id
-   lVMain := .T. // Валюта С-Ф совпадает с оновной валютой
+   lVMain := .T. // Р’Р°Р»СЋС‚Р° РЎ-Р¤ СЃРѕРІРїР°РґР°РµС‚ СЃ РѕРЅРѕРІРЅРѕР№ РІР°Р»СЋС‚РѕР№
  else
    lVMain := .F.
  endif
@@ -4110,7 +4110,7 @@ local lChangedDoc := .F.,lObjDoc := .F. ,oObjDoc := nil,aLock := {}
       endif
   endcase
 
-  // пересчитаем налоги  и суммы для  С_Ф
+  // РїРµСЂРµСЃС‡РёС‚Р°РµРј РЅР°Р»РѕРіРё  Рё СЃСѓРјРјС‹ РґР»СЏ  РЎ_Р¤
   ::CreateTaxForSF()
   oObjDoc := nil
  recover using oErr
@@ -4127,11 +4127,11 @@ Return .T.
 
 /////////////////////////
 //PG
-//После удалении ссылки в документах - удаляются
-//ссылки в строках этих документов
-// valKey -  идентификатор д-та
-// cTbName - таблица строк д-та
-// cTag - индекс по идентификатору д-та в таблице строк
+//РџРѕСЃР»Рµ СѓРґР°Р»РµРЅРёРё СЃСЃС‹Р»РєРё РІ РґРѕРєСѓРјРµРЅС‚Р°С… - СѓРґР°Р»СЏСЋС‚СЃСЏ
+//СЃСЃС‹Р»РєРё РІ СЃС‚СЂРѕРєР°С… СЌС‚РёС… РґРѕРєСѓРјРµРЅС‚РѕРІ
+// valKey -  РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Рґ-С‚Р°
+// cTbName - С‚Р°Р±Р»РёС†Р° СЃС‚СЂРѕРє Рґ-С‚Р°
+// cTag - РёРЅРґРµРєСЃ РїРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ Рґ-С‚Р° РІ С‚Р°Р±Р»РёС†Рµ СЃС‚СЂРѕРє
 ////////////////////////////
 Method clsTax_Inv:ClearMarkForStrDocm(valKey,cTbName,cTag,cFieldName,cKeyStr,aStr,tb)//(valKey,cTbName,cTag,lAll,valKeyStr,lClDoc)
 local  oErr
@@ -4206,7 +4206,7 @@ Return .T.
  */
 ////////////////////////
 //PG
-//Расчет сумм  по документу
+//Р Р°СЃС‡РµС‚ СЃСѓРјРј  РїРѕ РґРѕРєСѓРјРµРЅС‚Сѓ
 /////////////////////
 Method clsTax_Inv:CreateTaxForSF(lbase)
 local  oErr ,a := {}
@@ -4235,7 +4235,7 @@ Local aMod :=  ::TAX_STR:TAXSTRSUM:maModStr
  if ValType(lbase) != "L"
    lbase := .F.
  endif
-//Пока всегда расчитываем налоги
+//РџРѕРєР° РІСЃРµРіРґР° СЂР°СЃС‡РёС‚С‹РІР°РµРј РЅР°Р»РѕРіРё
  nRecNo := (::mAliasSum)->(RecNo())
  cOldTag := (::mAliasSum)->(OrdSetFocus("TAG_TAX"))// ::TAXSUM:SetOrder("TAG_TAX")
  cKey := (::mAliasInv)->Doc_ID + (::mAliasInv)->Doc_ID
@@ -4255,8 +4255,8 @@ Local aMod :=  ::TAX_STR:TAXSTRSUM:maModStr
    (::mAliasSum)->(DbSkip(1))
  enddo
  (::mAliasSum)->(OrdSetFocus("TAG_STR"))
- // собираем суммы по строкам
- //создаем строки налогов под документ и заполняем
+ // СЃРѕР±РёСЂР°РµРј СЃСѓРјРјС‹ РїРѕ СЃС‚СЂРѕРєР°Рј
+ //СЃРѕР·РґР°РµРј СЃС‚СЂРѕРєРё РЅР°Р»РѕРіРѕРІ РїРѕРґ РґРѕРєСѓРјРµРЅС‚ Рё Р·Р°РїРѕР»РЅСЏРµРј
  (::mAliasStr)->(OrdSetFocus("Tag_DOC_ID"))
  ::TAX_STR:MoveFirst()
  dbStr := ::TAX_STR:DS
@@ -4293,7 +4293,7 @@ Local aMod :=  ::TAX_STR:TAXSTRSUM:maModStr
          if cIdA == (::mAliasSum)->TAX_ID .And. Round((::mAliasSum)->TAX_SUM,6) == 0
          else
            if (::mAliasSum)->TAX_ID == aDocTax[n][1]
-             if Empty((::mAliasSum)->TAX_IDRT) // Для акциза может не быть ставки
+             if Empty((::mAliasSum)->TAX_IDRT) // Р”Р»СЏ Р°РєС†РёР·Р° РјРѕР¶РµС‚ РЅРµ Р±С‹С‚СЊ СЃС‚Р°РІРєРё
                if (::mAliasSum)->TAX_RATE == aDocTax[n][3]
                  lNotAdd := .T.
                  aDocTax[n][4] += (::mAliasSum)->TAX_BASE
@@ -4311,7 +4311,7 @@ Local aMod :=  ::TAX_STR:TAXSTRSUM:maModStr
            endif
          endif
        next
-       if !lNotAdd // Добавим налог и ставку
+       if !lNotAdd // Р”РѕР±Р°РІРёРј РЅР°Р»РѕРі Рё СЃС‚Р°РІРєСѓ
          if cIdA == (::mAliasSum)->TAX_ID .And. Round((::mAliasSum)->TAX_SUM,6) == 0
          else
            AADD(aDocTax,{(::mAliasSum)->TAX_ID,;
@@ -4400,9 +4400,9 @@ Static aTax := {}
 return lRet
 //////////////////////////
 //PG
-// Получение массива RecNo
-// документов взятых на редактирование
-// aRecNo - массив возвращаемых значений
+// РџРѕР»СѓС‡РµРЅРёРµ РјР°СЃСЃРёРІР° RecNo
+// РґРѕРєСѓРјРµРЅС‚РѕРІ РІР·СЏС‚С‹С… РЅР° СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ
+// aRecNo - РјР°СЃСЃРёРІ РІРѕР·РІСЂР°С‰Р°РµРјС‹С… Р·РЅР°С‡РµРЅРёР№
 ////////////////////////
 
 Method clsTax_Inv:GetDocRecNo(aRecNo,nJrn)
@@ -4446,8 +4446,8 @@ Local i//,cAlSfDoc := dbSfDoc:Alias()
 Return .T.
 //////////////////////////
 //PG
-//Отметка в массиве mParamDoc - удаленной строки С-Ф
-// nStrId - идентификатор удаленной строки
+//РћС‚РјРµС‚РєР° РІ РјР°СЃСЃРёРІРµ mParamDoc - СѓРґР°Р»РµРЅРЅРѕР№ СЃС‚СЂРѕРєРё РЎ-Р¤
+// nStrId - РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СѓРґР°Р»РµРЅРЅРѕР№ СЃС‚СЂРѕРєРё
 //////////////////////////
 Method clsTax_Inv:ClearMarkStrInDoc(nStrId)
 local  oErr,m ,n,k, aDel := {},nJrn,cIdDoc
@@ -4472,9 +4472,9 @@ Local dbSfDoc,cAlSfDoc
    dbSfDoc:GoTo(aDel[n])
    dbSfDoc:Delete()
  next
- // У документов у которых есть строки
+ // РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ Сѓ РєРѕС‚РѕСЂС‹С… РµСЃС‚СЊ СЃС‚СЂРѕРєРё
  if !(nJrn $ {"0101","0201"})
- // Проверим остались ли записи под данный документ
+ // РџСЂРѕРІРµСЂРёРј РѕСЃС‚Р°Р»РёСЃСЊ Р»Рё Р·Р°РїРёСЃРё РїРѕРґ РґР°РЅРЅС‹Р№ РґРѕРєСѓРјРµРЅС‚
    dbSfDoc:GoTop()
    aDel := {}
    Do While !dbSfDoc:Eof()
@@ -4491,9 +4491,9 @@ Local dbSfDoc,cAlSfDoc
      next
    endif
  endif
- // Снимем блокировку у удаленных документов
+ // РЎРЅРёРјРµРј Р±Р»РѕРєРёСЂРѕРІРєСѓ Сѓ СѓРґР°Р»РµРЅРЅС‹С… РґРѕРєСѓРјРµРЅС‚РѕРІ
  for n := 1 to len(aDel)
-   //Документ не брался на редактирование
+   //Р”РѕРєСѓРјРµРЅС‚ РЅРµ Р±СЂР°Р»СЃСЏ РЅР° СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ
    if AScan(::maTbDoc[m][3],aDel[n]) < 0
      ::maTbDoc[m][2]:GoTo(aDel[n])
      ::maTbDoc[m][2]:UnLock()
@@ -4516,13 +4516,13 @@ Local dbSfDoc,cAlSfDoc
 Return .T.
 //////////////////////
 //PG
-// Возвращает в зависимости от типа строки С-Ф
-// название таблицы строк документов, индекса идентификатора документа
-// индекса идентификатора строк С-ф
-// cStrTp - тип строк
-// cTbName -  возвращает имя таблицы
-// cTagDoc - индекс по идентификатору д-та
-// cTagSf - индекс по идентификатору строк С-Ф
+// Р’РѕР·РІСЂР°С‰Р°РµС‚ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РёРїР° СЃС‚СЂРѕРєРё РЎ-Р¤
+// РЅР°Р·РІР°РЅРёРµ С‚Р°Р±Р»РёС†С‹ СЃС‚СЂРѕРє РґРѕРєСѓРјРµРЅС‚РѕРІ, РёРЅРґРµРєСЃР° РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° РґРѕРєСѓРјРµРЅС‚Р°
+// РёРЅРґРµРєСЃР° РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° СЃС‚СЂРѕРє РЎ-С„
+// cStrTp - С‚РёРї СЃС‚СЂРѕРє
+// cTbName -  РІРѕР·РІСЂР°С‰Р°РµС‚ РёРјСЏ С‚Р°Р±Р»РёС†С‹
+// cTagDoc - РёРЅРґРµРєСЃ РїРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ Рґ-С‚Р°
+// cTagSf - РёРЅРґРµРєСЃ РїРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ СЃС‚СЂРѕРє РЎ-Р¤
 ////////////////////
 Method clsTax_Inv:SetStrDoc(nJrn/*cStrTp*/,cTbName,cTagDoc,cTagSf,cFieldName,cKeyName,cKeyStr)
 local  oErr
@@ -4572,8 +4572,8 @@ Return .T.
 
 /////////////////////////
 //PG
-//Создание  после сохранения С-Ф по предоплате
-//записи в книгу продаж
+//РЎРѕР·РґР°РЅРёРµ  РїРѕСЃР»Рµ СЃРѕС…СЂР°РЅРµРЅРёСЏ РЎ-Р¤ РїРѕ РїСЂРµРґРѕРїР»Р°С‚Рµ
+//Р·Р°РїРёСЃРё РІ РєРЅРёРіСѓ РїСЂРѕРґР°Р¶
 ///////////////////////
 Method clsTax_Inv:CreateAVForBook()
 local  oErr,tb , aDoc := {}
@@ -4595,7 +4595,7 @@ local i,j,n,m
      else
        aDoc :=  ::maTbDoc[i][3]
      endif
-     for j := 1 to Len(aDoc) // ходим по выбранным документам
+     for j := 1 to Len(aDoc) // С…РѕРґРёРј РїРѕ РІС‹Р±СЂР°РЅРЅС‹Рј РґРѕРєСѓРјРµРЅС‚Р°Рј
        if (abs((::mAliasInv)->SUM_A) - abs((::mAliasInv)->SUM_PAY) <= 0)
          Exit
        endif
@@ -4629,19 +4629,19 @@ Return .T.
 
 Method clsTax_Inv:CreateRecInBook(tb,lBank,cJrn) //(i)
 local  oErr
-local aParam //:= {0,"2","АВ"} //, SumRec := 0
+local aParam //:= {0,"2","РђР’"} //, SumRec := 0
 local oObjBook//, lBank := (::DS:STR_TP == "0")
  begin sequence
  //altd()
 
- if ::MOVE_TP == "ПР"
+ if ::MOVE_TP == "РџР "
    if  (::cWa)->TI_CTG == "1"
-     aParam := {0,(::cWa)->TI_CTG,"АУ"}
+     aParam := {0,(::cWa)->TI_CTG,"РђРЈ"}
    else
-     aParam := {0,(::cWa)->TI_CTG,"АВ"}
+     aParam := {0,(::cWa)->TI_CTG,"РђР’"}
    endif
  else
-   aParam := {0,(::cWa)->TI_CTG,"ПЛ"}
+   aParam := {0,(::cWa)->TI_CTG,"РџР›"}
  endif
  oObjBook := clsTax_Book():New()
  oObjBook:Open()
@@ -4674,7 +4674,7 @@ local oObjBook//, lBank := (::DS:STR_TP == "0")
  endif
 
  if !oObjBook:Save()
- // Откроем форму книги
+ // РћС‚РєСЂРѕРµРј С„РѕСЂРјСѓ РєРЅРёРіРё
    if !StartFrmBook(oObjBook)
      oObjBook:Destroy()
    endif
@@ -4697,8 +4697,8 @@ Return .T.
 
 /////////////////////////////
 //PG
-//Создание после сохранения С-Ф сторнирующих записей в Книгу покупок продаж
-//при типе движения "СЗ","СП"
+//РЎРѕР·РґР°РЅРёРµ РїРѕСЃР»Рµ СЃРѕС…СЂР°РЅРµРЅРёСЏ РЎ-Р¤ СЃС‚РѕСЂРЅРёСЂСѓСЋС‰РёС… Р·Р°РїРёСЃРµР№ РІ РљРЅРёРіСѓ РїРѕРєСѓРїРѕРє РїСЂРѕРґР°Р¶
+//РїСЂРё С‚РёРїРµ РґРІРёР¶РµРЅРёСЏ "РЎР—","РЎРџ"
 //////////////////////////
 Method clsTax_Inv:CreateStorno()
 local  oErr,tb
@@ -4714,7 +4714,7 @@ local i,j
    //endif
    if  Len(::maTbDoc[i][4]) > 0
      tb := ::maTbDoc[i][2]
-     for j := 1 to Len(::maTbDoc[i][4]) // ходим по выбранным документам
+     for j := 1 to Len(::maTbDoc[i][4]) // С…РѕРґРёРј РїРѕ РІС‹Р±СЂР°РЅРЅС‹Рј РґРѕРєСѓРјРµРЅС‚Р°Рј
        (tb)->(DbGoTo(::maTbDoc[i][4][j]))
        (tb)->(DbRUnLock(DbGoTo(::maTbDoc[i][4][j])))
        ::CreateStornoRecInBook(tb,::maTbDoc[i][1])
@@ -4736,17 +4736,17 @@ Method clsTax_Inv:CreateStornoRecInBook(tb,nJrn)
 local  oErr               // //????????
 local oObjBook/*lSclad := (::mAliasInv)->STR_TP2,((::mAliasInv)->STR_TP == "2")*/,aParam := {}
  begin sequence
- //if !(ValType(tb/*::tbDoc*/) == "O")  //  нет документов
+ //if !(ValType(tb/*::tbDoc*/) == "O")  //  РЅРµС‚ РґРѕРєСѓРјРµРЅС‚РѕРІ
  //  Break(.T.)
  //endif
   //altd()
  oObjBook := clsTax_Book():New()
  oObjBook:Open()
  if (::mAliasInv)->TI_CTG == "1"
-   aParam := {0,"1","ОП"}
+   aParam := {0,"1","РћРџ"}
  else
 
-   aParam := {0,"2","ОТ"}
+   aParam := {0,"2","РћРў"}
  endif
  if !oObjBook:BeforeAppend(aParam)
    Break(.F.)
@@ -4759,7 +4759,7 @@ local oObjBook/*lSclad := (::mAliasInv)->STR_TP2,((::mAliasInv)->STR_TP == "2")*
  //altd()
  oObjBook:SRC_ID := (tb)->nnoper //tb:FieldValue("nnoper")//::tbDoc:nnoper //::mParams[1][i]
  if !oObjBook:Save()
- // Откроем форму книги
+ // РћС‚РєСЂРѕРµРј С„РѕСЂРјСѓ РєРЅРёРіРё
    if !StartFrmBook(oObjBook)
      oObjBook:Destroy()
    endif
@@ -4797,27 +4797,27 @@ Return lRet
 */
 ////////////////////////////
 //PG
-//Формирование массива записей на основании строк
-//выбранных для создания С-Ф документов
-// рассчитывается сумма налогов
-// tbStr - рабочая область строк//рекордсет строк для выбранного д-та
-// aRec -  массив возвращаемых значение
-// lValuta -  флаг валютного д-та
-// lPrichod - флаг прихода
-// nRate - курс д-та
-// tbL_NDS - вхождение в цену НДС
-// tbL_ACZ - вхождение в цену Акциза
-// lGroup - признак группировки одинаковых строк
-// nRecNo - RecNo документа
-// cStrType - тип строки
-// cMLabel - рабочая область артикулов
-// lMul - Т - документов несколько, иначе один
-//!!!!!!!!!!!! Изменения синхронизировать с Function CreateArrayFromStrForSF
+//Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ РјР°СЃСЃРёРІР° Р·Р°РїРёСЃРµР№ РЅР° РѕСЃРЅРѕРІР°РЅРёРё СЃС‚СЂРѕРє
+//РІС‹Р±СЂР°РЅРЅС‹С… РґР»СЏ СЃРѕР·РґР°РЅРёСЏ РЎ-Р¤ РґРѕРєСѓРјРµРЅС‚РѕРІ
+// СЂР°СЃСЃС‡РёС‚С‹РІР°РµС‚СЃСЏ СЃСѓРјРјР° РЅР°Р»РѕРіРѕРІ
+// tbStr - СЂР°Р±РѕС‡Р°СЏ РѕР±Р»Р°СЃС‚СЊ СЃС‚СЂРѕРє//СЂРµРєРѕСЂРґСЃРµС‚ СЃС‚СЂРѕРє РґР»СЏ РІС‹Р±СЂР°РЅРЅРѕРіРѕ Рґ-С‚Р°
+// aRec -  РјР°СЃСЃРёРІ РІРѕР·РІСЂР°С‰Р°РµРјС‹С… Р·РЅР°С‡РµРЅРёРµ
+// lValuta -  С„Р»Р°Рі РІР°Р»СЋС‚РЅРѕРіРѕ Рґ-С‚Р°
+// lPrichod - С„Р»Р°Рі РїСЂРёС…РѕРґР°
+// nRate - РєСѓСЂСЃ Рґ-С‚Р°
+// tbL_NDS - РІС…РѕР¶РґРµРЅРёРµ РІ С†РµРЅСѓ РќР”РЎ
+// tbL_ACZ - РІС…РѕР¶РґРµРЅРёРµ РІ С†РµРЅСѓ РђРєС†РёР·Р°
+// lGroup - РїСЂРёР·РЅР°Рє РіСЂСѓРїРїРёСЂРѕРІРєРё РѕРґРёРЅР°РєРѕРІС‹С… СЃС‚СЂРѕРє
+// nRecNo - RecNo РґРѕРєСѓРјРµРЅС‚Р°
+// cStrType - С‚РёРї СЃС‚СЂРѕРєРё
+// cMLabel - СЂР°Р±РѕС‡Р°СЏ РѕР±Р»Р°СЃС‚СЊ Р°СЂС‚РёРєСѓР»РѕРІ
+// lMul - Рў - РґРѕРєСѓРјРµРЅС‚РѕРІ РЅРµСЃРєРѕР»СЊРєРѕ, РёРЅР°С‡Рµ РѕРґРёРЅ
+//!!!!!!!!!!!! РР·РјРµРЅРµРЅРёСЏ СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°С‚СЊ СЃ Function CreateArrayFromStrForSF
 Method clsTax_Inv:CreateArrayFromStr(tbStr,aRec,lValuta,lPrichod,;
                                      nRate,tbL_NDS,tbL_ACZ,lGroup,;
                                      nRecNo,cStrType,cMLabel,nStr,lMul)
 local  oErr
-local aRecSort := {},i ,cKey := "",aRecOneDoc := {} // массив строк одного документа одного
+local aRecSort := {},i ,cKey := "",aRecOneDoc := {} // РјР°СЃСЃРёРІ СЃС‚СЂРѕРє РѕРґРЅРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р° РѕРґРЅРѕРіРѕ
 local n := 0 , aRecSortSum := {},nPrior := 0,nBaseS := 0
 local nBaseN := 0,nTaxN := 0,nBaseA := 0,nTaxA := 0,nSumOut := 0
 local nRateA := 0,nRateN := 0,nTaxSumA := 0,nTaxSumN := 0
@@ -4843,7 +4843,7 @@ Local j
    ::objModStr:Scope(::mParamIni[4],::mParamIni[4],"TAG_PRIOR")
  endif
  */
- //39698 - сохраняем порядок ввода как в накладных и актах
+ //39698 - СЃРѕС…СЂР°РЅСЏРµРј РїРѕСЂСЏРґРѕРє РІРІРѕРґР° РєР°Рє РІ РЅР°РєР»Р°РґРЅС‹С… Рё Р°РєС‚Р°С…
  if cStrType $ {"2","3"}
       //AADD(aStr, {(tbStr)->NUMSTR,(tbStr)->(RecNo())})
      if cStrType = "2"
@@ -4883,14 +4883,14 @@ Local j
        /////////////////////////////
        if (tbStr)->NONDS
          if !CheckIdRateForRate(,(tbStr)->NDS,@cIdRateN,,"2",(tbStr)->NONDS)
-           messagebox(" Не удалось получить идентификатор ставки для НДС!",TITLEAPP,48)
+           messagebox(" РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚Р°РІРєРё РґР»СЏ РќР”РЎ!",TITLEAPP,48)
            Break(.F.)
          endif
        else
          if (waGrup)->(DbSeek(Upper((tbStr)->GRUP)))
            cIdRateN := (waGrup)->oper_nds
          endif
-         // Проверим соответствие идентификатора - ставке
+         // РџСЂРѕРІРµСЂРёРј СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРµ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° - СЃС‚Р°РІРєРµ
           if !Empty(cIdRateN)
             lRet := .F.
             if !LookUpSeek("SPR_NDS","TAG_OPER",@lRet,cIdRateN,"nds",@nNds)
@@ -4906,29 +4906,29 @@ Local j
           endif
          if Empty(cIdRateN)
            if !CheckIdRateForRate(,(tbStr)->NDS,@cIdRateN,,"2",(tbStr)->NONDS)
-             messagebox(" Не удалось получить идентификатор ставки для НДС!",TITLEAPP,48)
+             messagebox(" РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚Р°РІРєРё РґР»СЏ РќР”РЎ!",TITLEAPP,48)
              Break(.F.)
            endif
          endif
        endif
        if Empty(cIdRateN)
-         messagebox(" Не удалось получить идентификатор ставки для НДС!",TITLEAPP,48)
+         messagebox(" РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚Р°РІРєРё РґР»СЏ РќР”РЎ!",TITLEAPP,48)
          Break(.F.)
        endif
 
  //////////////////////////////////
 
 
-     // Получаем идентификатор ставки для акциза
+     // РџРѕР»СѓС‡Р°РµРј РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚Р°РІРєРё РґР»СЏ Р°РєС†РёР·Р°
        cIdRateA := ""
        //TaxId := ""
        if !Empty((tbStr)->SUM_ACZ)
-         // Получаем идентификатор Акциза
+         // РџРѕР»СѓС‡Р°РµРј РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РђРєС†РёР·Р°
          if !CheckIdRateForRate(,(tbStr)->PA,@cIdRateA,,"1")
-           messagebox(" Не удалось получить идентификатор ставки для Акциза!",TITLEAPP,48)
+           messagebox(" РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚Р°РІРєРё РґР»СЏ РђРєС†РёР·Р°!",TITLEAPP,48)
            Break(.F.)
          endif
-         //28296 pg идентификатора акциза с 0 ставкой может не  быть
+         //28296 pg РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° Р°РєС†РёР·Р° СЃ 0 СЃС‚Р°РІРєРѕР№ РјРѕР¶РµС‚ РЅРµ  Р±С‹С‚СЊ
          if Empty(cIdRateA) .And. !Empty((tbStr)->PA)
            if !CreateApRate((tbStr)->PA,@cIdRateA)
              Break(.F.)
@@ -4942,7 +4942,7 @@ Local j
          if !lRet
            Break(.F.)
          endif
-         // получаем идентификатор ставки по ставке
+         // РїРѕР»СѓС‡Р°РµРј РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚Р°РІРєРё РїРѕ СЃС‚Р°РІРєРµ
          cKey := TaxId + str(tbStr:PA,19,5)
          lRet := .F.
          if !LookUpSeek("SPR_NDS","TAG_IDNDS",@lRet,cKey,"NNOPER",@cIdRateA)
@@ -4950,21 +4950,21 @@ Local j
          endif
          if !lRet
            cIdRateA := ""
-           // Если не нашли ставку - создаем акциз
+           // Р•СЃР»Рё РЅРµ РЅР°С€Р»Рё СЃС‚Р°РІРєСѓ - СЃРѕР·РґР°РµРј Р°РєС†РёР·
            if !CreateApRate(tbStr:PA,@cIdRateA)
              Break(.F.)
            endif
          endif
          */
        endif
-       // Для передачи на консигнацию - проверяем на возврат
-       // при обработке не групповых с-ф
+       // Р”Р»СЏ РїРµСЂРµРґР°С‡Рё РЅР° РєРѕРЅСЃРёРіРЅР°С†РёСЋ - РїСЂРѕРІРµСЂСЏРµРј РЅР° РІРѕР·РІСЂР°С‚
+       // РїСЂРё РѕР±СЂР°Р±РѕС‚РєРµ РЅРµ РіСЂСѓРїРїРѕРІС‹С… СЃ-С„
        //nKolOsn := (tbStr)->KOL
        if (tbStr)->Vid == "2" .And. (tbStr)->Type == "3" .And. !::mGroupSf
          if (tbStr)->Kol2 > 0 .And. !lVozvratMsg
            lVozvratMsg := .T.
-           cMsg := "По накладной №" + (tbStr)->numdoc + " от " +  DTOC((tbStr)->date) + "был возврат." + chr(13) + chr(10)
-           cMsg += "Сформировать счет-фактуру с учетом возврата?"
+           cMsg := "РџРѕ РЅР°РєР»Р°РґРЅРѕР№ в„–" + (tbStr)->numdoc + " РѕС‚ " +  DTOC((tbStr)->date) + "Р±С‹Р» РІРѕР·РІСЂР°С‚." + chr(13) + chr(10)
+           cMsg += "РЎС„РѕСЂРјРёСЂРѕРІР°С‚СЊ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ СЃ СѓС‡РµС‚РѕРј РІРѕР·РІСЂР°С‚Р°?"
            n := messagebox(cMsg,TITLEAPP,36)
            if n == 6
              lVozvrat := .T.
@@ -4982,14 +4982,14 @@ Local j
          nVozOsn := 0
          nVoz := 0
        endif
-       // Для закупки проверяем брак и недостачу
+       // Р”Р»СЏ Р·Р°РєСѓРїРєРё РїСЂРѕРІРµСЂСЏРµРј Р±СЂР°Рє Рё РЅРµРґРѕСЃС‚Р°С‡Сѓ
        if (tbStr)->Vid == "1"
          nBrOsn :=  (tbStr)->kolned + (tbStr)->kolbr
          nBr    := nBrOsn
-         if !(nBrOsn == 0)//nBrOsn > 0 //есть брак или недостача
-         //пересчитаем количество в ед измерения документа
+         if !(nBrOsn == 0)//nBrOsn > 0 //РµСЃС‚СЊ Р±СЂР°Рє РёР»Рё РЅРµРґРѕСЃС‚Р°С‡Р°
+         //РїРµСЂРµСЃС‡РёС‚Р°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ РІ РµРґ РёР·РјРµСЂРµРЅРёСЏ РґРѕРєСѓРјРµРЅС‚Р°
            if (cMLabel)->(DbSeek(Upper((tbStr)->GRUP+(tbStr)->NNUM)))
-             if !((tbStr)->ED1 == (cMLabel)->ED) //Документ не в основных ед
+             if !((tbStr)->ED1 == (cMLabel)->ED) //Р”РѕРєСѓРјРµРЅС‚ РЅРµ РІ РѕСЃРЅРѕРІРЅС‹С… РµРґ
                 nBr := Calc_KolFromEd((tbStr)->grup,;
                                       (tbStr)->nnum,;
                                        nBrOsn,;
@@ -5003,15 +5003,15 @@ Local j
          endif
        endif
 
-                   //          1               добавлена аналитика
+                   //          1               РґРѕР±Р°РІР»РµРЅР° Р°РЅР°Р»РёС‚РёРєР°
        aadd(aRecOneDoc,{(tbStr)->GRUP + (tbStr)->NNUM + (tbStr)->MDIM + (tbStr)->PARTIA + (tbStr)->ED1 + str((tbStr)->cenaout,19,8) +  if(tbL_NDS,"1","0")+if(tbL_ACZ,if((tbStr)->SUM_ACZ=0,"0","1"),"0") ,;
               ; // 2             3           4
               (tbStr)->GRUP,(tbStr)->NNUM,(tbStr)->PARTIA, ;
-              ; // 5              6              7 - для валютной С-Ф - берем сумму в валюте д-та
+              ; // 5              6              7 - РґР»СЏ РІР°Р»СЋС‚РЅРѕР№ РЎ-Р¤ - Р±РµСЂРµРј СЃСѓРјРјСѓ РІ РІР°Р»СЋС‚Рµ Рґ-С‚Р°
               (tbStr)->ED1,{(tbStr)->KOLOUT,(tbStr)->KOL}, iif(lValuta,(tbStr)->SUMOUTR / nRate ,(tbStr)->SUMOUTR),;
-               ; //  8 для валютной С-Ф сумму налогов пересчитываем в валюту С-Ф  9
+               ; //  8 РґР»СЏ РІР°Р»СЋС‚РЅРѕР№ РЎ-Р¤ СЃСѓРјРјСѓ РЅР°Р»РѕРіРѕРІ РїРµСЂРµСЃС‡РёС‚С‹РІР°РµРј РІ РІР°Р»СЋС‚Сѓ РЎ-Р¤  9
               iif(lValuta,(tbStr)->SUM_NDS / nRate,(tbStr)->SUM_NDS),iif(lValuta,(tbStr)->SUM_ACZ / nRate,(tbStr)->SUM_ACZ),;
-              ;//10 Д-нт,  Строка д-та  //работаем от RecNo
+              ;//10 Р”-РЅС‚,  РЎС‚СЂРѕРєР° Рґ-С‚Р°  //СЂР°Р±РѕС‚Р°РµРј РѕС‚ RecNo
               {{nRecNo,(tbStr)->(RecNo()),(tbStr)->nnoperm, nStr}},; //{{nRecNo,tbStr:NUMSTR}},;nnoperm
               ; // 11       12
               (tbStr)->NDS,(tbStr)->PA,;
@@ -5023,29 +5023,29 @@ Local j
               nSumNNDS,nSumNDS,nSumA ,;
               ;// 25              26
               (tbStr)->R,iif(lValuta,(tbStr)->CENAOUT,(tbStr)->CENAOUT * nRate)*::mMultyStorno,;
-              ;// 27        28         29        30            31 недостача + брак,32 - возврат ,33 - ндс в цене акциз в цене
+              ;// 27        28         29        30            31 РЅРµРґРѕСЃС‚Р°С‡Р° + Р±СЂР°Рє,32 - РІРѕР·РІСЂР°С‚ ,33 - РЅРґСЃ РІ С†РµРЅРµ Р°РєС†РёР· РІ С†РµРЅРµ
               (tbStr)->VID,cIdRateA,cIdRateN,(tbStr)->MDIM,{nBr,nBrOsn},{nVoz,nVozOsn},{tbL_NDS,tbL_ACZ} })  //tbStr:Oper_Nds })  //
      case cStrType == "4"
        lRet := .F.
        nRateN := 0
-       if !Empty((tbStr)->Oper_Nds) // по идентификатору - получаем ставку
+       if !Empty((tbStr)->Oper_Nds) // РїРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ - РїРѕР»СѓС‡Р°РµРј СЃС‚Р°РІРєСѓ
          if !LookUpSeek("SPR_NDS.Dbf","TAG_OPER",@lRet,(tbStr)->Oper_Nds,"nds",@nRateN)
-           messagebox(" Не удалось получить значение ставки для НДС!",TITLEAPP,48)
+           messagebox(" РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ Р·РЅР°С‡РµРЅРёРµ СЃС‚Р°РІРєРё РґР»СЏ РќР”РЎ!",TITLEAPP,48)
            Break(.F.)
          endif
          if !lRet
-           messagebox(" Не удалось получить значение ставки для НДС!",TITLEAPP,48)
+           messagebox(" РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ Р·РЅР°С‡РµРЅРёРµ СЃС‚Р°РІРєРё РґР»СЏ РќР”РЎ!",TITLEAPP,48)
            Break(.F.)
          endif
        endif            //          1
        aadd(aRecOneDoc,{(tbStr)->GRUP + (tbStr)->NNUM + str((tbStr)->CENA)+  if(tbL_NDS,"1","0")+if(tbL_ACZ,if((tbStr)->SUM_ACZ=0,"0","1"),"0"), ;
               ; // 2               3      4
               (tbStr)->GRUP,(tbStr)->NNUM,"", ;
-              ; // 5   6          7 - для валютной С-Ф - берем сумму в валюте д-та
+              ; // 5   6          7 - РґР»СЏ РІР°Р»СЋС‚РЅРѕР№ РЎ-Р¤ - Р±РµСЂРµРј СЃСѓРјРјСѓ РІ РІР°Р»СЋС‚Рµ Рґ-С‚Р°
                "",{(tbStr)->KOL,(tbStr)->KOL}, iif(lValuta,(tbStr)->SUMMA / nRate,(tbStr)->SUMMA),;
-              ; //  8 для валютной С-Ф сумму налогов пересчитываем в валюту С-Ф 9
+              ; //  8 РґР»СЏ РІР°Р»СЋС‚РЅРѕР№ РЎ-Р¤ СЃСѓРјРјСѓ РЅР°Р»РѕРіРѕРІ РїРµСЂРµСЃС‡РёС‚С‹РІР°РµРј РІ РІР°Р»СЋС‚Сѓ РЎ-Р¤ 9
               iif(lValuta,(tbStr)->SUM_NDS / nRate,(tbStr)->SUM_NDS),0,;
-              ;//10 Д-нт,  Строка д-та
+              ;//10 Р”-РЅС‚,  РЎС‚СЂРѕРєР° Рґ-С‚Р°
               {{nRecNo,(tbStr)->(RecNo()),(tbStr)->NNOPER,nStr}},; //{{nRecNo,tbStr:NNOPER}},;
               ; //11       12
                 nRateN,0,;
@@ -5055,7 +5055,7 @@ Local j
               nRateN,nTaxSumN,nTaxSumBaseN,nTaxSumBaseNN,nBaseS,;
               ;//  22    23      24
               nSumNNDS,nSumNDS,nSumA ,;
-              ;// 25                           26                                27    28      29               30 31 - брак + недостача,32 - возврат,33 - ндс в цене, акциз в цене
+              ;// 25                           26                                27    28      29               30 31 - Р±СЂР°Рє + РЅРµРґРѕСЃС‚Р°С‡Р°,32 - РІРѕР·РІСЂР°С‚,33 - РЅРґСЃ РІ С†РµРЅРµ, Р°РєС†РёР· РІ С†РµРЅРµ
                1,iif(lValuta,(tbStr)->CENA,(tbStr)->CENA * nRate)*::mMultyStorno,"",cIdRateA,(tbStr)->Oper_Nds,"",{0,0},{0,0},{tbL_NDS,tbL_ACZ} }) //
    endcase
    //(tbStr)->(DbSkip(1))
@@ -5068,7 +5068,7 @@ Local j
    next
    aRecSort := ASort(aRecOneDoc,,,{|aX,aY|aX[1] < aY[1]})
    if !lMul
-   // Если документ один - пробуем сохранить порядок ввода документа
+   // Р•СЃР»Рё РґРѕРєСѓРјРµРЅС‚ РѕРґРёРЅ - РїСЂРѕР±СѓРµРј СЃРѕС…СЂР°РЅРёС‚СЊ РїРѕСЂСЏРґРѕРє РІРІРѕРґР° РґРѕРєСѓРјРµРЅС‚Р°
      cKey := ""
      lGroup := .F.
      for i := 1 to len(aRecSort)
@@ -5124,7 +5124,7 @@ Local j
    aRecSortSum := aRecSort
    aRecSort := {}
  //endif
- // рассчитываем налоги по строкам
+ // СЂР°СЃСЃС‡РёС‚С‹РІР°РµРј РЅР°Р»РѕРіРё РїРѕ СЃС‚СЂРѕРєР°Рј
  for n := 1 to  len(aRecSortSum)
  nBaseN := 0
  nTaxN := 0
@@ -5145,14 +5145,14 @@ Local j
  nSumNDS := 0
  nSumA := 0
 
- //Сумма по строке
+ //РЎСѓРјРјР° РїРѕ СЃС‚СЂРѕРєРµ
  nSumOut := aRecSortSum[n][7] //tbStr:SUMOUTR
  nSumOut :=  BS_ROUND(nSumOut,::mRound/*(DIC_VALUTA)->ACCURACY*/)
 
- // - если в документе ставка НДС ненулевая и сумма ненулевая - НДС в счете-фактуре переносим из документа
- // - если в документе ставка НДС ненулевая и сумма нулевая - НДС считаем по ставке
- // - если в документе ставка нулевая - в счете-фактуре считаем по ставке, не глядя на сумму НДС
- //  28059 нужно сделать как можно срочнее  . клиенту решено отдать dll ну во первых утверждение 2 и 3 не верно. Всегда переносим из документа.
+ // - РµСЃР»Рё РІ РґРѕРєСѓРјРµРЅС‚Рµ СЃС‚Р°РІРєР° РќР”РЎ РЅРµРЅСѓР»РµРІР°СЏ Рё СЃСѓРјРјР° РЅРµРЅСѓР»РµРІР°СЏ - РќР”РЎ РІ СЃС‡РµС‚Рµ-С„Р°РєС‚СѓСЂРµ РїРµСЂРµРЅРѕСЃРёРј РёР· РґРѕРєСѓРјРµРЅС‚Р°
+ // - РµСЃР»Рё РІ РґРѕРєСѓРјРµРЅС‚Рµ СЃС‚Р°РІРєР° РќР”РЎ РЅРµРЅСѓР»РµРІР°СЏ Рё СЃСѓРјРјР° РЅСѓР»РµРІР°СЏ - РќР”РЎ СЃС‡РёС‚Р°РµРј РїРѕ СЃС‚Р°РІРєРµ
+ // - РµСЃР»Рё РІ РґРѕРєСѓРјРµРЅС‚Рµ СЃС‚Р°РІРєР° РЅСѓР»РµРІР°СЏ - РІ СЃС‡РµС‚Рµ-С„Р°РєС‚СѓСЂРµ СЃС‡РёС‚Р°РµРј РїРѕ СЃС‚Р°РІРєРµ, РЅРµ РіР»СЏРґСЏ РЅР° СЃСѓРјРјСѓ РќР”РЎ
+ //  28059 РЅСѓР¶РЅРѕ СЃРґРµР»Р°С‚СЊ РєР°Рє РјРѕР¶РЅРѕ СЃСЂРѕС‡РЅРµРµВ  . РєР»РёРµРЅС‚Сѓ СЂРµС€РµРЅРѕ РѕС‚РґР°С‚СЊ dll РЅСѓ РІРѕ РїРµСЂРІС‹С… СѓС‚РІРµСЂР¶РґРµРЅРёРµ 2 Рё 3 РЅРµ РІРµСЂРЅРѕ. Р’СЃРµРіРґР° РїРµСЂРµРЅРѕСЃРёРј РёР· РґРѕРєСѓРјРµРЅС‚Р°.
  if tbL_NDS
 
    nTaxN := aRecSortSum[n][8]
@@ -5160,9 +5160,9 @@ Local j
    nBaseN := nSumOut - nTaxN
    if !(cStrType == "4")
      if tbL_ACZ
-      //  если НДС в цене - базовая сумма без суммы НДС
+      //  РµСЃР»Рё РќР”РЎ РІ С†РµРЅРµ - Р±Р°Р·РѕРІР°СЏ СЃСѓРјРјР° Р±РµР· СЃСѓРјРјС‹ РќР”РЎ
 
-       // 28296 pg ставки у акциза может не быть
+       // 28296 pg СЃС‚Р°РІРєРё Сѓ Р°РєС†РёР·Р° РјРѕР¶РµС‚ РЅРµ Р±С‹С‚СЊ
        if !Empty(aRecSortSum[n][9])
          nTaxA := aRecSortSum[n][9]
        elseif Empty(aRecSortSum[n][9]) //.And. !Empty(aRecSortSum[n][12])
@@ -5234,47 +5234,47 @@ Local j
   for i := 1 to len(aModStr)
     mTax := 0
     do case //&&&&
-      case ((Alltrim(aModStr[i][_SYSNUM]) == "1")  .And. !(cStrType == "4"))// Акциз//((Alltrim(::objModStr:TAX_TP:SYS_NUM) == "1")  .And. !(cStrType == "4"))// Акциз
+      case ((Alltrim(aModStr[i][_SYSNUM]) == "1")  .And. !(cStrType == "4"))// РђРєС†РёР·//((Alltrim(::objModStr:TAX_TP:SYS_NUM) == "1")  .And. !(cStrType == "4"))// РђРєС†РёР·
          nRateA := aRecSortSum[n][12]
          nTaxSumA := nTaxA  * ::mMultyStorno
          mTax := nTaxSumA
          //48804
          if (aModStr[i][_SUMUSE] == "2")
-         //Налоговая модель применяется к полю Стоимость с НДС (SUM_USE=2) Это значит - у нас НДС извлекается; акциз извлекается
+         //РќР°Р»РѕРіРѕРІР°СЏ РјРѕРґРµР»СЊ РїСЂРёРјРµРЅСЏРµС‚СЃСЏ Рє РїРѕР»СЋ РЎС‚РѕРёРјРѕСЃС‚СЊ СЃ РќР”РЎ (SUM_USE=2) Р­С‚Рѕ Р·РЅР°С‡РёС‚ - Сѓ РЅР°СЃ РќР”РЎ РёР·РІР»РµРєР°РµС‚СЃСЏ; Р°РєС†РёР· РёР·РІР»РµРєР°РµС‚СЃСЏ
            if tbL_ACZ .And. tbL_NDS
-           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR - MDOCM.SUM_NDS если MDOC. L_ACZ= true(входит) и MDOC. L_NDS=true(входит)
+           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR - MDOCM.SUM_NDS РµСЃР»Рё MDOC. L_ACZ= true(РІС…РѕРґРёС‚) Рё MDOC. L_NDS=true(РІС…РѕРґРёС‚)
              nTaxSumBaseA := nSumOut - nTaxN  * ::mMultyStorno
            elseif tbL_ACZ .And. !tbL_NDS
-           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR если MDOC. L_ACZ= true(входит) и MDOC. L_NDS=true(не входит)
+           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR РµСЃР»Рё MDOC. L_ACZ= true(РІС…РѕРґРёС‚) Рё MDOC. L_NDS=true(РЅРµ РІС…РѕРґРёС‚)
              nTaxSumBaseA := nSumOut
            elseif !tbL_ACZ .And. !tbL_NDS
-           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR + MDOCM.SUM_ACZ если MDOC. L_ACZ= true( не входит) и MDOC. L_NDS=true(не входит)
+           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR + MDOCM.SUM_ACZ РµСЃР»Рё MDOC. L_ACZ= true( РЅРµ РІС…РѕРґРёС‚) Рё MDOC. L_NDS=true(РЅРµ РІС…РѕРґРёС‚)
              nTaxSumBaseA := nSumOut +  nTaxSumA
            endif
          else
-         //Налоговая модель применяется к полю Стоимость (SUM_USE=1) Это значит у нас НДС начисляется; акциз извлекается
+         //РќР°Р»РѕРіРѕРІР°СЏ РјРѕРґРµР»СЊ РїСЂРёРјРµРЅСЏРµС‚СЃСЏ Рє РїРѕР»СЋ РЎС‚РѕРёРјРѕСЃС‚СЊ (SUM_USE=1) Р­С‚Рѕ Р·РЅР°С‡РёС‚ Сѓ РЅР°СЃ РќР”РЎ РЅР°С‡РёСЃР»СЏРµС‚СЃСЏ; Р°РєС†РёР· РёР·РІР»РµРєР°РµС‚СЃСЏ
            if tbL_ACZ .And. tbL_NDS
-           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR - MDOCM.SUM_NDS если MDOC. L_ACZ= true(входит) и MDOC. L_NDS=true(входит)
+           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR - MDOCM.SUM_NDS РµСЃР»Рё MDOC. L_ACZ= true(РІС…РѕРґРёС‚) Рё MDOC. L_NDS=true(РІС…РѕРґРёС‚)
              nTaxSumBaseA := nSumOut - nTaxN  * ::mMultyStorno
            elseif tbL_ACZ .And. !tbL_NDS
-           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR если MDOC. L_ACZ= true(входит) и MDOC. L_NDS=true(не входит)
+           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR РµСЃР»Рё MDOC. L_ACZ= true(РІС…РѕРґРёС‚) Рё MDOC. L_NDS=true(РЅРµ РІС…РѕРґРёС‚)
              nTaxSumBaseA := nSumOut
            elseif !tbL_ACZ .And. !tbL_NDS
-           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR + MDOCM.SUM_ACZ если MDOC. L_ACZ= true( не входит) и MDOC. L_NDS=true(не входит)
+           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR + MDOCM.SUM_ACZ РµСЃР»Рё MDOC. L_ACZ= true( РЅРµ РІС…РѕРґРёС‚) Рё MDOC. L_NDS=true(РЅРµ РІС…РѕРґРёС‚)
              nTaxSumBaseA := nSumOut +  nTaxSumA
            endif
          endif
          /*
-         if tbL_ACZ // в документе налог в том числе
+         if tbL_ACZ // РІ РґРѕРєСѓРјРµРЅС‚Рµ РЅР°Р»РѕРі РІ С‚РѕРј С‡РёСЃР»Рµ
          //nBaseN := nSumOut - nTaxN
-           if aModStr[i][_CALCRL] // Налог извлекатся
+           if aModStr[i][_CALCRL] // РќР°Р»РѕРі РёР·РІР»РµРєР°С‚СЃСЏ
              nTaxSumBaseA := nBaseA * ::mMultyStorno + nTaxSumA
            else
              nTaxSumBaseA := nBaseA * ::mMultyStorno
            endif
-         else //кроме того
+         else //РєСЂРѕРјРµ С‚РѕРіРѕ
          //nBaseN := nSumOut
-           if aModStr[i][_CALCRL] // Налог извлекатся
+           if aModStr[i][_CALCRL] // РќР°Р»РѕРі РёР·РІР»РµРєР°С‚СЃСЏ
              nTaxSumBaseA := nBaseA * ::mMultyStorno + nTaxSumA
            else
              nTaxSumBaseA := nBaseA * ::mMultyStorno
@@ -5282,12 +5282,12 @@ Local j
          endif
          */
          /*
-         if !aModStr[i][_CALCRL] .And. !tbL_ACZ//начисляется
-           // соответствует налоговой модели С-Ф к сумму без налога + налог
+         if !aModStr[i][_CALCRL] .And. !tbL_ACZ//РЅР°С‡РёСЃР»СЏРµС‚СЃСЏ
+           // СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ РЅР°Р»РѕРіРѕРІРѕР№ РјРѕРґРµР»Рё РЎ-Р¤ Рє СЃСѓРјРјСѓ Р±РµР· РЅР°Р»РѕРіР° + РЅР°Р»РѕРі
 
               nTaxSumBaseA := nBaseA * ::mMultyStorno + nTaxSumA
 
-         else //извлекается
+         else //РёР·РІР»РµРєР°РµС‚СЃСЏ
             nTaxSumBaseA := nBaseA * ::mMultyStorno
 
          endif
@@ -5298,54 +5298,54 @@ Local j
          endif
          */
 
-      // для НДС привести суммы в соответствие с налоговой моделью
-      case Alltrim(aModStr[i][_SYSNUM]) == "2"//Alltrim(::objModStr:TAX_TP:SYS_NUM) == "2" // НДС
+      // РґР»СЏ РќР”РЎ РїСЂРёРІРµСЃС‚Рё СЃСѓРјРјС‹ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРµ СЃ РЅР°Р»РѕРіРѕРІРѕР№ РјРѕРґРµР»СЊСЋ
+      case Alltrim(aModStr[i][_SYSNUM]) == "2"//Alltrim(::objModStr:TAX_TP:SYS_NUM) == "2" // РќР”РЎ
          nRateN := aRecSortSum[n][11]
          nTaxSumN := nTaxN  * ::mMultyStorno
          mTax := nTaxSumN
          //48804
          if (aModStr[i][_SUMUSE] == "2")
-         //Налоговая модель применяется к полю Стоимость с НДС (SUM_USE=2) Это значит - у нас НДС извлекается; акциз извлекается
+         //РќР°Р»РѕРіРѕРІР°СЏ РјРѕРґРµР»СЊ РїСЂРёРјРµРЅСЏРµС‚СЃСЏ Рє РїРѕР»СЋ РЎС‚РѕРёРјРѕСЃС‚СЊ СЃ РќР”РЎ (SUM_USE=2) Р­С‚Рѕ Р·РЅР°С‡РёС‚ - Сѓ РЅР°СЃ РќР”РЎ РёР·РІР»РµРєР°РµС‚СЃСЏ; Р°РєС†РёР· РёР·РІР»РµРєР°РµС‚СЃСЏ
            if tbL_ACZ .And. tbL_NDS
-           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR если MDOC. L_ACZ= true(входит) и MDOC. L_NDS=true(входит)
+           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR РµСЃР»Рё MDOC. L_ACZ= true(РІС…РѕРґРёС‚) Рё MDOC. L_NDS=true(РІС…РѕРґРёС‚)
              nTaxSumBaseN := nSumOut
            elseif tbL_ACZ .And. !tbL_NDS
-           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR + MDOCM.SUM_NDS если MDOC. L_ACZ= true(входит) и MDOC. L_NDS=true(не входит)
+           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR + MDOCM.SUM_NDS РµСЃР»Рё MDOC. L_ACZ= true(РІС…РѕРґРёС‚) Рё MDOC. L_NDS=true(РЅРµ РІС…РѕРґРёС‚)
              nTaxSumBaseN := nSumOut + nTaxSumN
            elseif !tbL_ACZ .And. !tbL_NDS
-           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR + MDOCM.SUM_ACZ + MDOCM.SUM_NDS если MDOC. L_ACZ= true( не входит) и MDOC. L_NDS=true(не входит)
+           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR + MDOCM.SUM_ACZ + MDOCM.SUM_NDS РµСЃР»Рё MDOC. L_ACZ= true( РЅРµ РІС…РѕРґРёС‚) Рё MDOC. L_NDS=true(РЅРµ РІС…РѕРґРёС‚)
              nTaxSumBaseN := nSumOut + nTaxSumN + nTaxA  * ::mMultyStorno
            elseif !tbL_ACZ .And. tbL_NDS
-           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR если MDOC. L_ACZ= false( не входит) и MDOC. L_NDS=true(входит) - это значит АКЦИЗА в модели склада НЕТ
+           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR РµСЃР»Рё MDOC. L_ACZ= false( РЅРµ РІС…РѕРґРёС‚) Рё MDOC. L_NDS=true(РІС…РѕРґРёС‚) - СЌС‚Рѕ Р·РЅР°С‡РёС‚ РђРљР¦РР—Рђ РІ РјРѕРґРµР»Рё СЃРєР»Р°РґР° РќР•Рў
              nTaxSumBaseN := nSumOut
            endif
          else
-         //Налоговая модель применяется к полю Стоимость (SUM_USE=1) Это значит у нас НДС начисляется; акциз извлекается
+         //РќР°Р»РѕРіРѕРІР°СЏ РјРѕРґРµР»СЊ РїСЂРёРјРµРЅСЏРµС‚СЃСЏ Рє РїРѕР»СЋ РЎС‚РѕРёРјРѕСЃС‚СЊ (SUM_USE=1) Р­С‚Рѕ Р·РЅР°С‡РёС‚ Сѓ РЅР°СЃ РќР”РЎ РЅР°С‡РёСЃР»СЏРµС‚СЃСЏ; Р°РєС†РёР· РёР·РІР»РµРєР°РµС‚СЃСЏ
            if tbL_ACZ .And. tbL_NDS
-           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR - MDOCM.SUM_NDS если MDOC. L_ACZ= true(входит) и MDOC. L_NDS=true(входит)
+           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR - MDOCM.SUM_NDS РµСЃР»Рё MDOC. L_ACZ= true(РІС…РѕРґРёС‚) Рё MDOC. L_NDS=true(РІС…РѕРґРёС‚)
              nTaxSumBaseN := nSumOut - nTaxSumN
            elseif tbL_ACZ .And. !tbL_NDS
-           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR если MDOC. L_ACZ= true(входит) и MDOC. L_NDS=true(не входит)
+           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR РµСЃР»Рё MDOC. L_ACZ= true(РІС…РѕРґРёС‚) Рё MDOC. L_NDS=true(РЅРµ РІС…РѕРґРёС‚)
              nTaxSumBaseN := nSumOut
            elseif !tbL_ACZ .And. !tbL_NDS
-           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR + MDOCM.SUM_ACZ если MDOC. L_ACZ= true( не входит) и MDOC. L_NDS=true(не входит)
+           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR + MDOCM.SUM_ACZ РµСЃР»Рё MDOC. L_ACZ= true( РЅРµ РІС…РѕРґРёС‚) Рё MDOC. L_NDS=true(РЅРµ РІС…РѕРґРёС‚)
              nTaxSumBaseN := nSumOut + nTaxA  * ::mMultyStorno
            elseif !tbL_ACZ .And. tbL_NDS
-           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR - MDOCM.SUM_NDS если MDOC. L_ACZ= false( не входит) и MDOC. L_NDS=true(входит) - это значит АКЦИЗА в модели склада НЕТ
+           //TAX_SUM.TAX_BASE= MDOCM.SUMOUTR - MDOCM.SUM_NDS РµСЃР»Рё MDOC. L_ACZ= false( РЅРµ РІС…РѕРґРёС‚) Рё MDOC. L_NDS=true(РІС…РѕРґРёС‚) - СЌС‚Рѕ Р·РЅР°С‡РёС‚ РђРљР¦РР—Рђ РІ РјРѕРґРµР»Рё СЃРєР»Р°РґР° РќР•Рў
              nTaxSumBaseN := nSumOut - nTaxSumN
            endif
          endif
          /*
-         if tbL_NDS // в документе НДС в том числе
+         if tbL_NDS // РІ РґРѕРєСѓРјРµРЅС‚Рµ РќР”РЎ РІ С‚РѕРј С‡РёСЃР»Рµ
          //nBaseN := nSumOut - nTaxN
-           if aModStr[i][_CALCRL] // Налог извлекатся
+           if aModStr[i][_CALCRL] // РќР°Р»РѕРі РёР·РІР»РµРєР°С‚СЃСЏ
              nTaxSumBaseN := nBaseN * ::mMultyStorno + nTaxSumN
            else
              nTaxSumBaseN := nBaseN
            endif
-         else //кроме того
+         else //РєСЂРѕРјРµ С‚РѕРіРѕ
          //nBaseN := nSumOut
-           if aModStr[i][_CALCRL] // Налог извлекатся
+           if aModStr[i][_CALCRL] // РќР°Р»РѕРі РёР·РІР»РµРєР°С‚СЃСЏ
              nTaxSumBaseN := nBaseN * ::mMultyStorno + nTaxSumN
            else
              nTaxSumBaseN := nBaseN
@@ -5353,10 +5353,10 @@ Local j
          endif
          */
          /*
-         if !aModStr[i][_CALCRL] .And. !tbL_NDS // начисляется
-           // соответствует налоговой модели С-Ф к сумму без налога + налог
+         if !aModStr[i][_CALCRL] .And. !tbL_NDS // РЅР°С‡РёСЃР»СЏРµС‚СЃСЏ
+           // СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ РЅР°Р»РѕРіРѕРІРѕР№ РјРѕРґРµР»Рё РЎ-Р¤ Рє СЃСѓРјРјСѓ Р±РµР· РЅР°Р»РѕРіР° + РЅР°Р»РѕРі
            nTaxSumBaseN := nBaseN * ::mMultyStorno
-         else //извлекается
+         else //РёР·РІР»РµРєР°РµС‚СЃСЏ
             nTaxSumBaseN := nBaseN * ::mMultyStorno + nTaxSumN
          endif
           */
@@ -5387,7 +5387,7 @@ Local j
         endif
       endif
 
-    else  //от стоимости
+    else  //РѕС‚ СЃС‚РѕРёРјРѕСЃС‚Рё
       if tbL_NDS
         if !aModStr[i][_CALCRL]
           nSumNNds := nSumNNds - mTax
@@ -5440,19 +5440,19 @@ Local j
   //48804
   if tbL_ACZ .And. tbL_NDS
   // TAX_STR.SUM_NNDS= MDOCM.SUMOUTR - MDOCM.SUM_NDS
-  // если MDOC. L_ACZ =true(входит) и MDOC.L_NDS=true (входит)
+  // РµСЃР»Рё MDOC. L_ACZ =true(РІС…РѕРґРёС‚) Рё MDOC.L_NDS=true (РІС…РѕРґРёС‚)
     nSumNNDS := nSumOut - nSumNDS
   elseif tbL_ACZ .And. !tbL_NDS
   // TAX_STR.SUM_NNDS= MDOCM.SUMOUTR
-  // если MDOC. L_ACZ =true(входит) MDOC. L_NDS=false ( не входит)
+  // РµСЃР»Рё MDOC. L_ACZ =true(РІС…РѕРґРёС‚) MDOC. L_NDS=false ( РЅРµ РІС…РѕРґРёС‚)
     nSumNNDS := nSumOut
   elseif !tbL_ACZ .And. !tbL_NDS
   // TAX_STR.SUM_NNDS= MDOCM.SUMOUTR + MDOCM.SUM_ACZ
-  // если MDOC. L_ACZ =false( не входит) MDOC. L_NDS= false(не входит)
+  // РµСЃР»Рё MDOC. L_ACZ =false( РЅРµ РІС…РѕРґРёС‚) MDOC. L_NDS= false(РЅРµ РІС…РѕРґРёС‚)
     nSumNNDS :=  nSumOut + nTaxSumA
   elseif !tbL_ACZ .And. tbL_NDS
   //TAX_STR.SUM_NNDS= MDOCM.SUMOUTR - MDOCM.SUM_NDS
-  // если MDOC. L_ACZ =false(не входит) и MDOC. L_NDS=true(входит)  это значит акциза НЕТ
+  // РµСЃР»Рё MDOC. L_ACZ =false(РЅРµ РІС…РѕРґРёС‚) Рё MDOC. L_NDS=true(РІС…РѕРґРёС‚)  СЌС‚Рѕ Р·РЅР°С‡РёС‚ Р°РєС†РёР·Р° РќР•Рў
     nSumNNDS := nSumOut - nSumNDS
   endif
   nSumA := nSumNNDS + nSumNDS
@@ -5469,9 +5469,9 @@ Local j
   aRecSortSum[n][22] := nSumNNDS
   aRecSortSum[n][23] := nSumNDS
   aRecSortSum[n][24] := nSumA
-  // цена приведенная к  налоговой модели nBaseS / aRecSortSum[n][6] - к-во
-  //aRecSortSum[n][1] :=  aRecSortSum[n][1] +  str((nBaseS / aRecSortSum[n][6][1]),19,8) + str(nRateA,19,5) + str(nRateN,19,5) // добавляем в ключ - цену
- aRecSortSum[n][1] :=  aRecSortSum[n][1] +  str(nRateA,19,5) + str(nRateN,19,5) // добавляем в ключ налоги
+  // С†РµРЅР° РїСЂРёРІРµРґРµРЅРЅР°СЏ Рє  РЅР°Р»РѕРіРѕРІРѕР№ РјРѕРґРµР»Рё nBaseS / aRecSortSum[n][6] - Рє-РІРѕ
+  //aRecSortSum[n][1] :=  aRecSortSum[n][1] +  str((nBaseS / aRecSortSum[n][6][1]),19,8) + str(nRateA,19,5) + str(nRateN,19,5) // РґРѕР±Р°РІР»СЏРµРј РІ РєР»СЋС‡ - С†РµРЅСѓ
+ aRecSortSum[n][1] :=  aRecSortSum[n][1] +  str(nRateA,19,5) + str(nRateN,19,5) // РґРѕР±Р°РІР»СЏРµРј РІ РєР»СЋС‡ РЅР°Р»РѕРіРё
  next
 
  if lGroup//::mGroupSf
@@ -5493,10 +5493,10 @@ Local j
     lExit := .F.
     if cKey == a[i][1]
          nVozvrat := 1
-       //if aRec[n][6] <= 0 //  не от чего отнимать возвраты
+       //if aRec[n][6] <= 0 //  РЅРµ РѕС‚ С‡РµРіРѕ РѕС‚РЅРёРјР°С‚СЊ РІРѕР·РІСЂР°С‚С‹
          if (a[i][27] == "1" .AND. (::mAliasInv)->TI_CTG == "2") .Or. ;
             (a[i][27] == "2" .AND. (::mAliasInv)->TI_CTG == "1")
-           nVozvrat := -1  // возвраты отнимаем
+           nVozvrat := -1  // РІРѕР·РІСЂР°С‚С‹ РѕС‚РЅРёРјР°РµРј
            if aRec[n][6][1] <= 0
              lExit := .T.
            endif
@@ -5529,13 +5529,13 @@ Local j
        //endif
     else
       if (::mAliasInv)->TI_CTG == "1"
-         if a[i][27] == "1" .Or. cStrType == "4"// только документ возврата - его не обрабатываем
+         if a[i][27] == "1" .Or. cStrType == "4"// С‚РѕР»СЊРєРѕ РґРѕРєСѓРјРµРЅС‚ РІРѕР·РІСЂР°С‚Р° - РµРіРѕ РЅРµ РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј
            AADD(aRec,a[i])
            cKey := a[i][1]
            n:= n +1
          endif
       else
-         if a[i][27] == "2" .Or. cStrType == "4"// только документ возврата - его не обрабатываем
+         if a[i][27] == "2" .Or. cStrType == "4"// С‚РѕР»СЊРєРѕ РґРѕРєСѓРјРµРЅС‚ РІРѕР·РІСЂР°С‚Р° - РµРіРѕ РЅРµ РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј
            AADD(aRec,a[i])
            cKey := a[i][1]
            n:= n +1
@@ -5559,7 +5559,7 @@ Local j
  end sequence
 Return .T.
 ////////////////////////////
-//Регистрация корректировочных с-ф
+//Р РµРіРёСЃС‚СЂР°С†РёСЏ РєРѕСЂСЂРµРєС‚РёСЂРѕРІРѕС‡РЅС‹С… СЃ-С„
 /////////////////////////////
 Method clsTax_Inv:CreateKorrRecInBook()
   local oErr,RecTp := ""
@@ -5574,24 +5574,24 @@ Method clsTax_Inv:CreateKorrRecInBook()
       n++
     endif
 
-    cMsg := "По счету-фактуре можно сформировать "
+    cMsg := "РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ РјРѕР¶РЅРѕ СЃС„РѕСЂРјРёСЂРѕРІР°С‚СЊ "
     if n == 2
-       cMsg += "записи" + chr(13) + chr(10) + "в книгу покупок и в книгу продаж." + chr(13) + chr(10)
+       cMsg += "Р·Р°РїРёСЃРё" + chr(13) + chr(10) + "РІ РєРЅРёРіСѓ РїРѕРєСѓРїРѕРє Рё РІ РєРЅРёРіСѓ РїСЂРѕРґР°Р¶." + chr(13) + chr(10)
     elseif a[1]
       if ::TI_CTG == "1"
-        cMsg += "запис в книгу покупок." + chr(13) + chr(10)
+        cMsg += "Р·Р°РїРёСЃ РІ РєРЅРёРіСѓ РїРѕРєСѓРїРѕРє." + chr(13) + chr(10)
       else
-        cMsg += "запис в книгу продаж." + chr(13) + chr(10)
+        cMsg += "Р·Р°РїРёСЃ РІ РєРЅРёРіСѓ РїСЂРѕРґР°Р¶." + chr(13) + chr(10)
       endif
     else
       if ::TI_CTG == "1"
-        cMsg += "запис в книгу продаж." + chr(13) + chr(10)
+        cMsg += "Р·Р°РїРёСЃ РІ РєРЅРёРіСѓ РїСЂРѕРґР°Р¶." + chr(13) + chr(10)
       else
-        cMsg += "запис в книгу покупок." + chr(13) + chr(10)
+        cMsg += "Р·Р°РїРёСЃ РІ РєРЅРёРіСѓ РїРѕРєСѓРїРѕРє." + chr(13) + chr(10)
       endif
     endif
 
-   cMsg += "Сформировать?"
+   cMsg += "РЎС„РѕСЂРјРёСЂРѕРІР°С‚СЊ?"
    if !(messagebox(cMsg,TITLEAPP,36)== 6)
      ::mlReg := .F.
      Return .T.
@@ -5607,15 +5607,15 @@ Method clsTax_Inv:CreateKorrRecInBook()
     oObjBook:Open()
     if (::mAliasInv)->TI_CTG == "1"
       if i == 1
-        aParam := {0,"1","ОП"}
+        aParam := {0,"1","РћРџ"}
       else
-        aParam := {0,"2","ВС"}
+        aParam := {0,"2","Р’РЎ"}
       endif
     else
       if i == 1
-        aParam := {0,"2","ОТ"}
+        aParam := {0,"2","РћРў"}
       else
-        aParam := {0,"1","ВЧ"}
+        aParam := {0,"1","Р’Р§"}
       endif
     endif
     if !oObjBook:BeforeAppend(aParam)
@@ -5626,7 +5626,7 @@ Method clsTax_Inv:CreateKorrRecInBook()
     endif
     oObjBook:SF_ID := (::mAliasInv)->DOC_ID
     if !oObjBook:Save()
-    // Откроем форму книги
+    // РћС‚РєСЂРѕРµРј С„РѕСЂРјСѓ РєРЅРёРіРё
       if !StartFrmBook(oObjBook)
         oObjBook:Destroy()
       endif
@@ -5653,7 +5653,7 @@ Method clsTax_Inv:CreateKorrRecInBook()
 Return .T.
 ////////////////////////
 //PG
-// для групповых записей делаем регистрацию в книгу продаж
+// РґР»СЏ РіСЂСѓРїРїРѕРІС‹С… Р·Р°РїРёСЃРµР№ РґРµР»Р°РµРј СЂРµРіРёСЃС‚СЂР°С†РёСЋ РІ РєРЅРёРіСѓ РїСЂРѕРґР°Р¶
 ///////////////////////
 Method clsTax_Inv:CreateGroupRecInBook()
 local  oErr,tb , cField := "" , cJrn
@@ -5676,7 +5676,7 @@ local cNameParam,RetValue,  nDoc := 0
  endif
 
 
-   //Проверим есть ли среди документов неудаленные
+   //РџСЂРѕРІРµСЂРёРј РµСЃС‚СЊ Р»Рё СЃСЂРµРґРё РґРѕРєСѓРјРµРЅС‚РѕРІ РЅРµСѓРґР°Р»РµРЅРЅС‹Рµ
    for i := 1 to Len(::maTbDoc)
      cJrn := ::maTbDoc[i][1]
      if cJrn == "1701"
@@ -5691,8 +5691,8 @@ local cNameParam,RetValue,  nDoc := 0
          aDoc := ::maTbDoc[i][3]
        endif
        tb := ::maTbDoc[i][2]
-       for j := 1 to Len(aDoc) // ходим по выбранным документам
-         // Проверим а не удаленный ли документ
+       for j := 1 to Len(aDoc) // С…РѕРґРёРј РїРѕ РІС‹Р±СЂР°РЅРЅС‹Рј РґРѕРєСѓРјРµРЅС‚Р°Рј
+         // РџСЂРѕРІРµСЂРёРј Р° РЅРµ СѓРґР°Р»РµРЅРЅС‹Р№ Р»Рё РґРѕРєСѓРјРµРЅС‚
          (tb)->(DbGoTo(aDoc[j]))
          lDel := .F.
          for n := 1 to len(::aSfDoc)
@@ -5711,21 +5711,21 @@ local cNameParam,RetValue,  nDoc := 0
      endif
    next
    if nDoc == 0//lDel
-   // Все строки удаленные
+   // Р’СЃРµ СЃС‚СЂРѕРєРё СѓРґР°Р»РµРЅРЅС‹Рµ
      ::mlReg := .F.
      Break(.T.)
    endif
-   // В зависимости от настройки - выдадим или нет
- // запрос на формирование записи в книгу
+   // Р’ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РЅР°СЃС‚СЂРѕР№РєРё - РІС‹РґР°РґРёРј РёР»Рё РЅРµС‚
+ // Р·Р°РїСЂРѕСЃ РЅР° С„РѕСЂРјРёСЂРѕРІР°РЅРёРµ Р·Р°РїРёСЃРё РІ РєРЅРёРіСѓ
  if ::mParamIni[_TAX_QUE] == "2" .And. ::mlMsgForReg
 
-   cMsg := "По счету-фактуре можно сформировать запись в книгу "
+   cMsg := "РџРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ РјРѕР¶РЅРѕ СЃС„РѕСЂРјРёСЂРѕРІР°С‚СЊ Р·Р°РїРёСЃСЊ РІ РєРЅРёРіСѓ "
    if ::TI_CTG == "1"
-    cMsg += "покупок." + chr(13) + chr(10)
+    cMsg += "РїРѕРєСѓРїРѕРє." + chr(13) + chr(10)
    else
-    cMsg += "продаж." + chr(13) + chr(10)
+    cMsg += "РїСЂРѕРґР°Р¶." + chr(13) + chr(10)
    endif
-   cMsg += "Сформировать?"
+   cMsg += "РЎС„РѕСЂРјРёСЂРѕРІР°С‚СЊ?"
    if !(messagebox(cMsg,TITLEAPP,36)== 6)
      ::mlReg := .F.
      Break(.T.)
@@ -5733,7 +5733,7 @@ local cNameParam,RetValue,  nDoc := 0
  endif
  ::mlMsgForReg := .F.
 
-  // не добавление документа в существующий с-ф
+  // РЅРµ РґРѕР±Р°РІР»РµРЅРёРµ РґРѕРєСѓРјРµРЅС‚Р° РІ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ СЃ-С„
  if ::TI_CTG == "1"
    cNameParam := "IN_GR_BK"
  else
@@ -5769,8 +5769,8 @@ local cNameParam,RetValue,  nDoc := 0
        aDoc := ::maTbDoc[i][3]
      endif
      tb := ::maTbDoc[i][2]
-     for j := 1 to Len(aDoc) // ходим по выбранным документам
-       // Проверим а не удаленный ли документ
+     for j := 1 to Len(aDoc) // С…РѕРґРёРј РїРѕ РІС‹Р±СЂР°РЅРЅС‹Рј РґРѕРєСѓРјРµРЅС‚Р°Рј
+       // РџСЂРѕРІРµСЂРёРј Р° РЅРµ СѓРґР°Р»РµРЅРЅС‹Р№ Р»Рё РґРѕРєСѓРјРµРЅС‚
        (tb)->(DbGoTo(aDoc[j]))
        lDel := .F.
        for n := 1 to len(::aSfDoc)
@@ -5848,7 +5848,7 @@ Return .T.
 
 Method clsTax_Inv:CreateRecForGroupInBook(tb,nJrn)
 local  oErr
-local aParam //:= {0,"2","ОТ"}//,  SumRec := 0
+local aParam //:= {0,"2","РћРў"}//,  SumRec := 0
 local oObjBook, nId
  begin sequence
  //altd()
@@ -5874,9 +5874,9 @@ local oObjBook, nId
  oObjBook := clsTax_Book():New()
  oObjBook:Open()
  if (::mAliasInv)->TI_CTG == "1"
-   aParam := {0,"1","ОП"}
+   aParam := {0,"1","РћРџ"}
  else
-   aParam := {0,"2","ОТ"}
+   aParam := {0,"2","РћРў"}
  endif
  if !oObjBook:BeforeAppend(aParam)
    Break(.F.)
@@ -5888,7 +5888,7 @@ local oObjBook, nId
  oObjBook:JRN_ID := nJrn
  oObjBook:SRC_ID := nId //iif(ValType(::mParams[1][i])=="N",Str(::mParams[1][i]),::mParams[1][i])
  if !oObjBook:Save()
- // Откроем форму книги
+ // РћС‚РєСЂРѕРµРј С„РѕСЂРјСѓ РєРЅРёРіРё
    if !StartFrmBook(oObjBook)
      oObjBook:Destroy()
    endif
@@ -5916,8 +5916,8 @@ Return .T.
 
 ///////////////////////////
 //PG
-// возвращает адресс  по идентификатору записи в справчнике адресов
-// lEnt Т - собственное предприятие иначе партнер
+// РІРѕР·РІСЂР°С‰Р°РµС‚ Р°РґСЂРµСЃСЃ  РїРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ Р·Р°РїРёСЃРё РІ СЃРїСЂР°РІС‡РЅРёРєРµ Р°РґСЂРµСЃРѕРІ
+// lEnt Рў - СЃРѕР±СЃС‚РІРµРЅРЅРѕРµ РїСЂРµРґРїСЂРёСЏС‚РёРµ РёРЅР°С‡Рµ РїР°СЂС‚РЅРµСЂ
 //////////////////////
 Method clsTax_Inv:GetAddrName(lEnt)
 Local s := Space(160),cKey
@@ -5943,8 +5943,8 @@ Return s
 
 /////////////////////
 //PG
-//Создает рекордсет записей связанных со С_Ф документов
-// и заполняет массив maDoc - RecNo этих документов
+//РЎРѕР·РґР°РµС‚ СЂРµРєРѕСЂРґСЃРµС‚ Р·Р°РїРёСЃРµР№ СЃРІСЏР·Р°РЅРЅС‹С… СЃРѕ РЎ_Р¤ РґРѕРєСѓРјРµРЅС‚РѕРІ
+// Рё Р·Р°РїРѕР»РЅСЏРµС‚ РјР°СЃСЃРёРІ maDoc - RecNo СЌС‚РёС… РґРѕРєСѓРјРµРЅС‚РѕРІ
 ////////////////////
 Method clsTax_Inv:CreateDocument(lNoLock)
 local  oErr,cIdSf
@@ -5969,8 +5969,8 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
  ::aSFDOC := {}
  ::maTbDoc := {}
   cIdSf := ::DS:FieldValue("DOC_ID")
- // Для авансовых с-ф - тип строки может быть отличный от 0 и 1
- // для них свое заполнение документов
+ // Р”Р»СЏ Р°РІР°РЅСЃРѕРІС‹С… СЃ-С„ - С‚РёРї СЃС‚СЂРѕРєРё РјРѕР¶РµС‚ Р±С‹С‚СЊ РѕС‚Р»РёС‡РЅС‹Р№ РѕС‚ 0 Рё 1
+ // РґР»СЏ РЅРёС… СЃРІРѕРµ Р·Р°РїРѕР»РЅРµРЅРёРµ РґРѕРєСѓРјРµРЅС‚РѕРІ
  if ::IsRBook(@lZac)  .And. lZac
    for k := 1 to 4
      if k == 1
@@ -6014,7 +6014,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
 
          if !lNoLock
            if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-            //Массив документов с которыми стартовали
+            //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
              AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
            else
              Break(.F.)
@@ -6043,7 +6043,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
       Do case
         case cStrTp == "0"
           //
-          // Проверим сначала в новой подсистеме потом в старой
+          // РџСЂРѕРІРµСЂРёРј СЃРЅР°С‡Р°Р»Р° РІ РЅРѕРІРѕР№ РїРѕРґСЃРёСЃС‚РµРјРµ РїРѕС‚РѕРј РІ СЃС‚Р°СЂРѕР№
           if CheckSubSystem("BD")
             nJrn := "PM01"
             k := 7
@@ -6052,9 +6052,9 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
                 Break(.F.)
               endif
               if (cAlias)->(DbSeek(cIdSf))
-              //Документы без строк ищем только по идентификатору с-ф
+              //Р”РѕРєСѓРјРµРЅС‚С‹ Р±РµР· СЃС‚СЂРѕРє РёС‰РµРј С‚РѕР»СЊРєРѕ РїРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ СЃ-С„
                 lPM01 := .T.
-                // журнал, ро документа, м-в д-тов до, м-в добав, ро строк
+                // Р¶СѓСЂРЅР°Р», СЂРѕ РґРѕРєСѓРјРµРЅС‚Р°, Рј-РІ Рґ-С‚РѕРІ РґРѕ, Рј-РІ РґРѕР±Р°РІ, СЂРѕ СЃС‚СЂРѕРє
                 AADD(::maTbDoc,{nJrn,,{},{},})
                 i := Len(::maTbDoc)
                 ::maTbDoc[i][2] := cAlias
@@ -6063,7 +6063,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
                   AADD(::aSFDOC,{cIdSf,(::mAliasStr)->STR_ID,(cAlias)->ROWID,(cAlias)->ROWID,"PM01",.F.,0,cKey,(cAlias)->(RecNo())})
                   if !lNoLock
                     if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-                      //Массив документов с которыми стартовали
+                      //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
                       AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
                     else
                       Break(.F.)
@@ -6083,7 +6083,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
             nJrn := "0101"
             k := 1
             if !l101
-              // Документы без строк ищем только по идентификатору с-ф
+              // Р”РѕРєСѓРјРµРЅС‚С‹ Р±РµР· СЃС‚СЂРѕРє РёС‰РµРј С‚РѕР»СЊРєРѕ РїРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ СЃ-С„
                l101 := .T.
 
                if ! _DbAreaOpen(B6_DBF_PATH + ::aTab[k][1], @cAlias,::aTab[k][3])
@@ -6098,7 +6098,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
                    AADD(::aSFDOC,{cIdSf,(::mAliasStr)->STR_ID,(cAlias)->NNOPER_ID,(cAlias)->NNOPER_ID,"0101",.F.,0,cKey,(cAlias)->(RecNo())})
                    if !lNoLock
                      if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-                       //Массив документов с которыми стартовали
+                       //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
                          AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
                      else
                         Break(.F.)
@@ -6124,7 +6124,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
               endif
               if (cAlias)->(DbSeek(cIdSf))
                 lPM02 := .T.
-                // журнал, ро документа, м-в д-тов до, м-в добав, ро строк
+                // Р¶СѓСЂРЅР°Р», СЂРѕ РґРѕРєСѓРјРµРЅС‚Р°, Рј-РІ Рґ-С‚РѕРІ РґРѕ, Рј-РІ РґРѕР±Р°РІ, СЂРѕ СЃС‚СЂРѕРє
                 AADD(::maTbDoc,{nJrn,,{},{},})
                 i := Len(::maTbDoc)
                 ::maTbDoc[i][2] := cAlias
@@ -6133,7 +6133,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
                   AADD(::aSFDOC,{cIdSf,(::mAliasStr)->STR_ID,(cAlias)->ROWID,(cAlias)->ROWID,"PM02",.F.,0,cKey,(cAlias)->(RecNo())})
                   if !lNoLock
                     if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-                    //Массив документов с которыми стартовали
+                    //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
                       AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
                     else
                       Break(.F.)
@@ -6154,7 +6154,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
             k := 2
             if !l201
               l201 := .T.
-              // журнал, ро документа, м-в д-тов до, м-в добав, ро строк
+              // Р¶СѓСЂРЅР°Р», СЂРѕ РґРѕРєСѓРјРµРЅС‚Р°, Рј-РІ Рґ-С‚РѕРІ РґРѕ, Рј-РІ РґРѕР±Р°РІ, СЂРѕ СЃС‚СЂРѕРє
 
               if ! _DbAreaOpen(B6_DBF_PATH + ::aTab[k][1], @cAlias,::aTab[k][3])
                 Break(.F.)
@@ -6169,7 +6169,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
                   AADD(::aSFDOC,{cIdSf,(::mAliasStr)->STR_ID,(cAlias)->NNOPER,(cAlias)->NNOPER,"0201",.F.,0,cKey,(cAlias)->(RecNo())})
                   if !lNoLock
                     if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-                    //Массив документов с которыми стартовали
+                    //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
                       AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
                     else
                       Break(.F.)
@@ -6189,9 +6189,9 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
           nJrn := "PM02"
             k := 8
             if !lPM02
-            // Документы без строк ищем только по идентификатору с-ф
+            // Р”РѕРєСѓРјРµРЅС‚С‹ Р±РµР· СЃС‚СЂРѕРє РёС‰РµРј С‚РѕР»СЊРєРѕ РїРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ СЃ-С„
               lPM02 := .T.
-              // журнал, ро документа, м-в д-тов до, м-в добав, ро строк
+              // Р¶СѓСЂРЅР°Р», СЂРѕ РґРѕРєСѓРјРµРЅС‚Р°, Рј-РІ Рґ-С‚РѕРІ РґРѕ, Рј-РІ РґРѕР±Р°РІ, СЂРѕ СЃС‚СЂРѕРє
               AADD(::maTbDoc,{nJrn,,{},{},})
               i := Len(::maTbDoc)
               if ! _DbAreaOpen(B6_DBF_PATH + ::aTab[k][1], @cAlias,::aTab[k][3])
@@ -6204,7 +6204,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
                   AADD(::aSFDOC,{cIdSf,(::mAliasStr)->STR_ID,(cAlias)->ROWID,(cAlias)->ROWID,"PM02",.F.,0,cKey,(cAlias)->(RecNo())})
                   if !lNoLock
                     if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-                      //Массив документов с которыми стартовали
+                      //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
                         AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
                     else
                        Break(.F.)
@@ -6220,7 +6220,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
             k := 2
             if !l201
               l201 := .T.
-              // журнал, ро документа, м-в д-тов до, м-в добав, ро строк
+              // Р¶СѓСЂРЅР°Р», СЂРѕ РґРѕРєСѓРјРµРЅС‚Р°, Рј-РІ Рґ-С‚РѕРІ РґРѕ, Рј-РІ РґРѕР±Р°РІ, СЂРѕ СЃС‚СЂРѕРє
               AADD(::maTbDoc,{nJrn,,{},{},})
               i := Len(::maTbDoc)
               if ! _DbAreaOpen(B6_DBF_PATH + ::aTab[k][1], @cAlias,::aTab[k][3])
@@ -6233,7 +6233,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
                   AADD(::aSFDOC,{cIdSf,(::mAliasStr)->STR_ID,(cAlias)->NNOPER,(cAlias)->NNOPER,"0201",.F.,0,cKey,(cAlias)->(RecNo())})
                   if !lNoLock
                     if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-                      //Массив документов с которыми стартовали
+                      //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
                         AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
                      else
                        Break(.F.)
@@ -6257,7 +6257,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
           k := 3
           if !l301
             l301 := .T.
-            // журнал, ро документа, м-в д-тов до, м-в добав, ро строк
+            // Р¶СѓСЂРЅР°Р», СЂРѕ РґРѕРєСѓРјРµРЅС‚Р°, Рј-РІ Рґ-С‚РѕРІ РґРѕ, Рј-РІ РґРѕР±Р°РІ, СЂРѕ СЃС‚СЂРѕРє
             AADD(::maTbDoc,{nJrn,,{},{},})
             i := Len(::maTbDoc)
             if ! _DbAreaOpen(B6_DBF_PATH + ::aTab[k][1], @cAlias,::aTab[k][3])
@@ -6270,7 +6270,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
                 AADD(::aSFDOC,{cIdSf,cIdSf,(cAlias)->NNOPER,(cAlias)->NNOPER,"0301",.F.,0,cKey,(cAlias)->(RecNo())})
                 if !lNoLock
                   if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-                   //Массив документов с которыми стартовали
+                   //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
                      AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
                   else
                     Break(.F.)
@@ -6302,7 +6302,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
             if (cAlias)->(DbSeek(cIdStr))
               do while (cAlias)->OPER_FACT == cIdStr
                 if (::maTbDoc[i][2])->(DbSeek((cAlias)->NNOPER_))
-                //Если сбойнула отметка шапки -  строки отметили - шапку нет
+                //Р•СЃР»Рё СЃР±РѕР№РЅСѓР»Р° РѕС‚РјРµС‚РєР° С€Р°РїРєРё -  СЃС‚СЂРѕРєРё РѕС‚РјРµС‚РёР»Рё - С€Р°РїРєСѓ РЅРµС‚
                   if (::maTbDoc[i][2])->OPER_FACT == cIdSf
                     cKey := "0301"+(::maTbDoc[n301][5])->NNOPER_+"1"
                     AADD(::aSFDOC,{cIdSf,cIdStr,(::maTbDoc[n301][5])->NNOPER_,(::maTbDoc[n301][5])->NNOPERM,"0301",.F.,0,cKey})
@@ -6324,7 +6324,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
           k := 4
           if !l901
             l901 := .T.
-            // журнал, ро документа, м-в д-тов до, м-в добав, ро строк
+            // Р¶СѓСЂРЅР°Р», СЂРѕ РґРѕРєСѓРјРµРЅС‚Р°, Рј-РІ Рґ-С‚РѕРІ РґРѕ, Рј-РІ РґРѕР±Р°РІ, СЂРѕ СЃС‚СЂРѕРє
             AADD(::maTbDoc,{nJrn,,{},{},})
             i := Len(::maTbDoc)
             if ! _DbAreaOpen(B6_DBF_PATH + ::aTab[k][1], @cAlias,::aTab[k][3])
@@ -6337,7 +6337,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
                  AADD(::aSFDOC,{cIdSf,cIdSf,(cAlias)->NNOPER,(cAlias)->NNOPER,"0901",.F.,0,cKey,(cAlias)->(RecNo())})
                  if !lNoLock
                    if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-                    //Массив документов с которыми стартовали
+                    //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
                       AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
                    else
                      Break(.F.)
@@ -6369,7 +6369,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
             if (cAlias)->(DbSeek(cIdStr))
               do while (cAlias)->OPER_FACT == cIdStr
                 if (::maTbDoc[i][2])->(DbSeek((cAlias)->NNOPER_))
-                //Если сбойнула отметка шапки -  строки отметили - шапку нет
+                //Р•СЃР»Рё СЃР±РѕР№РЅСѓР»Р° РѕС‚РјРµС‚РєР° С€Р°РїРєРё -  СЃС‚СЂРѕРєРё РѕС‚РјРµС‚РёР»Рё - С€Р°РїРєСѓ РЅРµС‚
                   if (::maTbDoc[i][2])->OPER_FACT == cIdSf
                     cKey := "0901"+(::maTbDoc[n901][5])->NNOPER_+"1"
                     AADD(::aSFDOC,{cIdSf,cIdStr,(::maTbDoc[n901][5])->NNOPER_,(::maTbDoc[n901][5])->NNOPERM,"0901",.F.,0,cKey})
@@ -6396,7 +6396,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
           endif
           if !l501
             l501 := .T.
-            // журнал, ро документа, м-в д-тов до, м-в добав, ро строк
+            // Р¶СѓСЂРЅР°Р», СЂРѕ РґРѕРєСѓРјРµРЅС‚Р°, Рј-РІ Рґ-С‚РѕРІ РґРѕ, Рј-РІ РґРѕР±Р°РІ, СЂРѕ СЃС‚СЂРѕРє
             AADD(::maTbDoc,{nJrn,,{},{},})
             i := Len(::maTbDoc)
             if ! _DbAreaOpen(B6_DBF_PATH + ::aTab[k][1], @cAlias,::aTab[k][3])
@@ -6409,7 +6409,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
                  AADD(::aSFDOC,{cIdSf,cIdSf,(cAlias)->NNOPER,(cAlias)->NNOPER,nJrn,.F.,0,cKey,(cAlias)->(RecNo())})
                  if !lNoLock
                    if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-                    //Массив документов с которыми стартовали
+                    //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
                       AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
                    else
                      Break(.F.)
@@ -6441,7 +6441,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
             if (cAlias)->(DbSeek(cIdStr))
               do while (cAlias)->OPER_FACT == cIdStr
                 if (::maTbDoc[i][2])->(DbSeek((cAlias)->NNOPER_))
-                //Если сбойнула отметка шапки -  строки отметили - шапку нет
+                //Р•СЃР»Рё СЃР±РѕР№РЅСѓР»Р° РѕС‚РјРµС‚РєР° С€Р°РїРєРё -  СЃС‚СЂРѕРєРё РѕС‚РјРµС‚РёР»Рё - С€Р°РїРєСѓ РЅРµС‚
                   if (::maTbDoc[i][2])->OPER_FACT == cIdSf
                     cKey := nJrn+(::maTbDoc[n501][5])->NNOPER_+"1"
                     AADD(::aSFDOC,{cIdSf,cIdStr,(::maTbDoc[n501][5])->NNOPER_,(::maTbDoc[n501][5])->NNOPER,nJrn,.F.,0,cKey})
@@ -6464,7 +6464,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
           k := 9
           if !l1701
             l1701 := .T.
-            // журнал, ро документа, м-в д-тов до, м-в добав, ро строк
+            // Р¶СѓСЂРЅР°Р», СЂРѕ РґРѕРєСѓРјРµРЅС‚Р°, Рј-РІ Рґ-С‚РѕРІ РґРѕ, Рј-РІ РґРѕР±Р°РІ, СЂРѕ СЃС‚СЂРѕРє
             AADD(::maTbDoc,{nJrn,,{},{},})
             i := Len(::maTbDoc)
             if ! _DbAreaOpen(B6_DBF_PATH + ::aTab[k][1], @cAlias,::aTab[k][3])
@@ -6477,7 +6477,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
                  AADD(::aSFDOC,{cIdSf,cIdSf,(cAlias)->DOC_ID,(cAlias)->DOC_ID,"1701",.F.,0,cKey,(cAlias)->(RecNo())})
                  if !lNoLock
                    if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-                    //Массив документов с которыми стартовали
+                    //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
                       AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
                    else
                      Break(.F.)
@@ -6504,7 +6504,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
             if (cAlias)->(DbSeek(cIdStr))
               do while (cAlias)->SSRC_ID == cIdStr
                 if (::maTbDoc[i][2])->(DbSeek((cAlias)->DOC_ID))
-                //Если сбойнула отметка шапки -  строки отметили - шапку нет
+                //Р•СЃР»Рё СЃР±РѕР№РЅСѓР»Р° РѕС‚РјРµС‚РєР° С€Р°РїРєРё -  СЃС‚СЂРѕРєРё РѕС‚РјРµС‚РёР»Рё - С€Р°РїРєСѓ РЅРµС‚
                   if (::maTbDoc[i][2])->SRC_ID == cIdSf
                     cKey := "1701"+(::maTbDoc[n1701][5])->DOC_ID+"1"
                     AADD(::aSFDOC,{cIdSf,cIdStr,(::maTbDoc[n1701][5])->DOC_ID,(::maTbDoc[n1701][5])->STR_ID,"1701",.F.,0,cKey})
@@ -6525,7 +6525,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
   cIdSf := ::DS:FieldValue("DOC_ID")
   (::mAliasStr)->(DbGoTop())
   Do While !(::mAliasStr)->(Eof())
-  // Если строка создана по д-ту запишем в массив связку с-ф д-т
+  // Р•СЃР»Рё СЃС‚СЂРѕРєР° СЃРѕР·РґР°РЅР° РїРѕ Рґ-С‚Сѓ Р·Р°РїРёС€РµРј РІ РјР°СЃСЃРёРІ СЃРІСЏР·РєСѓ СЃ-С„ Рґ-С‚
 
     if (::mAliasStr)->STR_SRC
       cStrTp := (::mAliasStr)->STR_TP
@@ -6535,7 +6535,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
           k := 1
           if !l101
             l101 := .T.
-            // журнал, ро документа, м-в д-тов до, м-в добав, ро строк
+            // Р¶СѓСЂРЅР°Р», СЂРѕ РґРѕРєСѓРјРµРЅС‚Р°, Рј-РІ Рґ-С‚РѕРІ РґРѕ, Рј-РІ РґРѕР±Р°РІ, СЂРѕ СЃС‚СЂРѕРє
             AADD(::maTbDoc,{nJrn,,{},{},})
             i := Len(::maTbDoc)
             if ! _DbAreaOpen(B6_DBF_PATH + ::aTab[k][1], @cAlias,::aTab[k][3])
@@ -6547,7 +6547,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
               cKey := Str(101,4,0)+(cAlias)->NNOPER_ID+"1"
               AADD(::aSFDOC,{cIdSf,(::mAliasStr)->STR_ID,(cAlias)->NNOPER_ID,(cAlias)->NNOPER_ID,101,.F.,0,cKey,(cAlias)->(RecNo())})
               if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-                //Массив документов с которыми стартовали
+                //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
                   AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
               else
                  Break(.F.)
@@ -6561,7 +6561,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
           k := 2
           if !l101
             l101 := .T.
-            // журнал, ро документа, м-в д-тов до, м-в добав, ро строк
+            // Р¶СѓСЂРЅР°Р», СЂРѕ РґРѕРєСѓРјРµРЅС‚Р°, Рј-РІ Рґ-С‚РѕРІ РґРѕ, Рј-РІ РґРѕР±Р°РІ, СЂРѕ СЃС‚СЂРѕРє
             AADD(::maTbDoc,{nJrn,,{},{},})
             i := Len(::maTbDoc)
             if ! _DbAreaOpen(B6_DBF_PATH + ::aTab[k][1], @cAlias,::aTab[k][3])
@@ -6573,7 +6573,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
               cKey := Str(201,4,0)+(cAlias)->NNOPER+"1"
               AADD(::aSFDOC,{cIdSf,(::mAliasStr)->STR_ID,(cAlias)->NNOPER,(cAlias)->NNOPER,201,.F.,0,cKey,(cAlias)->(RecNo())})
               if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-                //Массив документов с которыми стартовали
+                //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
                   AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
                else
                  Break(.F.)
@@ -6586,7 +6586,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
           k := 3
           if !l301
             l301 := .T.
-            // журнал, ро документа, м-в д-тов до, м-в добав, ро строк
+            // Р¶СѓСЂРЅР°Р», СЂРѕ РґРѕРєСѓРјРµРЅС‚Р°, Рј-РІ Рґ-С‚РѕРІ РґРѕ, Рј-РІ РґРѕР±Р°РІ, СЂРѕ СЃС‚СЂРѕРє
             AADD(::maTbDoc,{nJrn,,{},{},})
             i := Len(::maTbDoc)
             if ! _DbAreaOpen(B6_DBF_PATH + ::aTab[k][1], @cAlias,::aTab[k][3])
@@ -6598,7 +6598,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
                cKey := Str(301,4,0)+(cAlias)->NNOPER+"1"
                AADD(::aSFDOC,{cIdSf,cIdSf,(cAlias)->NNOPER,(cAlias)->NNOPER,301,.F.,0,cKey,(cAlias)->(RecNo())})
                if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-                //Массив документов с которыми стартовали
+                //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
                   AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
                else
                  Break(.F.)
@@ -6623,7 +6623,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
           k := 4
           if !l901
             l901 := .T.
-            // журнал, ро документа, м-в д-тов до, м-в добав, ро строк
+            // Р¶СѓСЂРЅР°Р», СЂРѕ РґРѕРєСѓРјРµРЅС‚Р°, Рј-РІ Рґ-С‚РѕРІ РґРѕ, Рј-РІ РґРѕР±Р°РІ, СЂРѕ СЃС‚СЂРѕРє
             AADD(::maTbDoc,{nJrn,,{},{},})
             i := Len(::maTbDoc)
             if ! _DbAreaOpen(B6_DBF_PATH + ::aTab[k][1], @cAlias,::aTab[k][3])
@@ -6635,7 +6635,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
               cKey := Str(901,4,0)+(cAlias)->NNOPER+"1"
               AADD(::aSFDOC,{cIdSf,cIdSf,(cAlias)->NNOPER,(cAlias)->NNOPER,901,.F.,0,cKey,(cAlias)->(RecNo())})
               if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-                //Массив документов с которыми стартовали
+                //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
                   AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
                else
                  Break(.F.)
@@ -6660,7 +6660,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
           k := 5
           if !l1201
             l1201 := .T.
-            // журнал, ро документа, м-в д-тов до, м-в добав, ро строк
+            // Р¶СѓСЂРЅР°Р», СЂРѕ РґРѕРєСѓРјРµРЅС‚Р°, Рј-РІ Рґ-С‚РѕРІ РґРѕ, Рј-РІ РґРѕР±Р°РІ, СЂРѕ СЃС‚СЂРѕРє
             AADD(::maTbDoc,{nJrn,,{},{},})
             i := Len(::maTbDoc)
             if ! _DbAreaOpen(B6_DBF_PATH + ::aTab[k][1], @cAlias,::aTab[k][3])
@@ -6672,7 +6672,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
               cKey := Str(1201,4,0)+(cAlias)->NNOPER+"1"
               AADD(::aSFDOC,{cIdSf,cIdSf,(cAlias)->NNOPER,(cAlias)->NNOPER,1201,.F.,0,cKey,(cAlias)->(RecNo())})
               if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-                //Массив документов с которыми стартовали
+                //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
                   AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
                else
                  Break(.F.)
@@ -6697,7 +6697,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
           k := 6
           if !l501
             l501 := .T.
-            // журнал, ро документа, м-в д-тов до, м-в добав, ро строк
+            // Р¶СѓСЂРЅР°Р», СЂРѕ РґРѕРєСѓРјРµРЅС‚Р°, Рј-РІ Рґ-С‚РѕРІ РґРѕ, Рј-РІ РґРѕР±Р°РІ, СЂРѕ СЃС‚СЂРѕРє
             AADD(::maTbDoc,{nJrn,,{},{},})
             i := Len(::maTbDoc)
             if ! _DbAreaOpen(B6_DBF_PATH + ::aTab[k][1], @cAlias,::aTab[k][3])
@@ -6709,7 +6709,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
               cKey := Str(501,4,0)+(cAlias)->NNOPER+"1"
               AADD(::aSFDOC,{cIdSf,cIdSf,(cAlias)->NNOPER,(cAlias)->NNOPER,501,.F.,0,cKey,(cAlias)->(RecNo())})
               if (cAlias)->(DbRLock((cAlias)->(RecNo())))
-                //Массив документов с которыми стартовали
+                //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
                   AADD(::maTbDoc[i][3],(cAlias)->(RecNo()) )
                else
                  Break(.F.)
@@ -6756,7 +6756,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
     cIdDoc := (cAl)->Doc_Id
     cIdStr := (cAl)->DocStr_Id
     if !(cIdDoc == cIdStr)
-    // Пропускаем регистрацию строк
+    // РџСЂРѕРїСѓСЃРєР°РµРј СЂРµРіРёСЃС‚СЂР°С†РёСЋ СЃС‚СЂРѕРє
       dbSfDoc:Skip(1)
       Loop
     endif
@@ -6769,9 +6769,9 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
       endif
     next
     if n < 1
-    // {Журнал,Рекорд на документ,
-    //  {Массив RecNo записей взятых на редактирование}
-    //  {Массив RecNo д-тов для которых создали строки} }
+    // {Р–СѓСЂРЅР°Р»,Р РµРєРѕСЂРґ РЅР° РґРѕРєСѓРјРµРЅС‚,
+    //  {РњР°СЃСЃРёРІ RecNo Р·Р°РїРёСЃРµР№ РІР·СЏС‚С‹С… РЅР° СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ}
+    //  {РњР°СЃСЃРёРІ RecNo Рґ-С‚РѕРІ РґР»СЏ РєРѕС‚РѕСЂС‹С… СЃРѕР·РґР°Р»Рё СЃС‚СЂРѕРєРё} }
 
       AADD(::maTbDoc,{nJrn,,{},{}})
       i := Len(::maTbDoc)
@@ -6786,7 +6786,7 @@ local cAlias,cKey,aDoc := {}, lZac := .F.
     if ::maTbDoc[i][2]:Seek(cIdDoc,.T.,::aTab[k][2])
       nRec := ::maTbDoc[i][2]:RecNo()
       if ::maTbDoc[i][2]:Lock()
-        //Массив документов с которыми стартовали
+        //РњР°СЃСЃРёРІ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
         AADD(::maTbDoc[i][3],::maTbDoc[i][2]:RecNo())
       else
         Break(.F.)
@@ -6937,7 +6937,7 @@ local  oErr,cKey//,tbReg
 
  begin sequence
  //altd()
- if /*_IS_UDAL  .Or.*/ (::mAliasInv)->MOVE_TP $ {"ПП","ПР"}
+ if /*_IS_UDAL  .Or.*/ (::mAliasInv)->MOVE_TP $ {"РџРџ","РџР "}
    ::mCardId := "" //0
    ::mCardPartner := ""
    ::mCardRecNo := 0
@@ -6980,7 +6980,7 @@ local  oErr,cKey//,tbReg
 Return .T.
 ////////////////////
 // PG 26.11.04
-// синхронизация карточки с С-Ф
+// СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёСЏ РєР°СЂС‚РѕС‡РєРё СЃ РЎ-Р¤
 ///////////////////
 Method clsTax_Inv:CheckCard()
 local oErr
@@ -6991,7 +6991,7 @@ Local lRet := .F.,lReg := .F.
 Local cCntType := "",nSumCard,nSumDoc
  begin sequence
  //altd()
- if (::mAliasInv)->MOVE_TP $ {"ПП","ПР"}
+ if (::mAliasInv)->MOVE_TP $ {"РџРџ","РџР "}
    Break(.T.)
  endif
  if !(ValType(::mTbCard) == "O")
@@ -7002,7 +7002,7 @@ Local cCntType := "",nSumCard,nSumDoc
    if lRet .And. (aParam[1] == "2")
      if aParam[2]  == "3"
        cCntType := aParam[2]
-       lReg := .T. // Документ нужно зарегистрировать в карточке с-ф
+       lReg := .T. // Р”РѕРєСѓРјРµРЅС‚ РЅСѓР¶РЅРѕ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°С‚СЊ РІ РєР°СЂС‚РѕС‡РєРµ СЃ-С„
      endif
    endif
  else
@@ -7011,29 +7011,29 @@ Local cCntType := "",nSumCard,nSumDoc
  AADD(::maTran,::mTbCard:Alias())
  (::mTbCard:Alias())->( WaEdit() )
  Do case
- //Если С-Ф новый и регистрить в с-ф не нужно
+ //Р•СЃР»Рё РЎ-Р¤ РЅРѕРІС‹Р№ Рё СЂРµРіРёСЃС‚СЂРёС‚СЊ РІ СЃ-С„ РЅРµ РЅСѓР¶РЅРѕ
    case ::EditMode == 2 .And. !lReg
      Break(.T.)
-  //Если С-Ф новый и регистрить нужно
+  //Р•СЃР»Рё РЎ-Р¤ РЅРѕРІС‹Р№ Рё СЂРµРіРёСЃС‚СЂРёС‚СЊ РЅСѓР¶РЅРѕ
    case ::EditMode == 2 .And. lReg
      if !::CreateCard(/*aParam,*/nTypeAp)
        break(.F.)
      endif
-  //Если С-Ф редактирование регистрить нужно
-  // а старой карточки нет - создаем карточку
+  //Р•СЃР»Рё РЎ-Р¤ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ СЂРµРіРёСЃС‚СЂРёС‚СЊ РЅСѓР¶РЅРѕ
+  // Р° СЃС‚Р°СЂРѕР№ РєР°СЂС‚РѕС‡РєРё РЅРµС‚ - СЃРѕР·РґР°РµРј РєР°СЂС‚РѕС‡РєСѓ
    case ::EditMode == 1 .And. lReg .And. Empty(::mCardId)
      if !::CreateCard(/*aParam,*/nTypeAp)
        break(.F.)
      endif
-  //Если С-Ф редактирование - регистрить не нужно
-  // а есть стараяч карточка - удаляем карточку
+  //Р•СЃР»Рё РЎ-Р¤ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ - СЂРµРіРёСЃС‚СЂРёС‚СЊ РЅРµ РЅСѓР¶РЅРѕ
+  // Р° РµСЃС‚СЊ СЃС‚Р°СЂР°СЏС‡ РєР°СЂС‚РѕС‡РєР° - СѓРґР°Р»СЏРµРј РєР°СЂС‚РѕС‡РєСѓ
    case ::EditMode == 1 .And. !lReg .And. !Empty(::mCardId)
      if !::DeleteCard()
        break(.F.)
      endif
 
-   //Если С-Ф редактирование и изменили партнера и его нужно регистрить
-  // а есть стараяч карточка - синхронизируем карточку
+   //Р•СЃР»Рё РЎ-Р¤ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ Рё РёР·РјРµРЅРёР»Рё РїР°СЂС‚РЅРµСЂР° Рё РµРіРѕ РЅСѓР¶РЅРѕ СЂРµРіРёСЃС‚СЂРёС‚СЊ
+  // Р° РµСЃС‚СЊ СЃС‚Р°СЂР°СЏС‡ РєР°СЂС‚РѕС‡РєР° - СЃРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµРј РєР°СЂС‚РѕС‡РєСѓ
    case  lReg .And. ::EditMode == 1 .And. !(::mCardPartner == ::PRT_ID)  .And. !Empty(::mCardId)
      if !::DeleteCard()
        break(.F.)
@@ -7041,8 +7041,8 @@ Local cCntType := "",nSumCard,nSumDoc
      if !::CreateCard(/*aParam,*/nTypeAp)
        break(.F.)
      endif
-     //Если С-Ф редактирование и изменили сумму
-    // а есть стараяч карточка - синхронизируем карточку
+     //Р•СЃР»Рё РЎ-Р¤ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ Рё РёР·РјРµРЅРёР»Рё СЃСѓРјРјСѓ
+    // Р° РµСЃС‚СЊ СЃС‚Р°СЂР°СЏС‡ РєР°СЂС‚РѕС‡РєР° - СЃРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµРј РєР°СЂС‚РѕС‡РєСѓ
    case  ::EditMode == 1 .And. (::mCardPartner == ::PRT_ID)  .And. !Empty(::mCardId)
      nSumCard := ::mTbCard:FieldValue("AMNT")
      nSumDoc  := (::mAliasInv)->SUM_A
@@ -7108,7 +7108,7 @@ local cCard//,cMsg//aSchet,n,lRet
                   (::mAliasInv)->DOC_NUM,;
                   (::mAliasInv)->CODE_TP,;
                    ::mTbCard)
-   Messagebox("Не удалось создать карточку расчетов!" + CRLF + "Повторите сохранение счета-фактуры!" ,TITLEAPP,48)
+   Messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ РєР°СЂС‚РѕС‡РєСѓ СЂР°СЃС‡РµС‚РѕРІ!" + CRLF + "РџРѕРІС‚РѕСЂРёС‚Рµ СЃРѕС…СЂР°РЅРµРЅРёРµ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!" ,TITLEAPP,48)
    Break(.F.)
  endif
  ::mCardId := cCard
@@ -7126,7 +7126,7 @@ Return .T.
 Method clsTax_Inv:DeleteCard()
 local oErr,aMsgDoc := {,}
  begin sequence
- // старая карточка есть - регистрационных записей нет
+ // СЃС‚Р°СЂР°СЏ РєР°СЂС‚РѕС‡РєР° РµСЃС‚СЊ - СЂРµРіРёСЃС‚СЂР°С†РёРѕРЅРЅС‹С… Р·Р°РїРёСЃРµР№ РЅРµС‚
  //altd()
  if !(ValType(::mTbCard) == "O")
    ::OldCard()
@@ -7145,7 +7145,7 @@ local oErr,aMsgDoc := {,}
 
    /*
    if ::mlRegDoc
-   // Разрегистрим все документы под эту карточку
+   // Р Р°Р·СЂРµРіРёСЃС‚СЂРёРј РІСЃРµ РґРѕРєСѓРјРµРЅС‚С‹ РїРѕРґ СЌС‚Сѓ РєР°СЂС‚РѕС‡РєСѓ
 
      Break(.F.)
    endif
@@ -7170,7 +7170,7 @@ Return .T.
 
 method clsTax_Inv:DelAllStr()
   local i, oStr,dssum,n
-  //удалим ссылки на документы //удалим tax_str (спецификацию)
+  //СѓРґР°Р»РёРј СЃСЃС‹Р»РєРё РЅР° РґРѕРєСѓРјРµРЅС‚С‹ //СѓРґР°Р»РёРј tax_str (СЃРїРµС†РёС„РёРєР°С†РёСЋ)
    oStr := ::TAX_STR
    oStr:GoTop()
    oStr:mDocDelete := .T.
@@ -7226,7 +7226,7 @@ method clsTax_Inv:DelAllStr()
       ds:Skip(1)
     enddo
 
-    if i == 1 // Почистим налоги под документ
+    if i == 1 // РџРѕС‡РёСЃС‚РёРј РЅР°Р»РѕРіРё РїРѕРґ РґРѕРєСѓРјРµРЅС‚
        ::Tax_Str:mDocDelete := .F.
     endif
   next
@@ -7255,7 +7255,7 @@ Local cTbMLabelAG := "", cAlAg := ""
 // altd()
  tb := oObjDoc
  do case
-   case nFor == 0 // склад
+   case nFor == 0 // СЃРєР»Р°Рґ
      //cTbName := "Sclad\MDocm.dbf"
      cTagName := "TAG_OPER_"
      cLabelName := "Sclad\MLabel.dbf"
@@ -7263,30 +7263,30 @@ Local cTbMLabelAG := "", cAlAg := ""
      cStrType := "2"
      cTbComment := "Sclad\CommentM.dbf"
      cTbMLabelAG := "SCLAD\MLABELAG.DBF"
-     if  (tb)->Vid == "1" //Tb:Vid == "1"  // по постановке для расходных документов - берем сумму налога
-       lPrichod := .T.  // для приходных - рассчитываем
+     if  (tb)->Vid == "1" //Tb:Vid == "1"  // РїРѕ РїРѕСЃС‚Р°РЅРѕРІРєРµ РґР»СЏ СЂР°СЃС…РѕРґРЅС‹С… РґРѕРєСѓРјРµРЅС‚РѕРІ - Р±РµСЂРµРј СЃСѓРјРјСѓ РЅР°Р»РѕРіР°
+       lPrichod := .T.  // РґР»СЏ РїСЂРёС…РѕРґРЅС‹С… - СЂР°СЃСЃС‡РёС‚С‹РІР°РµРј
      endif
      nJrn := "0301"
      cTbSort := "Sclad\MOVES.dbf"
      cKeySort := "VID+TYPE+TYPEEX"
      cTagSort := "MOVES_VE"
      cSortField := "PreSort"
-   case nFor == 1 // запас
+   case nFor == 1 // Р·Р°РїР°СЃ
      //cTbName := "Zapas\MDocm.dbf"
      cTagName := "TAG_OPER_"
      cLabelName := "Zapas\MLabel.dbf"
      cTbPrt := "Zapas\spr_part.dbf"
      cStrType := "3"
      cTbComment := "Zapas\CommentM.dbf"
-     if  (tb)->Vid == "1" //  Tb:Vid == "1"  // по постановке для расходных документов - берем сумму налога
-       lPrichod := .T.  // для приходных - рассчитываем
+     if  (tb)->Vid == "1" //  Tb:Vid == "1"  // РїРѕ РїРѕСЃС‚Р°РЅРѕРІРєРµ РґР»СЏ СЂР°СЃС…РѕРґРЅС‹С… РґРѕРєСѓРјРµРЅС‚РѕРІ - Р±РµСЂРµРј СЃСѓРјРјСѓ РЅР°Р»РѕРіР°
+       lPrichod := .T.  // РґР»СЏ РїСЂРёС…РѕРґРЅС‹С… - СЂР°СЃСЃС‡РёС‚С‹РІР°РµРј
      endif
      nJrn := "0901"
      cTbSort := "Zapas\MOVES.dbf"
      cKeySort := "VID+TYPE+TYPEEX"
      cTagSort := "MOVES_VE"
      cSortField := "PreSort"
-   case nFor == 2 // акты на закупку
+   case nFor == 2 // Р°РєС‚С‹ РЅР° Р·Р°РєСѓРїРєСѓ
      //cTbName := "TOVAR\ACT_OP.dbf"
      cTagName := "TAG_NUMPP" //"TAG_NNOPER"
      cLabelName := "TOVAR\MLabel.dbf"
@@ -7294,10 +7294,10 @@ Local cTbMLabelAG := "", cAlAg := ""
      cStrType := "4"
      nJrn := "TV01"//1201
      cTbSort := "TOVAR\MEMDAT.dbf"
-     cKeySort := Upper(AllTrim(m->B6_USER_NAME)) + "СОРТИРОВКА СТРОК АКТОВTV"
+     cKeySort := Upper(AllTrim(m->B6_USER_NAME)) + "РЎРћР РўРР РћР’РљРђ РЎРўР РћРљ РђРљРўРћР’TV"
      cTagSort := "TAG_IDENT"
      cSortField := "VALUE"
-   case nFor == 3 // акты на продажу
+   case nFor == 3 // Р°РєС‚С‹ РЅР° РїСЂРѕРґР°Р¶Сѓ
      //cTbName := "REAL\ACT_OP.dbf"
      cTagName := "TAG_NUMPP"//"TAG_NNOPER"
      cLabelName := "TOVAR\MLabel.dbf"
@@ -7305,7 +7305,7 @@ Local cTbMLabelAG := "", cAlAg := ""
      cStrType := "4"
      nJrn := "0501"
      cTbSort := "SCLAD\MEMDAT.dbf"
-     cKeySort := Upper(AllTrim(m->B6_USER_NAME)) + "СОРТИРОВКА СТРОК АКТОВ05"
+     cKeySort := Upper(AllTrim(m->B6_USER_NAME)) + "РЎРћР РўРР РћР’РљРђ РЎРўР РћРљ РђРљРўРћР’05"
      cTagSort := "TAG_IDENT"
      cSortField := "VALUE"
  endcase
@@ -7313,7 +7313,7 @@ Local cTbMLabelAG := "", cAlAg := ""
  if ::mParamIni[_TAX_SM_PS] //.Or. ::mGroupSf
    lGroup := .T.
  endif
- //удалим ссылки на документы //удалим спецификацию
+ //СѓРґР°Р»РёРј СЃСЃС‹Р»РєРё РЅР° РґРѕРєСѓРјРµРЅС‚С‹ //СѓРґР°Р»РёРј СЃРїРµС†РёС„РёРєР°С†РёСЋ
  ::DelAllStr()
 
  if ! _DbAreaOpen(B6_DBF_PATH + cTbComment, @cAlCom,"TAG_OPER")
@@ -7332,12 +7332,12 @@ Local cTbMLabelAG := "", cAlAg := ""
  if ! _DbAreaOpen(B6_DBF_PATH + cLabelName, @cMlabel,"MLABEL")
    Break(.F.)
  endif
- if !Empty((::mAliasInv)->ACNT_ID) //.And. !Empty((::mAliasInv)->ANALIT)//Есть счет  и аналитика
+ if !Empty((::mAliasInv)->ACNT_ID) //.And. !Empty((::mAliasInv)->ANALIT)//Р•СЃС‚СЊ СЃС‡РµС‚  Рё Р°РЅР°Р»РёС‚РёРєР°
    if (DIC_PLAN_SCH)->(DbSeek(Upper((::mAliasInv)->ACNT_ID)))
       lAnalit := (DIC_PLAN_SCH)->analit_y_n
    endif
- elseif Empty((::mAliasInv)->ACNT_ID) // счет нужно брать из документа
-   lSchet := .T.  // перепишем счет из документов
+ elseif Empty((::mAliasInv)->ACNT_ID) // СЃС‡РµС‚ РЅСѓР¶РЅРѕ Р±СЂР°С‚СЊ РёР· РґРѕРєСѓРјРµРЅС‚Р°
+   lSchet := .T.  // РїРµСЂРµРїРёС€РµРј СЃС‡РµС‚ РёР· РґРѕРєСѓРјРµРЅС‚РѕРІ
  endif
  for i := 1 to len(aLock)
  // altd()
@@ -7363,7 +7363,7 @@ Local cTbMLabelAG := "", cAlAg := ""
       endif
 
     endif
-    //if !Empty(::DS:FieldValue("ACNT_ID")) .And. !Empty(::DS:FieldValue("ANALIT"))//Есть счет  и аналитика
+    //if !Empty(::DS:FieldValue("ACNT_ID")) .And. !Empty(::DS:FieldValue("ANALIT"))//Р•СЃС‚СЊ СЃС‡РµС‚  Рё Р°РЅР°Р»РёС‚РёРєР°
     //   lAnalit := .T.
       if Empty(cDop) .And. ::mParamIni[_TAX_DOPSF]
         cDop := (tb)->Prim
@@ -7386,10 +7386,10 @@ Local cTbMLabelAG := "", cAlAg := ""
              cDocJrn := "DOC" + (tb)->JRN_CODE
              cDocDim := (tb)->DOCDIM
            else
-             if !(cAnalit == (tb)->agentcode) //аналитики разные
+             if !(cAnalit == (tb)->agentcode) //Р°РЅР°Р»РёС‚РёРєРё СЂР°Р·РЅС‹Рµ
                lFirst := .T.
              endif
-             if !(cSchet == (tb)->schet_a) //аналитики разные
+             if !(cSchet == (tb)->schet_a) //Р°РЅР°Р»РёС‚РёРєРё СЂР°Р·РЅС‹Рµ
                lFirstSch := .T.
              endif
            endif
@@ -7403,7 +7403,7 @@ Local cTbMLabelAG := "", cAlAg := ""
              if !(cAnalit == (tb)->Code)
                lFirst := .T.
              endif
-             if !(cSchet == (tb)->schet) //аналитики разные
+             if !(cSchet == (tb)->schet) //Р°РЅР°Р»РёС‚РёРєРё СЂР°Р·РЅС‹Рµ
                lFirstSch := .T.
              endif
            endif
@@ -7415,11 +7415,11 @@ Local cTbMLabelAG := "", cAlAg := ""
     else
       nRate := iif(!Empty((tb)->CENAVAL),(tb)->CENAVAL,1)
     endif
-    if !lVMain //С-Ф валютная
-      if (tb)->CODEVAL == ::VALCODE // валюта документа совпадает с валютой с-ф
-        lValuta := .T. // NDS и сумму - пересчитываем в валюту С-Ф
+    if !lVMain //РЎ-Р¤ РІР°Р»СЋС‚РЅР°СЏ
+      if (tb)->CODEVAL == ::VALCODE // РІР°Р»СЋС‚Р° РґРѕРєСѓРјРµРЅС‚Р° СЃРѕРІРїР°РґР°РµС‚ СЃ РІР°Р»СЋС‚РѕР№ СЃ-С„
+        lValuta := .T. // NDS Рё СЃСѓРјРјСѓ - РїРµСЂРµСЃС‡РёС‚С‹РІР°РµРј РІ РІР°Р»СЋС‚Сѓ РЎ-Р¤
       else
-        messagebox("Валюта документа не соответствует валюте счета-фактуры!",TITLEAPP,48)
+        messagebox("Р’Р°Р»СЋС‚Р° РґРѕРєСѓРјРµРЅС‚Р° РЅРµ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ РІР°Р»СЋС‚Рµ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!",TITLEAPP,48)
         Break(.F.)
       endif
     endif
@@ -7460,7 +7460,7 @@ Local cTbMLabelAG := "", cAlAg := ""
         endif
       else
         if !Empty(cCntDocRec)
-          if !(cCntDoc == cCntDocRec) //документы основания разные
+          if !(cCntDoc == cCntDocRec) //РґРѕРєСѓРјРµРЅС‚С‹ РѕСЃРЅРѕРІР°РЅРёСЏ СЂР°Р·РЅС‹Рµ
             lFirsCnt := .T.
           endif
         endif
@@ -7470,13 +7470,13 @@ Local cTbMLabelAG := "", cAlAg := ""
         if !(Empty(obj:KOP_NNDS) .Or. (cKOPNNDS == obj:KOP_NNDS)) .Or.;
            !(Empty(obj:KOP_NDS0) .Or. (cKOPNDS0 == obj:KOP_NDS0)) .Or.;
            !(Empty(obj:KOP_AG_NDS) .Or. (cKOPAGNDS == obj:KOP_AG_NDS))
-              messagebox("Коды операций по НДС в документах разные." + chr(13) + chr(10) + "Формирование одного счета-фактуры невозможно.",TITLEAPP,48)
+              messagebox("РљРѕРґС‹ РѕРїРµСЂР°С†РёР№ РїРѕ РќР”РЎ РІ РґРѕРєСѓРјРµРЅС‚Р°С… СЂР°Р·РЅС‹Рµ." + chr(13) + chr(10) + "Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ РѕРґРЅРѕРіРѕ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹ РЅРµРІРѕР·РјРѕР¶РЅРѕ.",TITLEAPP,48)
               break(.F.)
         endif
         */
 
 
-     //Введен идентификатор д-та
+     //Р’РІРµРґРµРЅ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Рґ-С‚Р°
      valKey :=  (tb)->NNOPER
      //tbStr:=CreateDbRecord(B6_DBF_PATH + cTbName,cTagName)
      //tbStr:Scope(valKey,valKey,cTagName) //"MDOCM")
@@ -7498,19 +7498,19 @@ Local cTbMLabelAG := "", cAlAg := ""
   for i := 1 to len(aRec)
    if (aRec[i][6][1] > 0) .Or. ( (aRec[i][6][1] == 0) .And. !::mGroupSf)
      if !::TAX_STR:BeforAppend(cStrType,.T.)
-       messagebox("Не удалось создать строку счета-фактуры!",TITLEAPP,48)
+       messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃС‚СЂРѕРєСѓ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!",TITLEAPP,48)
        Break(.F.)
      endif
      if !::TAX_STR:Append()
-       messagebox("Не удалось создать строку счета-фактуры!",TITLEAPP,48)
+       messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃС‚СЂРѕРєСѓ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!",TITLEAPP,48)
        Break(.F.)
      endif
      (::mAliasStr)->STR_SRC := .T.
      (::mAliasStr)->GROUP_CODE := aRec[i][2]//tbStr:GRUP
      (::mAliasStr)->NNUM := aRec[i][3]//tbStr:NNUM
-     cLabelKey := Upper(aRec[i][2] + aRec[i][3]) // позиционирование в таблице артикулов
+     cLabelKey := Upper(aRec[i][2] + aRec[i][3]) // РїРѕР·РёС†РёРѕРЅРёСЂРѕРІР°РЅРёРµ РІ С‚Р°Р±Р»РёС†Рµ Р°СЂС‚РёРєСѓР»РѕРІ
      //aNnumNameEd := {}
-     if cStrType == "4"  // получаем название а для актов и ед. измерения  артикула
+     if cStrType == "4"  // РїРѕР»СѓС‡Р°РµРј РЅР°Р·РІР°РЅРёРµ Р° РґР»СЏ Р°РєС‚РѕРІ Рё РµРґ. РёР·РјРµСЂРµРЅРёСЏ  Р°СЂС‚РёРєСѓР»Р°
         lRet := (cMLabel)->(DbSeek(cLabelKey))
         if lRet
           cNnumName := (cMLabel)->name
@@ -7543,7 +7543,7 @@ Local cTbMLabelAG := "", cAlAg := ""
      (::mAliasStr)->CODE := cCode
      (::mAliasStr)->NNAME := cNnumName
      (::mAliasStr)->PRT_CODE := aRec[i][4] //tbStr:PARTIA
-     // Если есть партия - получим ГТД и Страну
+     // Р•СЃР»Рё РµСЃС‚СЊ РїР°СЂС‚РёСЏ - РїРѕР»СѓС‡РёРј Р“РўР” Рё РЎС‚СЂР°РЅСѓ
      if !Empty(aRec[i][4])
        if Select(cPart) < 1
          _DbAreaOpen(B6_DBF_PATH + cTbPrt, @cPart,"TAG_NUM")
@@ -7561,15 +7561,15 @@ Local cTbMLabelAG := "", cAlAg := ""
      (::mAliasStr)->QNTY_BAS := aRec[i][6][2] + aRec[i][31][2] - aRec[i][32][2]
      (::mAliasStr)->QNTY_SHP := (::mAliasStr)->QNTY_BAS//(::mAliasStr)->QNTY
      //::TAX_STR:DS:PRICE := aRec[i][26]//iif(lValuta, tbStr:CENAOUT,tbStr:CENAOUT * tb:CENAVAL)*::mMultyStorno
-     //Пересчитаем на количество брака, недостачи и возврата
-     if aRec[i][6][1] = (::mAliasStr)->QNTY // общее к-во не нужно коректировать
-       nK := 1 //к-циент пересчета на разницу к-ва д-та и с-ф
+     //РџРµСЂРµСЃС‡РёС‚Р°РµРј РЅР° РєРѕР»РёС‡РµСЃС‚РІРѕ Р±СЂР°РєР°, РЅРµРґРѕСЃС‚Р°С‡Рё Рё РІРѕР·РІСЂР°С‚Р°
+     if aRec[i][6][1] = (::mAliasStr)->QNTY // РѕР±С‰РµРµ Рє-РІРѕ РЅРµ РЅСѓР¶РЅРѕ РєРѕСЂРµРєС‚РёСЂРѕРІР°С‚СЊ
+       nK := 1 //Рє-С†РёРµРЅС‚ РїРµСЂРµСЃС‡РµС‚Р° РЅР° СЂР°Р·РЅРёС†Сѓ Рє-РІР° Рґ-С‚Р° Рё СЃ-С„
      else
        nK := (::mAliasStr)->QNTY/aRec[i][6][1]
      endif
-     // Если ставка нулевая - рассчитываем по налоговой модели
-     // Для акциза нет нулевой ставки
-     // 28059 Всегда переносим из документа.
+     // Р•СЃР»Рё СЃС‚Р°РІРєР° РЅСѓР»РµРІР°СЏ - СЂР°СЃСЃС‡РёС‚С‹РІР°РµРј РїРѕ РЅР°Р»РѕРіРѕРІРѕР№ РјРѕРґРµР»Рё
+     // Р”Р»СЏ Р°РєС†РёР·Р° РЅРµС‚ РЅСѓР»РµРІРѕР№ СЃС‚Р°РІРєРё
+     // 28059 Р’СЃРµРіРґР° РїРµСЂРµРЅРѕСЃРёРј РёР· РґРѕРєСѓРјРµРЅС‚Р°.
      //if Empty(aRec[i][17])
      //  ::TAX_STR:TAXSTRSUM:MoveFirst()
      //  if Alltrim(::TAX_STR:TAXSTRSUM:SYS_NUM) == "1"
@@ -7591,25 +7591,25 @@ Local cTbMLabelAG := "", cAlAg := ""
        endif
       */
 
-      //48786 Счет-фактура и документ-источник.  Наводим порядок с ценами
+      //48786 РЎС‡РµС‚-С„Р°РєС‚СѓСЂР° Рё РґРѕРєСѓРјРµРЅС‚-РёСЃС‚РѕС‡РЅРёРє.  РќР°РІРѕРґРёРј РїРѕСЂСЏРґРѕРє СЃ С†РµРЅР°РјРё
        if  (Round(aRec[i][8],8) == 0 .And. Round(aRec[i][9],8) == 0) .Or.;
-          ;//независимо от L_ACZ и L_NDS если налогов по строке нет вообще
+          ;//РЅРµР·Р°РІРёСЃРёРјРѕ РѕС‚ L_ACZ Рё L_NDS РµСЃР»Рё РЅР°Р»РѕРіРѕРІ РїРѕ СЃС‚СЂРѕРєРµ РЅРµС‚ РІРѕРѕР±С‰Рµ
           ;// MDOCM(ACT_OP).SUM_ACZ=0  MDOCM(ACT_OP).SUM_NDS=0
           (!aRec[i][33][1] .And. aRec[i][33][2] ) .Or.;
-          ;//L_ ACZ=true(входит) L_NDS= false(не входит)
+          ;//L_ ACZ=true(РІС…РѕРґРёС‚) L_NDS= false(РЅРµ РІС…РѕРґРёС‚)
           (!aRec[i][33][1] .And. !aRec[i][33][2] .And. Round(aRec[i][9],8) == 0)
-          //L_ ACZ= false(не входит) L_NDS= false(не входит)
-          //НО акциза по строке НЕТ. т.е. MDOCM(ACT_OP).SUM_ACZ=0
+          //L_ ACZ= false(РЅРµ РІС…РѕРґРёС‚) L_NDS= false(РЅРµ РІС…РѕРґРёС‚)
+          //РќРћ Р°РєС†РёР·Р° РїРѕ СЃС‚СЂРѕРєРµ РќР•Рў. С‚.Рµ. MDOCM(ACT_OP).SUM_ACZ=0
 
          (::mAliasStr)->PRICE := aRec[i][26]
        elseif (aRec[i][33][1] .And. aRec[i][33][2] .And. (Round(aRec[i][8],8) > 0 .Or. Round(aRec[i][9],8) > 0)) .Or.;
-              ;//L_ ACZ=true(входит) L_NDS= true(входит)  и налоги по строке документа есть
+              ;//L_ ACZ=true(РІС…РѕРґРёС‚) L_NDS= true(РІС…РѕРґРёС‚)  Рё РЅР°Р»РѕРіРё РїРѕ СЃС‚СЂРѕРєРµ РґРѕРєСѓРјРµРЅС‚Р° РµСЃС‚СЊ
               (!aRec[i][33][1] .And. !aRec[i][33][2] .And. Round(aRec[i][9],8) > 0) .Or.;
-              ;//L_ ACZ=false(не входит) L_NDS= false(не входит)
-              ;//НО акциз по строке ЕСТЬ. т.е. MDOCM(ACT_OP).SUM_ACZ>0
+              ;//L_ ACZ=false(РЅРµ РІС…РѕРґРёС‚) L_NDS= false(РЅРµ РІС…РѕРґРёС‚)
+              ;//РќРћ Р°РєС†РёР· РїРѕ СЃС‚СЂРѕРєРµ Р•РЎРўР¬. С‚.Рµ. MDOCM(ACT_OP).SUM_ACZ>0
               (aRec[i][33][1] .And. !aRec[i][33][2] .And. Round(aRec[i][9],8) == 0)
-              //L_ ACZ= false(не входит) L_NDS= true(входит)
-              //НО акциза по строке НЕТ. т.е. MDOCM(ACT_OP).SUM_ACZ=0
+              //L_ ACZ= false(РЅРµ РІС…РѕРґРёС‚) L_NDS= true(РІС…РѕРґРёС‚)
+              //РќРћ Р°РєС†РёР·Р° РїРѕ СЃС‚СЂРѕРєРµ РќР•Рў. С‚.Рµ. MDOCM(ACT_OP).SUM_ACZ=0
 
          if (::mAliasStr)->QNTY == 0
            (::mAliasStr)->PRICE := (::mAliasStr)->SUM_NNDS
@@ -7645,7 +7645,7 @@ Local cTbMLabelAG := "", cAlAg := ""
          (::mAliasSum)->(DbSkip(1))
        enddo
        //altd()
-       // заполняем массив - RecNo д-т, Ключ ст-ка д-та, Ключ стрки С-Ф
+       // Р·Р°РїРѕР»РЅСЏРµРј РјР°СЃСЃРёРІ - RecNo Рґ-С‚, РљР»СЋС‡ СЃС‚-РєР° Рґ-С‚Р°, РљР»СЋС‡ СЃС‚СЂРєРё РЎ-Р¤
      //endif
      for n := 1 to len(aRec[i][10])
        AADD(aRegSfDoc,{aRec[i][10][n],::TAX_STR:STR_ID})
@@ -7654,7 +7654,7 @@ Local cTbMLabelAG := "", cAlAg := ""
      for n := 1 to len(aRec[i][10])
        /*
        if  !((::mAliasInv)->STR_TP == cStrType )
-         (::mAliasInv)->STR_TP := cStrType // есть записи созданные из документов склада
+         (::mAliasInv)->STR_TP := cStrType // РµСЃС‚СЊ Р·Р°РїРёСЃРё СЃРѕР·РґР°РЅРЅС‹Рµ РёР· РґРѕРєСѓРјРµРЅС‚РѕРІ СЃРєР»Р°РґР°
        endif
        */
       /// AADD(aRegSfDoc,{aRec[i][10][n],::TAX_STR:STR_ID})
@@ -7694,13 +7694,13 @@ Local cTbMLabelAG := "", cAlAg := ""
    endif
 
   next
-  // отсортируем по документам
+  // РѕС‚СЃРѕСЂС‚РёСЂСѓРµРј РїРѕ РґРѕРєСѓРјРµРЅС‚Р°Рј
   aRegSfDoc := ASort(aRegSfDoc,,,{|aX,aY|aX[1][1] < aY[1][1]})
   valKey := 0
   //cAlSfDoc := ::SFDOC:DS:Alias()
   n := len(::aSfDoc)
-  //Добавим в ::aSfDoc документы которых не было изменим статус
-  //у документов с которыми стартовали
+  //Р”РѕР±Р°РІРёРј РІ ::aSfDoc РґРѕРєСѓРјРµРЅС‚С‹ РєРѕС‚РѕСЂС‹С… РЅРµ Р±С‹Р»Рѕ РёР·РјРµРЅРёРј СЃС‚Р°С‚СѓСЃ
+  //Сѓ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
 
   For i := 1 to len(aRegSfDoc)
     if n > 0 .And. nJrn ==  ::aSfDoc[1][_JRNID]
@@ -7710,12 +7710,12 @@ Local cTbMLabelAG := "", cAlAg := ""
       for k := 1 to n
         if ::aSfDoc[k][_DOCID] == (tb)->nnoper
           if lAddDoc .And. ::aSfDoc[k][_DOCID] == ::aSfDoc[k][_DOCSTRID]
-          // перевыбрали тот же документ
+          // РїРµСЂРµРІС‹Р±СЂР°Р»Рё С‚РѕС‚ Р¶Рµ РґРѕРєСѓРјРµРЅС‚
              ::aSfDoc[k][_STATUS] := 0
              ::aSfDoc[k][_DEL] := .F.
              lAddDoc := .F.
           elseif aRegSfDoc[i][1][3] == ::aSfDoc[k][_DOCSTRID]
-          // перевыбрана строка, изменился идентификатор строки с-ф
+          // РїРµСЂРµРІС‹Р±СЂР°РЅР° СЃС‚СЂРѕРєР°, РёР·РјРµРЅРёР»СЃСЏ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё СЃ-С„
             ::aSfDoc[k][_STATUS] := 3
             ::aSfDoc[k][_SFSTRID] := aRegSfDoc[i][2]
             ::aSfDoc[k][_DEL] := .F.
@@ -7747,7 +7747,7 @@ Local cTbMLabelAG := "", cAlAg := ""
     else
       if !(valKey == aRegSfDoc[i][1][1])
         valKey := aRegSfDoc[i][1][1]
-      //Регистрируем документ
+      //Р РµРіРёСЃС‚СЂРёСЂСѓРµРј РґРѕРєСѓРјРµРЅС‚
         (tb)->(DbGoTo(aRegSfDoc[i][1][1]))//tb:GoTo(aRegSfDoc[i][1][1])
       /*
       if ::SFDOC:Append()
@@ -7765,7 +7765,7 @@ Local cTbMLabelAG := "", cAlAg := ""
                        .F.,;
                        1,cKey,(tb)->(recNo())})
       endif
-    //Регистрируем строки
+    //Р РµРіРёСЃС‚СЂРёСЂСѓРµРј СЃС‚СЂРѕРєРё
     /*
     if ::SFDOC:Append()
       (cAlSfDoc)->SFSTR_ID := aRegSfDoc[i][2]
@@ -7786,13 +7786,13 @@ Local cTbMLabelAG := "", cAlAg := ""
 
 
    //altd()
-/* if lAnalit // Есть аналитика - может нужно переписать
-   //Аналитики одинаковые ничего переписывать не нужно
+/* if lAnalit // Р•СЃС‚СЊ Р°РЅР°Р»РёС‚РёРєР° - РјРѕР¶РµС‚ РЅСѓР¶РЅРѕ РїРµСЂРµРїРёСЃР°С‚СЊ
+   //РђРЅР°Р»РёС‚РёРєРё РѕРґРёРЅР°РєРѕРІС‹Рµ РЅРёС‡РµРіРѕ РїРµСЂРµРїРёСЃС‹РІР°С‚СЊ РЅРµ РЅСѓР¶РЅРѕ
    if !(Upper(Alltrim(cAnalit)) ==  Upper(Alltrim(::DS:FieldValue("ANALIT"))))
      if lFirst
-       nRet := messagebox("У документов разные аналитические коды." + chr(13) + chr(10) +;
-                          "Перенести в счет-фактуру аналитику из первого документа?",TITLEAPP,36)
-       if nRet == 6 //Да
+       nRet := messagebox("РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ СЂР°Р·РЅС‹Рµ Р°РЅР°Р»РёС‚РёС‡РµСЃРєРёРµ РєРѕРґС‹." + chr(13) + chr(10) +;
+                          "РџРµСЂРµРЅРµСЃС‚Рё РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ Р°РЅР°Р»РёС‚РёРєСѓ РёР· РїРµСЂРІРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°?",TITLEAPP,36)
+       if nRet == 6 //Р”Р°
          ::DS:FieldValue("ANALIT",cAnalit)
        endif
      else
@@ -7823,9 +7823,9 @@ Local cTbMLabelAG := "", cAlAg := ""
      (::mAliasInv)->CNT_TYPE := cCntTp
      if !(cCntTp == "3")
        if lFirsCnt
-         nRet := messagebox("У документов разные документы основания." + chr(13) + chr(10) +;
-                        "Перенести в счет-фактуру документ основания из первого документа?",TITLEAPP,36)
-         if nRet == 6 //Да
+         nRet := messagebox("РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ СЂР°Р·РЅС‹Рµ РґРѕРєСѓРјРµРЅС‚С‹ РѕСЃРЅРѕРІР°РЅРёСЏ." + chr(13) + chr(10) +;
+                        "РџРµСЂРµРЅРµСЃС‚Рё РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ РґРѕРєСѓРјРµРЅС‚ РѕСЃРЅРѕРІР°РЅРёСЏ РёР· РїРµСЂРІРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°?",TITLEAPP,36)
+         if nRet == 6 //Р”Р°
            (::mAliasInv)->CNT_DOC_ID := cCntDoc
            (::mAliasInv)->ID_OBL := cIdObl
          endif
@@ -7838,9 +7838,9 @@ Local cTbMLabelAG := "", cAlAg := ""
 
  if !::mlRePlaceMod .And. lSchet
    if lFirstSch
-     nRet := messagebox("У документов разные корреспондирующие счета." + chr(13) + chr(10) +;
-                        "Перенести в счет-фактуру счет из первого документа?",TITLEAPP,36)
-     if nRet == 6 //Да
+     nRet := messagebox("РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ СЂР°Р·РЅС‹Рµ РєРѕСЂСЂРµСЃРїРѕРЅРґРёСЂСѓСЋС‰РёРµ СЃС‡РµС‚Р°." + chr(13) + chr(10) +;
+                        "РџРµСЂРµРЅРµСЃС‚Рё РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ СЃС‡РµС‚ РёР· РїРµСЂРІРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°?",TITLEAPP,36)
+     if nRet == 6 //Р”Р°
        ::DS:FieldValue("ACNT_ID",cSchet)
      else
        lAnalit := .F.
@@ -7852,13 +7852,13 @@ Local cTbMLabelAG := "", cAlAg := ""
       lAnalit := (DIC_PLAN_SCH)->analit_y_n
    endif
  endif
- if !::mlRePlaceMod .And. lAnalit // Есть аналитика - может нужно переписать
-   //Аналитики одинаковые ничего переписывать не нужно
+ if !::mlRePlaceMod .And. lAnalit // Р•СЃС‚СЊ Р°РЅР°Р»РёС‚РёРєР° - РјРѕР¶РµС‚ РЅСѓР¶РЅРѕ РїРµСЂРµРїРёСЃР°С‚СЊ
+   //РђРЅР°Р»РёС‚РёРєРё РѕРґРёРЅР°РєРѕРІС‹Рµ РЅРёС‡РµРіРѕ РїРµСЂРµРїРёСЃС‹РІР°С‚СЊ РЅРµ РЅСѓР¶РЅРѕ
    if lSchet
      if lFirst
-       nRet := messagebox("У документов разные аналитические коды." + chr(13) + chr(10) +;
-                          "Перенести в счет-фактуру аналитику из первого документа?",TITLEAPP,36)
-       if nRet == 6 //Да
+       nRet := messagebox("РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ СЂР°Р·РЅС‹Рµ Р°РЅР°Р»РёС‚РёС‡РµСЃРєРёРµ РєРѕРґС‹." + chr(13) + chr(10) +;
+                          "РџРµСЂРµРЅРµСЃС‚Рё РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ Р°РЅР°Р»РёС‚РёРєСѓ РёР· РїРµСЂРІРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°?",TITLEAPP,36)
+       if nRet == 6 //Р”Р°
          ::DS:FieldValue("ANALIT",cAnalit)
        endif
      else
@@ -7868,9 +7868,9 @@ Local cTbMLabelAG := "", cAlAg := ""
      if !Empty(cSchet) .And. (::mAliasInv)->ACNT_ID == cSchet
        if !(Upper(Alltrim(cAnalit)) ==  Upper(Alltrim((::mAliasInv)->ANALIT)))
          if lFirst
-           nRet := messagebox("У документов разные аналитические коды." + chr(13) + chr(10) +;
-                              "Перенести в счет-фактуру аналитику из первого документа?",TITLEAPP,36)
-           if nRet == 6 //Да
+           nRet := messagebox("РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ СЂР°Р·РЅС‹Рµ Р°РЅР°Р»РёС‚РёС‡РµСЃРєРёРµ РєРѕРґС‹." + chr(13) + chr(10) +;
+                              "РџРµСЂРµРЅРµСЃС‚Рё РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ Р°РЅР°Р»РёС‚РёРєСѓ РёР· РїРµСЂРІРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°?",TITLEAPP,36)
+           if nRet == 6 //Р”Р°
              ::DS:FieldValue("ANALIT",cAnalit)
            endif
          else
@@ -7879,9 +7879,9 @@ Local cTbMLabelAG := "", cAlAg := ""
        endif
      elseif !Empty(cSchet) .And. !((::mAliasInv)->ACNT_ID == cSchet)
        if lFirst
-         nRet := messagebox("У документов разные аналитические коды." + chr(13) + chr(10) +;
-                            "Перенести в счет-фактуру аналитику из первого документа?",TITLEAPP,36)
-         if nRet == 6 //Да
+         nRet := messagebox("РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ СЂР°Р·РЅС‹Рµ Р°РЅР°Р»РёС‚РёС‡РµСЃРєРёРµ РєРѕРґС‹." + chr(13) + chr(10) +;
+                            "РџРµСЂРµРЅРµСЃС‚Рё РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ Р°РЅР°Р»РёС‚РёРєСѓ РёР· РїРµСЂРІРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°?",TITLEAPP,36)
+         if nRet == 6 //Р”Р°
            cAnalit := grMaskReFill((::mAliasInv)->ACNT_ID,;
                                    (::mAliasInv)->ANALIT,;
                                    cSchet,;
@@ -7947,7 +7947,7 @@ local cDocJrn := "DOC1701", cDocDim := "", cSfDocDim
   begin sequence
   lGroup := ::mParamIni[_TAX_SM_PS]
 
-  //удалим ссылки на документы //удалим спецификацию
+  //СѓРґР°Р»РёРј СЃСЃС‹Р»РєРё РЅР° РґРѕРєСѓРјРµРЅС‚С‹ //СѓРґР°Р»РёРј СЃРїРµС†РёС„РёРєР°С†РёСЋ
   ::DelAllStr()
   if ! _DbAreaOpen(B6_DBF_PATH + "Assets\RES_CARD.Dbf", @cCard,"TAG_ID")
     Break(.F.)
@@ -7973,17 +7973,17 @@ local cDocJrn := "DOC1701", cDocDim := "", cSfDocDim
     endif
   next
   if len(a) < 1
-  //нет строк с суммами - ничего не будем создавать
+  //РЅРµС‚ СЃС‚СЂРѕРє СЃ СЃСѓРјРјР°РјРё - РЅРёС‡РµРіРѕ РЅРµ Р±СѓРґРµРј СЃРѕР·РґР°РІР°С‚СЊ
     Break(.T.)
   endif
 
   for i := 1 to len(a)
     if !::TAX_STR:BeforAppend("5",.T.)
-      messagebox("Не удалось создать строку счета-фактуры!",TITLEAPP,48)
+      messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃС‚СЂРѕРєСѓ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!",TITLEAPP,48)
       Break(.F.)
     endif
     if !::TAX_STR:Append()
-      messagebox("Не удалось создать строку счета-фактуры!",TITLEAPP,48)
+      messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃС‚СЂРѕРєСѓ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!",TITLEAPP,48)
       Break(.F.)
     endif
     (::mAliasStr)->STR_SRC := .T.
@@ -8024,13 +8024,13 @@ local cDocJrn := "DOC1701", cDocDim := "", cSfDocDim
   next
 
 
-  // отсортируем по документам
+  // РѕС‚СЃРѕСЂС‚РёСЂСѓРµРј РїРѕ РґРѕРєСѓРјРµРЅС‚Р°Рј
   aRegSfDoc := ASort(aRegSfDoc,,,{|aX,aY|aX[1][1] < aY[1][1]})
   valKey := 0
 
   n := len(::aSfDoc)
-  //Добавим в ::aSfDoc документы которых не было изменим статус
-  //у документов с которыми стартовали
+  //Р”РѕР±Р°РІРёРј РІ ::aSfDoc РґРѕРєСѓРјРµРЅС‚С‹ РєРѕС‚РѕСЂС‹С… РЅРµ Р±С‹Р»Рѕ РёР·РјРµРЅРёРј СЃС‚Р°С‚СѓСЃ
+  //Сѓ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ РєРѕС‚РѕСЂС‹РјРё СЃС‚Р°СЂС‚РѕРІР°Р»Рё
 
   For i := 1 to len(aRegSfDoc)
     if n > 0 .And. nJrn ==  ::aSfDoc[1][_JRNID]
@@ -8040,12 +8040,12 @@ local cDocJrn := "DOC1701", cDocDim := "", cSfDocDim
       for k := 1 to n
         if ::aSfDoc[k][_DOCID] == (oObjDoc)->DOC_ID
           if lAddDoc .And. ::aSfDoc[k][_DOCID] == ::aSfDoc[k][_DOCSTRID]
-          // перевыбрали тот же документ
+          // РїРµСЂРµРІС‹Р±СЂР°Р»Рё С‚РѕС‚ Р¶Рµ РґРѕРєСѓРјРµРЅС‚
              ::aSfDoc[k][_STATUS] := 0
              ::aSfDoc[k][_DEL] := .F.
              lAddDoc := .F.
           elseif aRegSfDoc[i][1][3] == ::aSfDoc[k][_DOCSTRID]
-          // перевыбрана строка, изменился идентификатор строки с-ф
+          // РїРµСЂРµРІС‹Р±СЂР°РЅР° СЃС‚СЂРѕРєР°, РёР·РјРµРЅРёР»СЃСЏ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё СЃ-С„
             ::aSfDoc[k][_STATUS] := 3
             ::aSfDoc[k][_SFSTRID] := aRegSfDoc[i][2]
             ::aSfDoc[k][_DEL] := .F.
@@ -8076,7 +8076,7 @@ local cDocJrn := "DOC1701", cDocDim := "", cSfDocDim
     else
       if !(valKey == aRegSfDoc[i][1][1])
         valKey := aRegSfDoc[i][1][1]
-      //Регистрируем документ
+      //Р РµРіРёСЃС‚СЂРёСЂСѓРµРј РґРѕРєСѓРјРµРЅС‚
         (oObjDoc)->(DbGoTo(aRegSfDoc[i][1][1]))
 
         cKey := nJrn+(oObjDoc)->DOC_ID+"0"
@@ -8088,7 +8088,7 @@ local cDocJrn := "DOC1701", cDocDim := "", cSfDocDim
                        .F.,;
                        1,cKey,(oObjDoc)->(recNo())})
       endif
-    //Регистрируем строки
+    //Р РµРіРёСЃС‚СЂРёСЂСѓРµРј СЃС‚СЂРѕРєРё
         cKey := nJrn+(oObjDoc)->DOC_ID+"1"
         AADD(::aSfDoc,{(::mAliasInv)->DOC_ID,;
                        aRegSfDoc[i][2],;
@@ -8131,7 +8131,7 @@ Local cKOPNDS := Space(2),cKOPNNDS := Space(7),cKOPNDS0 := Space(7),cKOPAGNDS :=
 Local cTaxModId := "", lRet := .T., aFinTax := {} // lTaxMod := .F. ,
 /////////
 Local oSum ,cAl,cAlTaxTp,cAlSprNds
-Local nBaseSum := 0 // Сумма по документам по которым нет строк
+Local nBaseSum := 0 // РЎСѓРјРјР° РїРѕ РґРѕРєСѓРјРµРЅС‚Р°Рј РїРѕ РєРѕС‚РѕСЂС‹Рј РЅРµС‚ СЃС‚СЂРѕРє
 Local cAlFinTax := "",lFinTax := .F. , cCom := "", cDop := ""
 local cDocJrn, cDocDim := "", cSfDocDim, tb
 local lAnalit := .F.,lSchet := .F. ,lFirst := .F. ,lFirstSch := .F.
@@ -8155,12 +8155,12 @@ local cAnalit := "",cSchet := ""
     Break(.F.)
   endif
 
-  if !Empty((::mAliasInv)->ACNT_ID) //.And. !Empty((::mAliasInv)->ANALIT)//Есть счет  и аналитика
+  if !Empty((::mAliasInv)->ACNT_ID) //.And. !Empty((::mAliasInv)->ANALIT)//Р•СЃС‚СЊ СЃС‡РµС‚  Рё Р°РЅР°Р»РёС‚РёРєР°
     if (DIC_PLAN_SCH)->(DbSeek(Upper((::mAliasInv)->ACNT_ID)))
       lAnalit := (DIC_PLAN_SCH)->analit_y_n
     endif
-  elseif Empty((::mAliasInv)->ACNT_ID) // счет нужно брать из документа
-    lSchet := .T.  // перепишем счет из документов
+  elseif Empty((::mAliasInv)->ACNT_ID) // СЃС‡РµС‚ РЅСѓР¶РЅРѕ Р±СЂР°С‚СЊ РёР· РґРѕРєСѓРјРµРЅС‚Р°
+    lSchet := .T.  // РїРµСЂРµРїРёС€РµРј СЃС‡РµС‚ РёР· РґРѕРєСѓРјРµРЅС‚РѕРІ
   endif
   /////////////////////////*
   if lAnalit .Or. lSchet
@@ -8170,8 +8170,8 @@ local cAnalit := "",cSchet := ""
   endif
 
   if len(aLock) > 1
-    //  Если  документов несколько проверим на соответствие
-    // налоговых моделий
+    //  Р•СЃР»Рё  РґРѕРєСѓРјРµРЅС‚РѕРІ РЅРµСЃРєРѕР»СЊРєРѕ РїСЂРѕРІРµСЂРёРј РЅР° СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРµ
+    // РЅР°Р»РѕРіРѕРІС‹С… РјРѕРґРµР»РёР№
     for i := 1  to len(aLock)
       (oObjDoc)->(DbGoTo(aLock[i]))
       if !Empty((oObjDoc)->TAX_MOD_ID)
@@ -8187,7 +8187,7 @@ local cAnalit := "",cSchet := ""
           endif
         endif
       else
-      // У предыдущего документа определена налоговая модель
+      // РЈ РїСЂРµРґС‹РґСѓС‰РµРіРѕ РґРѕРєСѓРјРµРЅС‚Р° РѕРїСЂРµРґРµР»РµРЅР° РЅР°Р»РѕРіРѕРІР°СЏ РјРѕРґРµР»СЊ
         if  !Empty(cTaxModId)
           Break(.F.)
         endif
@@ -8202,7 +8202,7 @@ local cAnalit := "",cSchet := ""
   endif
 
   if !Empty(cTaxModId) .And. !(cTaxModId == (::cWa)->MOD_ID)
-  // Переустановим налоговую модель
+  // РџРµСЂРµСѓСЃС‚Р°РЅРѕРІРёРј РЅР°Р»РѕРіРѕРІСѓСЋ РјРѕРґРµР»СЊ
     oSum := ::TAX_STR:TAXSTRSUM
     cAl := oSum:mMODSTR
     cAlTaxTp :=  oSum:mTAX_TP
@@ -8213,9 +8213,9 @@ local cAnalit := "",cSchet := ""
     endif
     (::cWa)->MOD_ID :=  cTaxModId
     //lTaxMod := .T.
-    // Если строк по налогам у документов нет - а налоговая модель есть
-    // переустановим налоговую модель, а расчет
-    // будем производить как и ранее
+    // Р•СЃР»Рё СЃС‚СЂРѕРє РїРѕ РЅР°Р»РѕРіР°Рј Сѓ РґРѕРєСѓРјРµРЅС‚РѕРІ РЅРµС‚ - Р° РЅР°Р»РѕРіРѕРІР°СЏ РјРѕРґРµР»СЊ РµСЃС‚СЊ
+    // РїРµСЂРµСѓСЃС‚Р°РЅРѕРІРёРј РЅР°Р»РѕРіРѕРІСѓСЋ РјРѕРґРµР»СЊ, Р° СЂР°СЃС‡РµС‚
+    // Р±СѓРґРµРј РїСЂРѕРёР·РІРѕРґРёС‚СЊ РєР°Рє Рё СЂР°РЅРµРµ
     /*
     if ! _DbAreaOpen(B6_DBF_PATH + "PAY\FIN_TAX.dbf", @cAlFinTax,"TAG_DOC")
       Break(.F.)
@@ -8264,21 +8264,21 @@ local cAnalit := "",cSchet := ""
       Break(.F.)
     endif
     if nTaxBase = 0
-      loop // для документов с 0 суммой записи не делаем
+      loop // РґР»СЏ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ 0 СЃСѓРјРјРѕР№ Р·Р°РїРёСЃРё РЅРµ РґРµР»Р°РµРј
     endif
     if (cAlFinTax)->(DbSeek((oObjDoc)->ROWID))
       AADD(aFinTax,{aLock[i],1})
     endif
-    // В платежах - не идентификатор документа основания, а идентификатор карточки для этого документа
+    // Р’ РїР»Р°С‚РµР¶Р°С… - РЅРµ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РґРѕРєСѓРјРµРЅС‚Р° РѕСЃРЅРѕРІР°РЅРёСЏ, Р° РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєР°СЂС‚РѕС‡РєРё РґР»СЏ СЌС‚РѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°
     if (tb)->(DbSeek((oObjDoc)->ROWID))
       if i == 1
         cAnalit := (tb)->KORR_DIM
         cSchet := (tb)->KORR_ACNT
       else
-        if !(cAnalit == (tb)->KORR_DIM) //аналитики разные
+        if !(cAnalit == (tb)->KORR_DIM) //Р°РЅР°Р»РёС‚РёРєРё СЂР°Р·РЅС‹Рµ
           lFirst := .T.
         endif
-        if !(cSchet == (tb)->KORR_ACNT) //аналитики разные
+        if !(cSchet == (tb)->KORR_ACNT) //Р°РЅР°Р»РёС‚РёРєРё СЂР°Р·РЅС‹Рµ
           lFirstSch := .T.
         endif
       endif
@@ -8363,7 +8363,7 @@ local cAnalit := "",cSchet := ""
         endif
       else
         if !Empty((oObjDoc)->ACNT_ID)
-          if !(cIdCard == (oObjDoc)->ACNT_ID) //документы основания разные
+          if !(cIdCard == (oObjDoc)->ACNT_ID) //РґРѕРєСѓРјРµРЅС‚С‹ РѕСЃРЅРѕРІР°РЅРёСЏ СЂР°Р·РЅС‹Рµ
             lFirsCnt := .T.
           endif
         endif
@@ -8376,7 +8376,7 @@ local cAnalit := "",cSchet := ""
     for n := 1 to len(aFinTax)
       if aLock[i] == aFinTax[n][1]
         lFinTax := .T.
-        // Коэффициент пересчета налогов по строкам
+        // РљРѕСЌС„С„РёС†РёРµРЅС‚ РїРµСЂРµСЃС‡РµС‚Р° РЅР°Р»РѕРіРѕРІ РїРѕ СЃС‚СЂРѕРєР°Рј
         if  Round(nTaxBase,6) != Round((oObjDoc)->SUM,6)
           aFinTax[n][2] := nTaxBase/(oObjDoc)->SUM
         endif
@@ -8397,12 +8397,12 @@ local cAnalit := "",cSchet := ""
 
   if nBaseSum > 0
 
-    if!::TAX_STR:BeforAppend(StrTp,.T.) //kostia ошибка 31170 передадим SrtTp  !::TAX_STR:BeforAppend("0",.T.)
-      messagebox("Не удалось создать строку счета-фактуры!",TITLEAPP,48)
+    if!::TAX_STR:BeforAppend(StrTp,.T.) //kostia РѕС€РёР±РєР° 31170 РїРµСЂРµРґР°РґРёРј SrtTp  !::TAX_STR:BeforAppend("0",.T.)
+      messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃС‚СЂРѕРєСѓ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!",TITLEAPP,48)
       Break(.F.)
     endif
     if !::TAX_STR:Append()
-      messagebox("Не удалось создать строку счета-фактуры!",TITLEAPP,48)
+      messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃС‚СЂРѕРєСѓ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!",TITLEAPP,48)
       Break(.F.)
     endif
     if ::mParamIni[_TAX_NM_AV]
@@ -8426,12 +8426,12 @@ local cAnalit := "",cSchet := ""
       (cAlFinTax)->(DbGoTop())
       do while !(cAlFinTax)->(Eof())
         /*
-        if!::TAX_STR:BeforAppend(StrTp,.T.) //kostia ошибка 31170 передадим SrtTp  !::TAX_STR:BeforAppend("0",.T.)
-          messagebox("Не удалось создать строку счета-фактуры!",TITLEAPP,48)
+        if!::TAX_STR:BeforAppend(StrTp,.T.) //kostia РѕС€РёР±РєР° 31170 РїРµСЂРµРґР°РґРёРј SrtTp  !::TAX_STR:BeforAppend("0",.T.)
+          messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃС‚СЂРѕРєСѓ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!",TITLEAPP,48)
           Break(.F.)
         endif
         if !::TAX_STR:Append()
-          messagebox("Не удалось создать строку счета-фактуры!",TITLEAPP,48)
+          messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃС‚СЂРѕРєСѓ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!",TITLEAPP,48)
           Break(.F.)
         endif
         (::mAliasStr)->STR_TP := StrTp
@@ -8468,9 +8468,9 @@ local cAnalit := "",cSchet := ""
   ///////////////////////////*/
   if !::mlRePlaceMod .And. lCnt .And. !Empty(cCntDoc)
    if lFirsCnt
-     nRet := messagebox("У документов разные документы основания." + chr(13) + chr(10) +;
-                          "Перенести документ основания из первого документа?",TITLEAPP,36)
-     if nRet == 6 //Да
+     nRet := messagebox("РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ СЂР°Р·РЅС‹Рµ РґРѕРєСѓРјРµРЅС‚С‹ РѕСЃРЅРѕРІР°РЅРёСЏ." + chr(13) + chr(10) +;
+                          "РџРµСЂРµРЅРµСЃС‚Рё РґРѕРєСѓРјРµРЅС‚ РѕСЃРЅРѕРІР°РЅРёСЏ РёР· РїРµСЂРІРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°?",TITLEAPP,36)
+     if nRet == 6 //Р”Р°
        ::DS:FieldValue("CNT_TYPE",cCntTp)
        ::DS:FieldValue("CNT_DOC_ID",cCntDoc)
        ::DS:FieldValue("ID_OBL",cIdObl)
@@ -8510,9 +8510,9 @@ local cAnalit := "",cSchet := ""
 
  if !::mlRePlaceMod .And. lSchet
    if lFirstSch
-     nRet := messagebox("У документов разные корреспондирующие счета." + chr(13) + chr(10) +;
-                        "Перенести в счет-фактуру счет из первого документа?",TITLEAPP,36)
-     if nRet == 6 //Да
+     nRet := messagebox("РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ СЂР°Р·РЅС‹Рµ РєРѕСЂСЂРµСЃРїРѕРЅРґРёСЂСѓСЋС‰РёРµ СЃС‡РµС‚Р°." + chr(13) + chr(10) +;
+                        "РџРµСЂРµРЅРµСЃС‚Рё РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ СЃС‡РµС‚ РёР· РїРµСЂРІРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°?",TITLEAPP,36)
+     if nRet == 6 //Р”Р°
        ::DS:FieldValue("ACNT_ID",cSchet)
      else
        lAnalit := .F.
@@ -8525,13 +8525,13 @@ local cAnalit := "",cSchet := ""
    endif
  endif
 
- if !::mlRePlaceMod .And. lAnalit // Есть аналитика - может нужно переписать
-   //Аналитики одинаковые ничего переписывать не нужно
+ if !::mlRePlaceMod .And. lAnalit // Р•СЃС‚СЊ Р°РЅР°Р»РёС‚РёРєР° - РјРѕР¶РµС‚ РЅСѓР¶РЅРѕ РїРµСЂРµРїРёСЃР°С‚СЊ
+   //РђРЅР°Р»РёС‚РёРєРё РѕРґРёРЅР°РєРѕРІС‹Рµ РЅРёС‡РµРіРѕ РїРµСЂРµРїРёСЃС‹РІР°С‚СЊ РЅРµ РЅСѓР¶РЅРѕ
    if lSchet
      if lFirst
-       nRet := messagebox("У документов разные аналитические коды." + chr(13) + chr(10) +;
-                          "Перенести в счет-фактуру аналитику из первого документа?",TITLEAPP,36)
-       if nRet == 6 //Да
+       nRet := messagebox("РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ СЂР°Р·РЅС‹Рµ Р°РЅР°Р»РёС‚РёС‡РµСЃРєРёРµ РєРѕРґС‹." + chr(13) + chr(10) +;
+                          "РџРµСЂРµРЅРµСЃС‚Рё РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ Р°РЅР°Р»РёС‚РёРєСѓ РёР· РїРµСЂРІРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°?",TITLEAPP,36)
+       if nRet == 6 //Р”Р°
          ::DS:FieldValue("ANALIT",cAnalit)
        endif
      else
@@ -8541,9 +8541,9 @@ local cAnalit := "",cSchet := ""
      if !Empty(cSchet) .And. (::mAliasInv)->ACNT_ID == cSchet
        if !(Upper(Alltrim(cAnalit)) ==  Upper(Alltrim((::mAliasInv)->ANALIT)))
          if lFirst
-           nRet := messagebox("У документов разные аналитические коды." + chr(13) + chr(10) +;
-                              "Перенести в счет-фактуру аналитику из первого документа?",TITLEAPP,36)
-           if nRet == 6 //Да
+           nRet := messagebox("РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ СЂР°Р·РЅС‹Рµ Р°РЅР°Р»РёС‚РёС‡РµСЃРєРёРµ РєРѕРґС‹." + chr(13) + chr(10) +;
+                              "РџРµСЂРµРЅРµСЃС‚Рё РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ Р°РЅР°Р»РёС‚РёРєСѓ РёР· РїРµСЂРІРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°?",TITLEAPP,36)
+           if nRet == 6 //Р”Р°
              ::DS:FieldValue("ANALIT",cAnalit)
            endif
          else
@@ -8552,9 +8552,9 @@ local cAnalit := "",cSchet := ""
        endif
      elseif !Empty(cSchet) .And. !((::mAliasInv)->ACNT_ID == cSchet)
        if lFirst
-         nRet := messagebox("У документов разные аналитические коды." + chr(13) + chr(10) +;
-                            "Перенести в счет-фактуру аналитику из первого документа?",TITLEAPP,36)
-         if nRet == 6 //Да
+         nRet := messagebox("РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ СЂР°Р·РЅС‹Рµ Р°РЅР°Р»РёС‚РёС‡РµСЃРєРёРµ РєРѕРґС‹." + chr(13) + chr(10) +;
+                            "РџРµСЂРµРЅРµСЃС‚Рё РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ Р°РЅР°Р»РёС‚РёРєСѓ РёР· РїРµСЂРІРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°?",TITLEAPP,36)
+         if nRet == 6 //Р”Р°
            //cAnalit := grMaskReMake(cSchet,cAnalit,(::mAliasInv)->ACNT_ID)
            cAnalit := grMaskReFill((::mAliasInv)->ACNT_ID,;
                                    (::mAliasInv)->ANALIT,;
@@ -8642,19 +8642,19 @@ local cDocJrn , cDocDim := "", cSfDocDim
 //altd()
  begin sequence
  StrTp := ""
- //удалим ссылки на документы
+ //СѓРґР°Р»РёРј СЃСЃС‹Р»РєРё РЅР° РґРѕРєСѓРјРµРЅС‚С‹
  ::DelAllStr()
 
  tb := oObjDoc //:Alias //::tbDoc
  if Empty((::mAliasInv)->CNT_DOC_ID)
    lCnt := .T.
  endif
- if !Empty((::mAliasInv)->ACNT_ID) //.And. !Empty((::mAliasInv)->ANALIT)//Есть счет  и аналитика
+ if !Empty((::mAliasInv)->ACNT_ID) //.And. !Empty((::mAliasInv)->ANALIT)//Р•СЃС‚СЊ СЃС‡РµС‚  Рё Р°РЅР°Р»РёС‚РёРєР°
    if (DIC_PLAN_SCH)->(DbSeek(Upper((::mAliasInv)->ACNT_ID)))
       lAnalit := (DIC_PLAN_SCH)->analit_y_n
    endif
- elseif Empty((::mAliasInv)->ACNT_ID) // счет нужно брать из документа
-   lSchet := .T.  // перепишем счет из документов
+ elseif Empty((::mAliasInv)->ACNT_ID) // СЃС‡РµС‚ РЅСѓР¶РЅРѕ Р±СЂР°С‚СЊ РёР· РґРѕРєСѓРјРµРЅС‚Р°
+   lSchet := .T.  // РїРµСЂРµРїРёС€РµРј СЃС‡РµС‚ РёР· РґРѕРєСѓРјРµРЅС‚РѕРІ
  endif
  for i := 1 to len(aLock)
    //altd()
@@ -8671,10 +8671,10 @@ local cDocJrn , cDocDim := "", cSfDocDim
              cAnalit := (tb)->Scr
              cSchet := (tb)->cr
            else
-             if !(cAnalit == (tb)->Scr) //аналитики разные
+             if !(cAnalit == (tb)->Scr) //Р°РЅР°Р»РёС‚РёРєРё СЂР°Р·РЅС‹Рµ
                lFirst := .T.
              endif
-             if !(cSchet == (tb)->cr) //аналитики разные
+             if !(cSchet == (tb)->cr) //Р°РЅР°Р»РёС‚РёРєРё СЂР°Р·РЅС‹Рµ
                lFirstSch := .T.
              endif
            endif
@@ -8693,7 +8693,7 @@ local cDocJrn , cDocDim := "", cSfDocDim
              if !(cAnalit == (tb)->An_KSchet)
                lFirst := .T.
              endif
-             if !(cSchet == (tb)->kschet) //аналитики разные
+             if !(cSchet == (tb)->kschet) //Р°РЅР°Р»РёС‚РёРєРё СЂР°Р·РЅС‹Рµ
                lFirstSch := .T.
              endif
            endif
@@ -8718,9 +8718,9 @@ local cDocJrn , cDocDim := "", cSfDocDim
          endif
        endif
  /*
-       #define _TAX_NM_AV      18 // T - из документа  Наименование авансового счета-фактуры
-#define _TAX_NM_AV_TXT  19 // Текст наименования
-#define _TAX_DOP_AV     20 // T - из документа  Дополнение авансового счета-фактуры
+       #define _TAX_NM_AV      18 // T - РёР· РґРѕРєСѓРјРµРЅС‚Р°  РќР°РёРјРµРЅРѕРІР°РЅРёРµ Р°РІР°РЅСЃРѕРІРѕРіРѕ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹
+#define _TAX_NM_AV_TXT  19 // РўРµРєСЃС‚ РЅР°РёРјРµРЅРѕРІР°РЅРёСЏ
+#define _TAX_DOP_AV     20 // T - РёР· РґРѕРєСѓРјРµРЅС‚Р°  Р”РѕРїРѕР»РЅРµРЅРёРµ Р°РІР°РЅСЃРѕРІРѕРіРѕ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹
 #define _TAX_COM_AV
  */
 
@@ -8739,7 +8739,7 @@ local cDocJrn , cDocDim := "", cSfDocDim
            endif
          else
            if !Empty((tb)->CNT_DOC_ID)
-             if !(cCntDoc == (tb)->CNT_DOC_ID) //документы основания разные
+             if !(cCntDoc == (tb)->CNT_DOC_ID) //РґРѕРєСѓРјРµРЅС‚С‹ РѕСЃРЅРѕРІР°РЅРёСЏ СЂР°Р·РЅС‹Рµ
                lFirsCnt := .T.
              endif
            endif
@@ -8751,7 +8751,7 @@ local cDocJrn , cDocDim := "", cSfDocDim
        endif
 
 
-       // проверяем валюты
+       // РїСЂРѕРІРµСЂСЏРµРј РІР°Р»СЋС‚С‹
      if nFor == 0
        StrTp := "0"
        cKey := (tb)->NNOPER_ID
@@ -8783,7 +8783,7 @@ local cDocJrn , cDocDim := "", cSfDocDim
      endif
 
      if nTaxBase = 0
-       loop // ?для документов с 0 суммой записи не делаем
+       loop // ?РґР»СЏ РґРѕРєСѓРјРµРЅС‚РѕРІ СЃ 0 СЃСѓРјРјРѕР№ Р·Р°РїРёСЃРё РЅРµ РґРµР»Р°РµРј
      endif
 
      aNds := {}
@@ -8890,17 +8890,17 @@ local cDocJrn , cDocDim := "", cSfDocDim
  endif
  aModStr := ::TAX_STR:TAXSTRSUM:maModStr
  if len(aModStr) = 1 .And. AllTrim(aModStr[1][_SYSNUM]) == "1"
-   messagebox("Налоговая модель счета-фактуры не совпадает с налоговыми данными документа." + chr(13) + chr(10) + ;
-              "Создание счета-фактуры невозможно",TITLEAPP,48)
+   messagebox("РќР°Р»РѕРіРѕРІР°СЏ РјРѕРґРµР»СЊ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹ РЅРµ СЃРѕРІРїР°РґР°РµС‚ СЃ РЅР°Р»РѕРіРѕРІС‹РјРё РґР°РЅРЅС‹РјРё РґРѕРєСѓРјРµРЅС‚Р°." + chr(13) + chr(10) + ;
+              "РЎРѕР·РґР°РЅРёРµ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹ РЅРµРІРѕР·РјРѕР¶РЅРѕ",TITLEAPP,48)
    Break(.F.)
  endif
  if nBaseSumAll > 0
-   if!::TAX_STR:BeforAppend(StrTp,.T.) //kostia ошибка 31170 передадим SrtTp  !::TAX_STR:BeforAppend("0",.T.)
-     messagebox("Не удалось создать строку счета-фактуры!",TITLEAPP,48)
+   if!::TAX_STR:BeforAppend(StrTp,.T.) //kostia РѕС€РёР±РєР° 31170 РїРµСЂРµРґР°РґРёРј SrtTp  !::TAX_STR:BeforAppend("0",.T.)
+     messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃС‚СЂРѕРєСѓ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!",TITLEAPP,48)
      Break(.F.)
    endif
    if !::TAX_STR:Append()
-     messagebox("Не удалось создать строку счета-фактуры!",TITLEAPP,48)
+     messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃС‚СЂРѕРєСѓ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!",TITLEAPP,48)
      Break(.F.)
    endif
 
@@ -8923,11 +8923,11 @@ local cDocJrn , cDocDim := "", cSfDocDim
 
  for i := 1 to len(aNdsAll)
    if !::TAX_STR:BeforAppend(StrTp,.T.) //!::TAX_STR:BeforAppend("0",.T.)
-     messagebox("Не удалось создать строку счета-фактуры!",TITLEAPP,48)
+     messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃС‚СЂРѕРєСѓ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!",TITLEAPP,48)
      Break(.F.)
    endif
    if !::TAX_STR:Append()
-     messagebox("Не удалось создать строку счета-фактуры!",TITLEAPP,48)
+     messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃС‚СЂРѕРєСѓ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!",TITLEAPP,48)
      Break(.F.)
    endif
    if ::mParamIni[_TAX_NM_AV]
@@ -8943,15 +8943,15 @@ local cDocJrn , cDocDim := "", cSfDocDim
    (::mAliasStr)->STR_TP := StrTp
    (::mAliasStr)->STR_SRC := .T.
    ::TAX_STR:TAXSTRSUM:MoveFirst()
-   if len(aModStr) = 1 // Налог 1 и это НДС
+   if len(aModStr) = 1 // РќР°Р»РѕРі 1 Рё СЌС‚Рѕ РќР”РЎ
      if !::ReplaceNdsFromKalk(aNdsAll[i])
        Break(.F.)
      endif
 
    else
-     if AllTrim(aModStr[1][_SYSNUM]) == "1"  // Первый акциз
-       // Посчитаем по налоговой модели - а потом поменяем НДС
-       if aModStr[1][_CALCRL] // извлекается
+     if AllTrim(aModStr[1][_SYSNUM]) == "1"  // РџРµСЂРІС‹Р№ Р°РєС†РёР·
+       // РџРѕСЃС‡РёС‚Р°РµРј РїРѕ РЅР°Р»РѕРіРѕРІРѕР№ РјРѕРґРµР»Рё - Р° РїРѕС‚РѕРј РїРѕРјРµРЅСЏРµРј РќР”РЎ
+       if aModStr[1][_CALCRL] // РёР·РІР»РµРєР°РµС‚СЃСЏ
          nBaseSumAll := aNdsAll[i][4]
        else
          nBaseSumAll := aNdsAll[i][4] - aNdsAll[i][3]
@@ -8961,7 +8961,7 @@ local cDocJrn , cDocDim := "", cSfDocDim
        k := 1
        Do While !::TAX_STR:TAXSTRSUM:Eof
          if ::TAX_STR:TAXSTRSUM:TAX_ID == aModStr[k][_TAXID] .And. AllTrim(aModStr[k][_SYSNUM]) == "2"
-         // стали на строку НДС
+         // СЃС‚Р°Р»Рё РЅР° СЃС‚СЂРѕРєСѓ РќР”РЎ
            if !::ReplaceNdsFromKalk(aNdsAll[i])
              Break(.F.)
            endif
@@ -8971,7 +8971,7 @@ local cDocJrn , cDocDim := "", cSfDocDim
          ::TAX_STR:TAXSTRSUM:Skip(1)
        enddo
      else
-     // Первый НДС
+     // РџРµСЂРІС‹Р№ РќР”РЎ
        if !::ReplaceNdsFromKalk(aNdsAll[i])
          Break(.F.)
        endif
@@ -8991,7 +8991,7 @@ local cDocJrn , cDocDim := "", cSfDocDim
      endif
 
      /*
-     if ::TAX_STR:TAXSTRSUM:maModStr[1][_CALCRL] // Извлекаем
+     if ::TAX_STR:TAXSTRSUM:maModStr[1][_CALCRL] // РР·РІР»РµРєР°РµРј
        nBaseSumAll := aNdsAll[i][4]
      else
 
@@ -9017,7 +9017,7 @@ local cDocJrn , cDocDim := "", cSfDocDim
 
  /*
  if  !((::mAliasInv)->STR_TP == StrTp)
-    ::DS:FieldValue("STR_TP", StrTp) // есть записи созданные из платежек
+    ::DS:FieldValue("STR_TP", StrTp) // РµСЃС‚СЊ Р·Р°РїРёСЃРё СЃРѕР·РґР°РЅРЅС‹Рµ РёР· РїР»Р°С‚РµР¶РµРє
  endif
  */
  n := len(::aSfDoc)
@@ -9075,9 +9075,9 @@ local cDocJrn , cDocDim := "", cSfDocDim
 
  if !::mlRePlaceMod .And. lCnt .And. !Empty(cCntDoc)
    if lFirsCnt
-     nRet := messagebox("У документов разные документы основания." + chr(13) + chr(10) +;
-                          "Перенести документ основания из первого документа?",TITLEAPP,36)
-     if nRet == 6 //Да
+     nRet := messagebox("РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ СЂР°Р·РЅС‹Рµ РґРѕРєСѓРјРµРЅС‚С‹ РѕСЃРЅРѕРІР°РЅРёСЏ." + chr(13) + chr(10) +;
+                          "РџРµСЂРµРЅРµСЃС‚Рё РґРѕРєСѓРјРµРЅС‚ РѕСЃРЅРѕРІР°РЅРёСЏ РёР· РїРµСЂРІРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°?",TITLEAPP,36)
+     if nRet == 6 //Р”Р°
        ::DS:FieldValue("CNT_TYPE",cCntTp)
        ::DS:FieldValue("CNT_DOC_ID",cCntDoc)
        ::DS:FieldValue("ID_OBL",cIdObl)
@@ -9090,9 +9090,9 @@ local cDocJrn , cDocDim := "", cSfDocDim
  endif
  if !::mlRePlaceMod .And. lSchet
    if lFirstSch
-     nRet := messagebox("У документов разные корреспондирующие счета." + chr(13) + chr(10) +;
-                        "Перенести в счет-фактуру счет из первого документа?",TITLEAPP,36)
-     if nRet == 6 //Да
+     nRet := messagebox("РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ СЂР°Р·РЅС‹Рµ РєРѕСЂСЂРµСЃРїРѕРЅРґРёСЂСѓСЋС‰РёРµ СЃС‡РµС‚Р°." + chr(13) + chr(10) +;
+                        "РџРµСЂРµРЅРµСЃС‚Рё РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ СЃС‡РµС‚ РёР· РїРµСЂРІРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°?",TITLEAPP,36)
+     if nRet == 6 //Р”Р°
        ::DS:FieldValue("ACNT_ID",cSchet)
      else
        lAnalit := .F.
@@ -9104,13 +9104,13 @@ local cDocJrn , cDocDim := "", cSfDocDim
       lAnalit := (DIC_PLAN_SCH)->analit_y_n
    endif
  endif
- if !::mlRePlaceMod .And. lAnalit // Есть аналитика - может нужно переписать
-   //Аналитики одинаковые ничего переписывать не нужно
+ if !::mlRePlaceMod .And. lAnalit // Р•СЃС‚СЊ Р°РЅР°Р»РёС‚РёРєР° - РјРѕР¶РµС‚ РЅСѓР¶РЅРѕ РїРµСЂРµРїРёСЃР°С‚СЊ
+   //РђРЅР°Р»РёС‚РёРєРё РѕРґРёРЅР°РєРѕРІС‹Рµ РЅРёС‡РµРіРѕ РїРµСЂРµРїРёСЃС‹РІР°С‚СЊ РЅРµ РЅСѓР¶РЅРѕ
    if lSchet
      if lFirst
-       nRet := messagebox("У документов разные аналитические коды." + chr(13) + chr(10) +;
-                          "Перенести в счет-фактуру аналитику из первого документа?",TITLEAPP,36)
-       if nRet == 6 //Да
+       nRet := messagebox("РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ СЂР°Р·РЅС‹Рµ Р°РЅР°Р»РёС‚РёС‡РµСЃРєРёРµ РєРѕРґС‹." + chr(13) + chr(10) +;
+                          "РџРµСЂРµРЅРµСЃС‚Рё РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ Р°РЅР°Р»РёС‚РёРєСѓ РёР· РїРµСЂРІРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°?",TITLEAPP,36)
+       if nRet == 6 //Р”Р°
          ::DS:FieldValue("ANALIT",cAnalit)
        endif
      else
@@ -9120,9 +9120,9 @@ local cDocJrn , cDocDim := "", cSfDocDim
      if !Empty(cSchet) .And. (::mAliasInv)->ACNT_ID == cSchet
        if !(Upper(Alltrim(cAnalit)) ==  Upper(Alltrim((::mAliasInv)->ANALIT)))
          if lFirst
-           nRet := messagebox("У документов разные аналитические коды." + chr(13) + chr(10) +;
-                              "Перенести в счет-фактуру аналитику из первого документа?",TITLEAPP,36)
-           if nRet == 6 //Да
+           nRet := messagebox("РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ СЂР°Р·РЅС‹Рµ Р°РЅР°Р»РёС‚РёС‡РµСЃРєРёРµ РєРѕРґС‹." + chr(13) + chr(10) +;
+                              "РџРµСЂРµРЅРµСЃС‚Рё РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ Р°РЅР°Р»РёС‚РёРєСѓ РёР· РїРµСЂРІРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°?",TITLEAPP,36)
+           if nRet == 6 //Р”Р°
              ::DS:FieldValue("ANALIT",cAnalit)
            endif
          else
@@ -9131,9 +9131,9 @@ local cDocJrn , cDocDim := "", cSfDocDim
        endif
      elseif !Empty(cSchet) .And. !((::mAliasInv)->ACNT_ID == cSchet)
        if lFirst
-         nRet := messagebox("У документов разные аналитические коды." + chr(13) + chr(10) +;
-                            "Перенести в счет-фактуру аналитику из первого документа?",TITLEAPP,36)
-         if nRet == 6 //Да
+         nRet := messagebox("РЈ РґРѕРєСѓРјРµРЅС‚РѕРІ СЂР°Р·РЅС‹Рµ Р°РЅР°Р»РёС‚РёС‡РµСЃРєРёРµ РєРѕРґС‹." + chr(13) + chr(10) +;
+                            "РџРµСЂРµРЅРµСЃС‚Рё РІ СЃС‡РµС‚-С„Р°РєС‚СѓСЂСѓ Р°РЅР°Р»РёС‚РёРєСѓ РёР· РїРµСЂРІРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°?",TITLEAPP,36)
+         if nRet == 6 //Р”Р°
            //cAnalit := grMaskReMake(cSchet,cAnalit,(::mAliasInv)->ACNT_ID)
            cAnalit := grMaskReFill((::mAliasInv)->ACNT_ID,;
                                    (::mAliasInv)->ANALIT,;
@@ -9213,7 +9213,7 @@ local i,n , dDateUr,nDocRate //dbSfDoc,cAlSfDoc,
     if ::aSfDoc[i][_DEL] .Or. !(::aSfDoc[i][_DOCID] == ::aSfDoc[i][_DOCSTRID])
       Loop
     endif
-    //if (cAlSfDoc)->DOC_ID == (cAlSfDoc)->DOCSTR_ID // документ а не строка документа
+    //if (cAlSfDoc)->DOC_ID == (cAlSfDoc)->DOCSTR_ID // РґРѕРєСѓРјРµРЅС‚ Р° РЅРµ СЃС‚СЂРѕРєР° РґРѕРєСѓРјРµРЅС‚Р°
       cDocId := ::aSfDoc[i][_DOCID]//(cAlSfDoc)->DOC_ID
       nJrn := ::aSfDoc[i][_JRNID]//(cAlSfDoc)->JRN_ID
       if ValType(obj) == "O"
@@ -9221,7 +9221,7 @@ local i,n , dDateUr,nDocRate //dbSfDoc,cAlSfDoc,
         obj := nil
       endif
       do case
-      /*  22989 - платежи не регистрим
+      /*  22989 - РїР»Р°С‚РµР¶Рё РЅРµ СЂРµРіРёСЃС‚СЂРёРј
         case nJrn == 101
           obj := clsTaxForDoc51():New()
           cTagName := "TAG_OPER"
@@ -9281,8 +9281,8 @@ local i,n , dDateUr,nDocRate //dbSfDoc,cAlSfDoc,
                      ;//   16           17 18 19 20 21 22 23       24       25  26     27   28
                      ,::mTbApReg,::mTbCard,  ,  ,  ,  ,  ,  , obj:SRC_URNUM,  ,dDateUr, ,nDocRate)
 
-        /*   22989 - платежи не регистрим
-        if nJrn $ { 101,201 } // 22974 - проставим идентификатор с-ф в документ основание
+        /*   22989 - РїР»Р°С‚РµР¶Рё РЅРµ СЂРµРіРёСЃС‚СЂРёРј
+        if nJrn $ { 101,201 } // 22974 - РїСЂРѕСЃС‚Р°РІРёРј РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃ-С„ РІ РґРѕРєСѓРјРµРЅС‚ РѕСЃРЅРѕРІР°РЅРёРµ
           For i := 1 to len(::maTbDoc)
             if nJrn == ::maTbDoc[i][1]
               if ::maTbDoc[i][2]:Seek(cDocId,.T.,"TAG_OPER")
@@ -9317,8 +9317,8 @@ local i,n , dDateUr,nDocRate //dbSfDoc,cAlSfDoc,
   end sequence
 Return .T.
 
-// Блокируем записи выбранных документов
-// разблокируем остальные, кроме тех которые брали на редактирование
+// Р‘Р»РѕРєРёСЂСѓРµРј Р·Р°РїРёСЃРё РІС‹Р±СЂР°РЅРЅС‹С… РґРѕРєСѓРјРµРЅС‚РѕРІ
+// СЂР°Р·Р±Р»РѕРєРёСЂСѓРµРј РѕСЃС‚Р°Р»СЊРЅС‹Рµ, РєСЂРѕРјРµ С‚РµС… РєРѕС‚РѕСЂС‹Рµ Р±СЂР°Р»Рё РЅР° СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ
 Method clsTax_Inv:ReLockDocForSf(nJrn,aParam)
   local oErr,i,n,j
   begin sequence
@@ -9337,7 +9337,7 @@ Method clsTax_Inv:ReLockDocForSf(nJrn,aParam)
         if (::maTbDoc[i][2])->(DbRLock(aParam[j]))
           AADD(::maTbDoc[i][4],aParam[j])
         else
-          messagebox("Документ-источник редактируется.",TITLEAPP,48)
+          messagebox("Р”РѕРєСѓРјРµРЅС‚-РёСЃС‚РѕС‡РЅРёРє СЂРµРґР°РєС‚РёСЂСѓРµС‚СЃСЏ.",TITLEAPP,48)
           Break(.F.)
         endif
       next
@@ -9356,14 +9356,14 @@ Method clsTax_Inv:ReLockDocForSf(nJrn,aParam)
 Return .T.
 
 *
-*                     востановление аннулированных записей
-* Восстановить аннулированные  записи - можно по текущему счету-фактуре.
-* При этом дата и номер доп листа  очищаются. Восстановить записи
-* по счету-фактуре можно только в том случае, если по нему нет
-* других, не аннулированных записей, при этом восстанавливаются
-* все записи сразу.
+*                     РІРѕСЃС‚Р°РЅРѕРІР»РµРЅРёРµ Р°РЅРЅСѓР»РёСЂРѕРІР°РЅРЅС‹С… Р·Р°РїРёСЃРµР№
+* Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ Р°РЅРЅСѓР»РёСЂРѕРІР°РЅРЅС‹Рµ  Р·Р°РїРёСЃРё - РјРѕР¶РЅРѕ РїРѕ С‚РµРєСѓС‰РµРјСѓ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ.
+* РџСЂРё СЌС‚РѕРј РґР°С‚Р° Рё РЅРѕРјРµСЂ РґРѕРї Р»РёСЃС‚Р°  РѕС‡РёС‰Р°СЋС‚СЃСЏ. Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ Р·Р°РїРёСЃРё
+* РїРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ РјРѕР¶РЅРѕ С‚РѕР»СЊРєРѕ РІ С‚РѕРј СЃР»СѓС‡Р°Рµ, РµСЃР»Рё РїРѕ РЅРµРјСѓ РЅРµС‚
+* РґСЂСѓРіРёС…, РЅРµ Р°РЅРЅСѓР»РёСЂРѕРІР°РЅРЅС‹С… Р·Р°РїРёСЃРµР№, РїСЂРё СЌС‚РѕРј РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°СЋС‚СЃСЏ
+* РІСЃРµ Р·Р°РїРёСЃРё СЃСЂР°Р·Сѓ.
 *
-* 43544 - Аннулирование записей доп.листов (корректировочных).
+* 43544 - РђРЅРЅСѓР»РёСЂРѕРІР°РЅРёРµ Р·Р°РїРёСЃРµР№ РґРѕРї.Р»РёСЃС‚РѕРІ (РєРѕСЂСЂРµРєС‚РёСЂРѕРІРѕС‡РЅС‹С…).
 
 Method clsTax_Inv:RecoverAnulRecords(lNoDoc)
   local dsSF, dsBook,dsBookSt, nRecNo, nRecNoSt
@@ -9398,9 +9398,9 @@ Method clsTax_Inv:RecoverAnulRecords(lNoDoc)
     *check before recovery
     do while !dsBook:Eof
       if !( dsBook:FieldValue("CMP_TP") $ "1,3" )
-        cMsg := "Восстановить записи по счету-фактуре можно"+CRLF+;
-                "только в том случае, если по нему нет других,"+CRLF+;
-                "не аннулированных записей."
+        cMsg := "Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ Р·Р°РїРёСЃРё РїРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ РјРѕР¶РЅРѕ"+CRLF+;
+                "С‚РѕР»СЊРєРѕ РІ С‚РѕРј СЃР»СѓС‡Р°Рµ, РµСЃР»Рё РїРѕ РЅРµРјСѓ РЅРµС‚ РґСЂСѓРіРёС…,"+CRLF+;
+                "РЅРµ Р°РЅРЅСѓР»РёСЂРѕРІР°РЅРЅС‹С… Р·Р°РїРёСЃРµР№."
         break( 1 )
       else
         if Empty(aDopLst[1])
@@ -9423,9 +9423,9 @@ Method clsTax_Inv:RecoverAnulRecords(lNoDoc)
     aDopLst := {"","",CTOD("")}
     do while !dsBookSt:Eof
       if !( dsBookSt:FieldValue("CMP_TP") $ "1,3" )
-        cMsg := "Восстановить записи по счету-фактуре можно"+CRLF+;
-                "только в том случае, если по нему нет других,"+CRLF+;
-                "не аннулированных записей."
+        cMsg := "Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ Р·Р°РїРёСЃРё РїРѕ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ РјРѕР¶РЅРѕ"+CRLF+;
+                "С‚РѕР»СЊРєРѕ РІ С‚РѕРј СЃР»СѓС‡Р°Рµ, РµСЃР»Рё РїРѕ РЅРµРјСѓ РЅРµС‚ РґСЂСѓРіРёС…,"+CRLF+;
+                "РЅРµ Р°РЅРЅСѓР»РёСЂРѕРІР°РЅРЅС‹С… Р·Р°РїРёСЃРµР№."
         break( 1 )
       else
         if Empty(aDopLst[1])
@@ -9446,7 +9446,7 @@ Method clsTax_Inv:RecoverAnulRecords(lNoDoc)
       dsBookSt:skip(1)
     enddo
 
-    *если все записи в книге аннулированы, то и в этих полях 0
+    *РµСЃР»Рё РІСЃРµ Р·Р°РїРёСЃРё РІ РєРЅРёРіРµ Р°РЅРЅСѓР»РёСЂРѕРІР°РЅС‹, С‚Рѕ Рё РІ СЌС‚РёС… РїРѕР»СЏС… 0
     dsSF:FieldValue("Sum_Book", 0)
     dsSF:FieldValue("Sum_PAY" , 0)
     dsSF:FieldValue("Sum_Shp" , 0)
@@ -9454,9 +9454,9 @@ Method clsTax_Inv:RecoverAnulRecords(lNoDoc)
     //dsSF:FieldValue("Sum_Use" , 0)
 
     if lDiffer
-      cMsg := "Записи по данному счету-фактуре " + chr(13) + chr(10) + ;
-              "аннулировались неоднократно. " + chr(13) + chr(10) + ;
-              "Восстановить все аннулированные записи? "
+      cMsg := "Р—Р°РїРёСЃРё РїРѕ РґР°РЅРЅРѕРјСѓ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ " + chr(13) + chr(10) + ;
+              "Р°РЅРЅСѓР»РёСЂРѕРІР°Р»РёСЃСЊ РЅРµРѕРґРЅРѕРєСЂР°С‚РЅРѕ. " + chr(13) + chr(10) + ;
+              "Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ РІСЃРµ Р°РЅРЅСѓР»РёСЂРѕРІР°РЅРЅС‹Рµ Р·Р°РїРёСЃРё? "
 
       r :=messagebox(cMsg,TITLEAPP,36)
       if !(r == 6)
@@ -9548,9 +9548,9 @@ Method clsTax_Inv:CreateBrg(cCnt)
     cTag := aFile[1][2]
     tb:SetOrder(cTag)
   elseif cCnt == "2"
-     if (::mAliasInv)->TI_CTG == "1"   //покупки
+     if (::mAliasInv)->TI_CTG == "1"   //РїРѕРєСѓРїРєРё
        tb := CreateDbRecord(B6_DBF_PATH + aFile[3][1])
-     else  //продажи
+     else  //РїСЂРѕРґР°Р¶Рё
        tb := CreateDbRecord(B6_DBF_PATH + aFile[2][1])
      endif
      cTag := aFile[1][2]
@@ -9626,11 +9626,11 @@ Static cCntAnalit := "" ,cDocDim := ""
         cDimId := "0000000000000000001044"
         cDocDim :=  ::aTabCnt[n][2]:FieldValue("DOCDIM")
       else
-        cVidDoc := "Заказ"//::aTabCnt[n][2]:FieldValue("dopcode")
+        cVidDoc := "Р—Р°РєР°Р·"//::aTabCnt[n][2]:FieldValue("dopcode")
         cNumDoc := ::aTabCnt[n][2]:FieldValue("numdoc")
         cDateDoc := DTOC(::aTabCnt[n][2]:FieldValue("date"))
         if (::mAliasInv)->TI_CTG == "1"
-          cDimId := "0000000000000000001059" // Заказ покупка
+          cDimId := "0000000000000000001059" // Р—Р°РєР°Р· РїРѕРєСѓРїРєР°
         else
           cDimId := "0000000000000000001008"
         endif
@@ -9659,15 +9659,15 @@ Static cCntAnalit := "" ,cDocDim := ""
     */
   endif
 
-  if nParam == 1 // вид д-та
+  if nParam == 1 // РІРёРґ Рґ-С‚Р°
     cRet := cVidDoc
-  elseif  nParam == 2 // номер д-та
+  elseif  nParam == 2 // РЅРѕРјРµСЂ Рґ-С‚Р°
     cRet := cNumDoc
-  elseif nParam == 3  // дата д-та
+  elseif nParam == 3  // РґР°С‚Р° Рґ-С‚Р°
     cRet := cDateDoc
-  elseif nParam == 4  // аналитика д-та
+  elseif nParam == 4  // Р°РЅР°Р»РёС‚РёРєР° Рґ-С‚Р°
     cRet := cCntAnalit
-  elseif nParam == 5  // доп.измерение д-та
+  elseif nParam == 5  // РґРѕРї.РёР·РјРµСЂРµРЅРёРµ Рґ-С‚Р°
     cRet := cDocDim
   endif
 
@@ -9691,7 +9691,7 @@ Local nLock := 0,nAll:= 0,nSum:= 0,cMsg := ""
           (::mAliasInv)->(DbRUnLock())
         endif
       else
-        messagebox("Изменение невозможно - запись сформирована на полную сумму",TITLEAPP,48)
+        messagebox("РР·РјРµРЅРµРЅРёРµ РЅРµРІРѕР·РјРѕР¶РЅРѕ - Р·Р°РїРёСЃСЊ СЃС„РѕСЂРјРёСЂРѕРІР°РЅР° РЅР° РїРѕР»РЅСѓСЋ СЃСѓРјРјСѓ",TITLEAPP,48)
       endif
     endif
     Return .T.
@@ -9721,14 +9721,14 @@ Local nLock := 0,nAll:= 0,nSum:= 0,cMsg := ""
     nRecMark := ::MarkNext()
   enddo
   if nLock > 0 .Or. nSum > 0
-    cMsg := "Статус изменен в " + Alltrim(Str(nAll-nLock-nSum)) + " счетах-фактурах" + chr(13) + chr(10)
+    cMsg := "РЎС‚Р°С‚СѓСЃ РёР·РјРµРЅРµРЅ РІ " + Alltrim(Str(nAll-nLock-nSum)) + " СЃС‡РµС‚Р°С…-С„Р°РєС‚СѓСЂР°С…" + chr(13) + chr(10)
     if nSum > 0
-      cMsg += "Изменение невозможно в " + Alltrim(Str(nSum)) + " счетах-фактурах - " + chr(13) + chr(10)
-      cMsg += "записи сформированы на полную сумму." + chr(13) + chr(10)
+      cMsg += "РР·РјРµРЅРµРЅРёРµ РЅРµРІРѕР·РјРѕР¶РЅРѕ РІ " + Alltrim(Str(nSum)) + " СЃС‡РµС‚Р°С…-С„Р°РєС‚СѓСЂР°С… - " + chr(13) + chr(10)
+      cMsg += "Р·Р°РїРёСЃРё СЃС„РѕСЂРјРёСЂРѕРІР°РЅС‹ РЅР° РїРѕР»РЅСѓСЋ СЃСѓРјРјСѓ." + chr(13) + chr(10)
     endif
     if nLock > 0
-      cMsg += "Изменение не произведено в " + Alltrim(Str(nLock)) + " счетах-фактурах - " + chr(13) + chr(10)
-      cMsg += "записи заблокированы другими пользователями." + chr(13) + chr(10)
+      cMsg += "РР·РјРµРЅРµРЅРёРµ РЅРµ РїСЂРѕРёР·РІРµРґРµРЅРѕ РІ " + Alltrim(Str(nLock)) + " СЃС‡РµС‚Р°С…-С„Р°РєС‚СѓСЂР°С… - " + chr(13) + chr(10)
+      cMsg += "Р·Р°РїРёСЃРё Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅС‹ РґСЂСѓРіРёРјРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏРјРё." + chr(13) + chr(10)
     endif
     messagebox(cMsg,TITLEAPP,48)
   endif
@@ -9737,9 +9737,9 @@ Return .T.
 
 Method clsTax_Inv:SetParamStrSum()
 Local oStr,oSum,cAl,cAlTaxTp,cAlSprNds
-local lStorno := ((::mAliasInv)->MOVE_TP $ {'СЗ','СП'})
+local lStorno := ((::mAliasInv)->MOVE_TP $ {'РЎР—','РЎРџ'})
 Local cModId := (::mAliasInv)->MOD_ID//,s := "",n := 0,cTag,cTagSpr
-  // ???? Проверить на соответствие существующую и налоговую одель документа
+  // ???? РџСЂРѕРІРµСЂРёС‚СЊ РЅР° СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРµ СЃСѓС‰РµСЃС‚РІСѓСЋС‰СѓСЋ Рё РЅР°Р»РѕРіРѕРІСѓСЋ РѕРґРµР»СЊ РґРѕРєСѓРјРµРЅС‚Р°
   if Empty(cModId)
     cModId := ::mParamIni[4]
   endif
@@ -9771,7 +9771,7 @@ Local cModId := (::mAliasInv)->MOD_ID//,s := "",n := 0,cTag,cTagSpr
   (cAl)->(OrdScope(1,cModId))
   (cAl)->(DbGoTop())
   if (cAl)->(Eof())
-     messagebox("Не определены строки налоговой модели!")
+     messagebox("РќРµ РѕРїСЂРµРґРµР»РµРЅС‹ СЃС‚СЂРѕРєРё РЅР°Р»РѕРіРѕРІРѕР№ РјРѕРґРµР»Рё!")
      Return .F.
   endif
   do while !(cAl)->(Eof())
@@ -9813,7 +9813,7 @@ Method clsTax_Inv:Pereschet()
       ::TAX_STR:TAXSTRSUM:GoTop()
       do while !(::mAliasSum)->(Eof())
         if (::mAliasSum)->IS_HAND
-          // 28296 pg если изменяли акциз без ставки - пересчет не делаем
+          // 28296 pg РµСЃР»Рё РёР·РјРµРЅСЏР»Рё Р°РєС†РёР· Р±РµР· СЃС‚Р°РІРєРё - РїРµСЂРµСЃС‡РµС‚ РЅРµ РґРµР»Р°РµРј
           //if !(Alltrim(::TAX_STR:TAXSTRSUM:SYS_NUM) == "1" .And. Empty((::mAliasSum)->TAX_IDRT))
             lPer := .T.
             Exit
@@ -9846,7 +9846,7 @@ Method clsTax_Inv:GetDocForStr(cDocName)
   local oErr ,cIdStr,cType,cJrn
   Local i,n,cNum,cVid,cDate,nTab,cKey,cMsg
   Local a := {}
-  //Материалы, Товары, Услуги
+  //РњР°С‚РµСЂРёР°Р»С‹, РўРѕРІР°СЂС‹, РЈСЃР»СѓРіРё
   begin sequence
 
   cIdStr := ::TAX_STR:STR_ID
@@ -9862,7 +9862,7 @@ Method clsTax_Inv:GetDocForStr(cDocName)
       cVid  := "codedoc"
       cDate := "date"
       cKey  := "NNOPER_"
-      cMsg := "Товары "
+      cMsg := "РўРѕРІР°СЂС‹ "
 
     case  cType == "3"
       cJrn := "0901"
@@ -9870,7 +9870,7 @@ Method clsTax_Inv:GetDocForStr(cDocName)
       cVid  := "codedoc"
       cDate := "date"
       cKey  := "NNOPER_"
-      cMsg := "Материалы "
+      cMsg := "РњР°С‚РµСЂРёР°Р»С‹ "
     case  cType == "4"
       if ::TI_CTG == "1"
         cJrn := "TV01"
@@ -9881,14 +9881,14 @@ Method clsTax_Inv:GetDocForStr(cDocName)
       cVid  := "type_p"
       cDate := "tek_data"
       cKey  := "NNOPER_"
-      cMsg := "Услуги "
+      cMsg := "РЈСЃР»СѓРіРё "
      otherwise
       Break(.T.)
   endcase
   if ::TI_CTG == "1"
-    cMsg += " оприходованы."
+    cMsg += " РѕРїСЂРёС…РѕРґРѕРІР°РЅС‹."
   else
-    cMsg += " отгруженны."
+    cMsg += " РѕС‚РіСЂСѓР¶РµРЅРЅС‹."
   endif
   for nTab := 1 to len(::aTab)
     if cJrn == ::aTab[nTab][5]
@@ -9899,17 +9899,17 @@ Method clsTax_Inv:GetDocForStr(cDocName)
     if Len(a) < 1 .And. ::aSFDOC[i][_SFSTRID] == cIdStr .And. !::aSFDOC[i][_DEL]
       for n := 1 to len(::maTbDoc)
         if Len(a) < 1 .And. cJrn == ::maTbDoc[n][1]
-          // Запись может быть новая
-          // или взятая на редактирование
+          // Р—Р°РїРёСЃСЊ РјРѕР¶РµС‚ Р±С‹С‚СЊ РЅРѕРІР°СЏ
+          // РёР»Рё РІР·СЏС‚Р°СЏ РЅР° СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ
           if ::aSFDOC[i][_STATUS] != "0"
-          // у строки документа в поле Oper_Fact
-          // может не быть записи или запись не соответствует
-          // строке - перевыбрали тот же документ
+          // Сѓ СЃС‚СЂРѕРєРё РґРѕРєСѓРјРµРЅС‚Р° РІ РїРѕР»Рµ Oper_Fact
+          // РјРѕР¶РµС‚ РЅРµ Р±С‹С‚СЊ Р·Р°РїРёСЃРё РёР»Рё Р·Р°РїРёСЃСЊ РЅРµ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚
+          // СЃС‚СЂРѕРєРµ - РїРµСЂРµРІС‹Р±СЂР°Р»Рё С‚РѕС‚ Р¶Рµ РґРѕРєСѓРјРµРЅС‚
             (::maTbDoc[n][5])->(OrdSetFocus(::aTab[nTab][8]))
             if Len(a) < 1 .And. (::maTbDoc[n][5])->(DbSeek(::aSFDOC[i][_DOCSTRID]))
               (::maTbDoc[n][2])->(OrdSetFocus(::aTab[nTab][2]))
               if (::maTbDoc[n][2])->(DbSeek((::maTbDoc[n][5])->&cKey))
-                AADD(a,(::maTbDoc[n][2])->&cVid + " № " + (::maTbDoc[n][2])->&cNum + " от " + DTOC((::maTbDoc[n][2])->&cDate) )
+                AADD(a,(::maTbDoc[n][2])->&cVid + " в„– " + (::maTbDoc[n][2])->&cNum + " РѕС‚ " + DTOC((::maTbDoc[n][2])->&cDate) )
               endif
             endif
           else
@@ -9924,7 +9924,7 @@ Method clsTax_Inv:GetDocForStr(cDocName)
                 cDate := DTOC((::maTbDoc[n][2])->&cDate)
                 */
                   if !Empty((::maTbDoc[n][2])->Oper_Fact)
-                    AADD(a,(::maTbDoc[n][2])->&cVid + " № " + (::maTbDoc[n][2])->&cNum + " от " + DTOC((::maTbDoc[n][2])->&cDate) )
+                    AADD(a,(::maTbDoc[n][2])->&cVid + " в„– " + (::maTbDoc[n][2])->&cNum + " РѕС‚ " + DTOC((::maTbDoc[n][2])->&cDate) )
                   endif
                 endif
                 (::maTbDoc[n][5])->(DbSkip(1))
@@ -9941,8 +9941,8 @@ Method clsTax_Inv:GetDocForStr(cDocName)
     Break(.T.)
   endif
   cMsg += chr(13) + chr(10)
-  cMsg += "Документ: " + chr(13) + chr(10)
-  //+ cVid + " № " + cNum + " от " + cDate
+  cMsg += "Р”РѕРєСѓРјРµРЅС‚: " + chr(13) + chr(10)
+  //+ cVid + " в„– " + cNum + " РѕС‚ " + cDate
   for i := 1 to len(a)
     cMsg += a[i]  + chr(13) + chr(10)
   next
@@ -9983,14 +9983,14 @@ Return .T.
 
 Method clsTax_Inv:ReplaceNdsFromKalk(aNdsAll)
 Local cIdRateN,lNoNds
-  if !(aNdsAll[2] == nil) // ставка определена
+  if !(aNdsAll[2] == nil) // СЃС‚Р°РІРєР° РѕРїСЂРµРґРµР»РµРЅР°
     if aNdsAll[2] == 0
       lNoNds := aNdsAll[5]
     endif
     cIdRateN := ""
     if !((::mAliasSum)->TAX_RATE == aNdsAll[2]) .Or. (aNdsAll[2] == 0)
       if !CheckIdRateForRate(,aNdsAll[2],@cIdRateN,,"2",lNoNds)
-        messagebox(" Не удалось получить идентификатор ставки для НДС!",TITLEAPP,48)
+        messagebox(" РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚Р°РІРєРё РґР»СЏ РќР”РЎ!",TITLEAPP,48)
         Return .F.
       endif
       (::mAliasSum)->TAX_IDRT := cIdRateN
@@ -10148,7 +10148,7 @@ Local cCnt := (::mAliasInv)->CNT_TYPE
   endif
 Return .T.
 /*
-//определяем как заполняется партионная карточка
+//РѕРїСЂРµРґРµР»СЏРµРј РєР°Рє Р·Р°РїРѕР»РЅСЏРµС‚СЃСЏ РїР°СЂС‚РёРѕРЅРЅР°СЏ РєР°СЂС‚РѕС‡РєР°
 Method clsTax_Inv:GetPAdd(cArm)
 Local cPath, s
 
@@ -10168,9 +10168,9 @@ Local cPath, s
    endif
 Return .T.
 */
-// nFor - 0 - старый банк
-//        1 - старая касса
-//        2 - новые денежные средства
+// nFor - 0 - СЃС‚Р°СЂС‹Р№ Р±Р°РЅРє
+//        1 - СЃС‚Р°СЂР°СЏ РєР°СЃСЃР°
+//        2 - РЅРѕРІС‹Рµ РґРµРЅРµР¶РЅС‹Рµ СЃСЂРµРґСЃС‚РІР°
 Method clsTax_Inv:CreateForDoc51OrderRbook(tb,nFor,aLoc)
   local oErr
   Local cTbName,cTbNameM,cRBook := "" ,cRBookM := ""
@@ -10196,7 +10196,7 @@ Method clsTax_Inv:CreateForDoc51OrderRbook(tb,nFor,aLoc)
   else
     cTbName := "REAL\RBOOK.Dbf"
     cTbNameM := "REAL\RBOOKM.Dbf"
-    //cItemTp := "2" //"Т"
+    //cItemTp := "2" //"Рў"
     lTov := .F.
   endif
   if ! _DbAreaOpen(B6_DBF_PATH + cTbName, @cRBook,"TAG_OPER")
@@ -10213,7 +10213,7 @@ Method clsTax_Inv:CreateForDoc51OrderRbook(tb,nFor,aLoc)
     cBrgId := (tb)->CNT_DOC_ID
 
   elseif nFor == 2
-  // В деньгах - идентификатор карточки
+  // Р’ РґРµРЅСЊРіР°С… - РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєР°СЂС‚РѕС‡РєРё
     cKeyDoc := ""
     lR  := .F.
     cKeyCard := (tb)->ACNT_ID
@@ -10239,9 +10239,9 @@ Method clsTax_Inv:CreateForDoc51OrderRbook(tb,nFor,aLoc)
   (cRBookM)->(DbGoTop())
   Do While !(cRBookM)->(Eof())
     /*
-      2 - товары если ITEM_TP=T
-      3 - материалы если ITEM_TP=M
-      4 - услуги если ITEM_TP=У
+      2 - С‚РѕРІР°СЂС‹ РµСЃР»Рё ITEM_TP=T
+      3 - РјР°С‚РµСЂРёР°Р»С‹ РµСЃР»Рё ITEM_TP=M
+      4 - СѓСЃР»СѓРіРё РµСЃР»Рё ITEM_TP=РЈ
     */
     if lTov
       cItemTp := (cRBookM)->ITEM_TP
@@ -10253,7 +10253,7 @@ Method clsTax_Inv:CreateForDoc51OrderRbook(tb,nFor,aLoc)
       endif
     endif
     do case
-      case cItemTp == "2" //"Т"
+      case cItemTp == "2" //"Рў"
         StrTp := "2"
         if Select(cAlSlb) < 1
           if ! _DbAreaOpen(B6_DBF_PATH + "Sclad\MLabel.dbf", @cAlSLb,"MLABEL")
@@ -10265,7 +10265,7 @@ Method clsTax_Inv:CreateForDoc51OrderRbook(tb,nFor,aLoc)
         endif
         cAllb := cAlSlb
         cAlGr := cAlSGr
-      case cItemTp == "3" //"М"
+      case cItemTp == "3" //"Рњ"
         StrTp := "3"
         if Select(cAlZlb) < 1
           if ! _DbAreaOpen(B6_DBF_PATH + "Zapas\MLabel.dbf", @cAlZLb,"MLABEL")
@@ -10277,7 +10277,7 @@ Method clsTax_Inv:CreateForDoc51OrderRbook(tb,nFor,aLoc)
         endif
         cAllb := cAlZlb
         cAlGr := cAlZGr
-      case cItemTp == "4" //"У"
+      case cItemTp == "4" //"РЈ"
         StrTp := "4"
         if Select(cAlTlb) < 1
           if ! _DbAreaOpen(B6_DBF_PATH + "Tovar\MLabel.dbf", @cAlTLb,"MLABEL")
@@ -10291,12 +10291,12 @@ Method clsTax_Inv:CreateForDoc51OrderRbook(tb,nFor,aLoc)
         cAlGr := cAlTGr
     endcase
 
-    if!::TAX_STR:BeforAppend(StrTp,.T.) //kostia ошибка 31170 передадим SrtTp  !::TAX_STR:BeforAppend("0",.T.)
-      messagebox("Не удалось создать строку счета-фактуры!",TITLEAPP,48)
+    if!::TAX_STR:BeforAppend(StrTp,.T.) //kostia РѕС€РёР±РєР° 31170 РїРµСЂРµРґР°РґРёРј SrtTp  !::TAX_STR:BeforAppend("0",.T.)
+      messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃС‚СЂРѕРєСѓ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!",TITLEAPP,48)
       Break(.F.)
     endif
     if !::TAX_STR:Append()
-      messagebox("Не удалось создать строку счета-фактуры!",TITLEAPP,48)
+      messagebox("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃС‚СЂРѕРєСѓ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹!",TITLEAPP,48)
       Break(.F.)
     endif
     (::mAliasStr)->STR_TP := StrTp
@@ -10313,10 +10313,10 @@ Method clsTax_Inv:CreateForDoc51OrderRbook(tb,nFor,aLoc)
 
     (::mAliasStr)->SUM_NDS := (cRBookM)->SUM_NDS
     // 35057
-    //Если RBOOK.LNDS=F, TAX_BASE=RBOOKM.SUMOUT+ TAX_SUM для НДС
-    //Если RBOOK.LNDS=T, TAX_BASE=RBOOKM.SUMOUT
-    //для акциза тоже елис не входит, то прибавить, елис входит, то взять как есть
-    // pg  - получается что nBaseNds - это всегда сумма с налогом
+    //Р•СЃР»Рё RBOOK.LNDS=F, TAX_BASE=RBOOKM.SUMOUT+ TAX_SUM РґР»СЏ РќР”РЎ
+    //Р•СЃР»Рё RBOOK.LNDS=T, TAX_BASE=RBOOKM.SUMOUT
+    //РґР»СЏ Р°РєС†РёР·Р° С‚РѕР¶Рµ РµР»РёСЃ РЅРµ РІС…РѕРґРёС‚, С‚Рѕ РїСЂРёР±Р°РІРёС‚СЊ, РµР»РёСЃ РІС…РѕРґРёС‚, С‚Рѕ РІР·СЏС‚СЊ РєР°Рє РµСЃС‚СЊ
+    // pg  - РїРѕР»СѓС‡Р°РµС‚СЃСЏ С‡С‚Рѕ nBaseNds - СЌС‚Рѕ РІСЃРµРіРґР° СЃСѓРјРјР° СЃ РЅР°Р»РѕРіРѕРј
     if (cRBook)->L_NDS
       //nBaseNds := (cRBookM)->SUMOUT - (cRBookM)->SUM_NDS
       nBaseNds := (cRBookM)->SUMOUT
@@ -10338,7 +10338,7 @@ Method clsTax_Inv:CreateForDoc51OrderRbook(tb,nFor,aLoc)
     nSumNNds := (cRBookM)->SUMOUT
     for i :=  1 to len(aModStr)
       if AllTrim(aModStr[i][_SYSNUM]) == "1"
-      //Акциз
+      //РђРєС†РёР·
         mTax := (cRBookM)->SUM_ACZ
       else
         mTax := (cRBookM)->SUM_NDS
@@ -10373,18 +10373,18 @@ Method clsTax_Inv:CreateForDoc51OrderRbook(tb,nFor,aLoc)
 
     (::mAliasStr)->SUM_NNDS := (::mAliasStr)->SUM_A - (::mAliasStr)->SUM_NDS
     */
-    // Налоги
-    // Получим налоги из группы
+    // РќР°Р»РѕРіРё
+    // РџРѕР»СѓС‡РёРј РЅР°Р»РѕРіРё РёР· РіСЂСѓРїРїС‹
     cKey := Upper((cRBookM)->GRUP)
     if !(cAlGr)->(DbSeek(cKey))
       Break(.F.)
     endif
-    // НДС
+    // РќР”РЎ
     // 34735
-    //заказа продажи
-    //\REAL\RBOOKM ставка налога по строке (TAX_RATE, TAX_IDRT)формируется так:
-    //Запись таблицы SPR_ NDS со ставкой ищется на основе полей
-    //RBOOKM.NDS(ставка) и RBOOKM.NONDS(без НДС) из строки заказа
+    //Р·Р°РєР°Р·Р° РїСЂРѕРґР°Р¶Рё
+    //\REAL\RBOOKM СЃС‚Р°РІРєР° РЅР°Р»РѕРіР° РїРѕ СЃС‚СЂРѕРєРµ (TAX_RATE, TAX_IDRT)С„РѕСЂРјРёСЂСѓРµС‚СЃСЏ С‚Р°Рє:
+    //Р—Р°РїРёСЃСЊ С‚Р°Р±Р»РёС†С‹ SPR_ NDS СЃРѕ СЃС‚Р°РІРєРѕР№ РёС‰РµС‚СЃСЏ РЅР° РѕСЃРЅРѕРІРµ РїРѕР»РµР№
+    //RBOOKM.NDS(СЃС‚Р°РІРєР°) Рё RBOOKM.NONDS(Р±РµР· РќР”РЎ) РёР· СЃС‚СЂРѕРєРё Р·Р°РєР°Р·Р°
 
 
     if lTov
@@ -10393,7 +10393,7 @@ Method clsTax_Inv:CreateForDoc51OrderRbook(tb,nFor,aLoc)
         nAcz := (cAlGr)->PA
       endif
       cIdRateN := (cAlGr)->oper_nds
-      // Проверим соответствие идентификатора - ставке
+      // РџСЂРѕРІРµСЂРёРј СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРµ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° - СЃС‚Р°РІРєРµ
       if !Empty(cIdRateN)
         lRet := .F.
         if !LookUpSeek("SPR_NDS","TAG_OPER",@lRet,cIdRateN)
@@ -10405,31 +10405,31 @@ Method clsTax_Inv:CreateForDoc51OrderRbook(tb,nFor,aLoc)
       endif
       if Empty(cIdRateN)
         if !CheckIdRateForRate(,(cAlGr)->NDS,@cIdRateN,,"2")
-          messagebox(" Не удалось получить идентификатор ставки для НДС!",TITLEAPP,48)
+          messagebox(" РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚Р°РІРєРё РґР»СЏ РќР”РЎ!",TITLEAPP,48)
           Break(.F.)
         endif
       endif
     else
       nNds := (cRBookM)->NDS
       if !CheckIdRateForRate(,nNds,@cIdRateN,,"2",(cRBookM)->NONDS)
-        messagebox(" Не удалось получить идентификатор ставки для НДС!",TITLEAPP,48)
+        messagebox(" РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚Р°РІРєРё РґР»СЏ РќР”РЎ!",TITLEAPP,48)
         Break(.F.)
       endif
     endif
     if Empty(cIdRateN)
-       messagebox(" Не удалось получить идентификатор ставки для НДС!",TITLEAPP,48)
+       messagebox(" РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚Р°РІРєРё РґР»СЏ РќР”РЎ!",TITLEAPP,48)
        Break(.F.)
     endif
 
  //////////////////////////////////
-    // Получаем идентификатор ставки для акциза
+    // РџРѕР»СѓС‡Р°РµРј РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚Р°РІРєРё РґР»СЏ Р°РєС†РёР·Р°
     cIdRateA := ""
     if !(cItemTp == "4")
       if !Empty((cRBookM)->SUM_ACZ)
-      // Получаем идентификатор Акциза
+      // РџРѕР»СѓС‡Р°РµРј РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РђРєС†РёР·Р°
         nAcz := (cAlGr)->PA
         if !CheckIdRateForRate(,(cAlGr)->PA,@cIdRateA,,"1")
-          messagebox(" Не удалось получить идентификатор ставки для Акциза!",TITLEAPP,48)
+          messagebox(" РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚Р°РІРєРё РґР»СЏ РђРєС†РёР·Р°!",TITLEAPP,48)
           Break(.F.)
         endif
       else
@@ -10461,7 +10461,7 @@ Method clsTax_Inv:CreateForDoc51OrderRbook(tb,nFor,aLoc)
     (cRBookM)->(DbSkip(1))
   enddo
 
-  // Перенесем документ основания
+  // РџРµСЂРµРЅРµСЃРµРј РґРѕРєСѓРјРµРЅС‚ РѕСЃРЅРѕРІР°РЅРёСЏ
 
   if Empty((::mAliasInv)->CNT_DOC_ID)
      (::mAliasInv)->CNT_TYPE := cBrgType
@@ -10471,7 +10471,7 @@ Method clsTax_Inv:CreateForDoc51OrderRbook(tb,nFor,aLoc)
      endif
   endif
 
-  if Empty((::mAliasInv)->ACNT_ID) // счет нужно брать из документа
+  if Empty((::mAliasInv)->ACNT_ID) // СЃС‡РµС‚ РЅСѓР¶РЅРѕ Р±СЂР°С‚СЊ РёР· РґРѕРєСѓРјРµРЅС‚Р°
     if nFor == 0
       (::mAliasInv)->ACNT_ID := (tb)->cr
       (::mAliasInv)->ANALIT := (tb)->Scr
@@ -10596,10 +10596,10 @@ Method clsTax_Inv:CreateForDoc51OrderRbook(tb,nFor,aLoc)
     endif
   end sequence
 Return .T.
-// проверим нужно ли делать авансовый с-ф по заказу
-// nFor - 0 - старый банк
-//        1 - старая касса
-//        2 - новые денежные средства
+// РїСЂРѕРІРµСЂРёРј РЅСѓР¶РЅРѕ Р»Рё РґРµР»Р°С‚СЊ Р°РІР°РЅСЃРѕРІС‹Р№ СЃ-С„ РїРѕ Р·Р°РєР°Р·Сѓ
+// nFor - 0 - СЃС‚Р°СЂС‹Р№ Р±Р°РЅРє
+//        1 - СЃС‚Р°СЂР°СЏ РєР°СЃСЃР°
+//        2 - РЅРѕРІС‹Рµ РґРµРЅРµР¶РЅС‹Рµ СЃСЂРµРґСЃС‚РІР°
 Method clsTax_Inv:CheckRBook(tb,nFor,aLoc,nRet)
   local oErr ,nTaxBase,nSumAll,cTbName,cRBook := ""
   Local cKey,dDocDate,cBrgType ,cBrgId, cKeyCard, lR
@@ -10632,9 +10632,9 @@ Method clsTax_Inv:CheckRBook(tb,nFor,aLoc,nRet)
     if !SumForAvans(@nTaxBase,cKey,dDocDate)
       Break(.F.)
     endif
-   // Для одного документа  34520 - доработка - аванс на заказ
+   // Р”Р»СЏ РѕРґРЅРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°  34520 - РґРѕСЂР°Р±РѕС‚РєР° - Р°РІР°РЅСЃ РЅР° Р·Р°РєР°Р·
     if  nTaxBase == nSumAll
-    // Аванс на полную сумму платежного документа
+    // РђРІР°РЅСЃ РЅР° РїРѕР»РЅСѓСЋ СЃСѓРјРјСѓ РїР»Р°С‚РµР¶РЅРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°
        if ::TI_CTG == "1"
          cTbName := "TOVAR\RBOOK.Dbf"
        else
@@ -10647,7 +10647,7 @@ Method clsTax_Inv:CheckRBook(tb,nFor,aLoc,nRet)
        if nFor $ {0,1}
          cBrgId := (tb)->CNT_DOC_ID
        elseif nFor == 2
-       // В деньгах - идентификатор карточки
+       // Р’ РґРµРЅСЊРіР°С… - РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєР°СЂС‚РѕС‡РєРё
          cBrgId := ""
          lR  := .F.
          cKeyCard := (tb)->ACNT_ID
@@ -10665,9 +10665,9 @@ Method clsTax_Inv:CheckRBook(tb,nFor,aLoc,nRet)
 
        if (cRBook)->(DbSeek(cBrgId))
          if (cRBook)->SUMTOTAL == nSumAll
-             nRet := upgCustomMsg("Полная оплата заказа." + chr(13) + chr(10) + "Формировать позиции счета-фактуры",,;
-                                 {"По всему заказу  ",;
-                                  "По каждой позиции"},,.T.,.T.)
+             nRet := upgCustomMsg("РџРѕР»РЅР°СЏ РѕРїР»Р°С‚Р° Р·Р°РєР°Р·Р°." + chr(13) + chr(10) + "Р¤РѕСЂРјРёСЂРѕРІР°С‚СЊ РїРѕР·РёС†РёРё СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹",,;
+                                 {"РџРѕ РІСЃРµРјСѓ Р·Р°РєР°Р·Сѓ  ",;
+                                  "РџРѕ РєР°Р¶РґРѕР№ РїРѕР·РёС†РёРё"},,.T.,.T.)
 
 
          endif
@@ -10684,12 +10684,12 @@ Method clsTax_Inv:CheckRBook(tb,nFor,aLoc,nRet)
     endif
   end sequence
 Return .T.
-// Проверяем создан ли с-ф по заказу
+// РџСЂРѕРІРµСЂСЏРµРј СЃРѕР·РґР°РЅ Р»Рё СЃ-С„ РїРѕ Р·Р°РєР°Р·Сѓ
 Method clsTax_Inv:IsRBook(lZac)
 Local lRet := .T.,nRecNo := (::mAliasStr)->(RecNo())
   begin sequence
   lZac  := .F.
-  if (::cWa)->Move_Tp $ "ПР,ПП"
+  if (::cWa)->Move_Tp $ "РџР ,РџРџ"
     nRecNo := (::mAliasStr)->(RecNo())
     (::mAliasStr)->(DbGoTop())
     Do While !(::mAliasStr)->(Eof())
@@ -10709,7 +10709,7 @@ Local lRet := .T.,nRecNo := (::mAliasStr)->(RecNo())
 
   (::mAliasStr)->(DbGoTo(nRecNo))
 Return lRet
-// проверяем налоги под платежный документ если создали по заказу
+// РїСЂРѕРІРµСЂСЏРµРј РЅР°Р»РѕРіРё РїРѕРґ РїР»Р°С‚РµР¶РЅС‹Р№ РґРѕРєСѓРјРµРЅС‚ РµСЃР»Рё СЃРѕР·РґР°Р»Рё РїРѕ Р·Р°РєР°Р·Сѓ
 Method clsTax_Inv:CheckTaxForZac(nRet)
 local oErr
 Local lRet := .T. ,cOldTag,cKey
@@ -10717,7 +10717,7 @@ Local cTbName,cParamNDS,cParamSum,cAlsPrm := ""
 Local tb ,aNds ,nRecNo ,r ,i ,lNds,lNoRate ,cKeyKalk
 Local aModStr
   begin sequence
-  // Определим для какого журнала смотреть калькуляцию
+  // РћРїСЂРµРґРµР»РёРј РґР»СЏ РєР°РєРѕРіРѕ Р¶СѓСЂРЅР°Р»Р° СЃРјРѕС‚СЂРµС‚СЊ РєР°Р»СЊРєСѓР»СЏС†РёСЋ
   nRet := 0
   nRecNo := (::mAliasSum)->(RecNo())
   cOldTag := (::mAliasSum)->(OrdName())
@@ -10736,7 +10736,7 @@ Local aModStr
     cParamSum := "S_NDS18"
     cKeyKalk :=  (tb)->oper_kalk
   else
-  // Для остальных журналов ни чего не делаем
+  // Р”Р»СЏ РѕСЃС‚Р°Р»СЊРЅС‹С… Р¶СѓСЂРЅР°Р»РѕРІ РЅРё С‡РµРіРѕ РЅРµ РґРµР»Р°РµРј
     Break(.T.)
   endif
 
@@ -10744,9 +10744,9 @@ Local aModStr
     Break(.F.)
   endif
 
-  // Определим налоги и суммы в калькуляции
+  // РћРїСЂРµРґРµР»РёРј РЅР°Р»РѕРіРё Рё СЃСѓРјРјС‹ РІ РєР°Р»СЊРєСѓР»СЏС†РёРё
   if !(cAlsPrm)->(DbSeek(cKeyKalk))
-  // Нет калькуляции под документ
+  // РќРµС‚ РєР°Р»СЊРєСѓР»СЏС†РёРё РїРѕРґ РґРѕРєСѓРјРµРЅС‚
     Break(.T.)
   endif
   aNds := {}
@@ -10784,11 +10784,11 @@ Local aModStr
   endif
   aModStr :=  ::TAX_STR:TAXSTRSUM:maModStr
   if (len(aModStr) = 1 .And. AllTrim(aModStr[1][_SYSNUM]) == "1") .Or. len(aModStr) > 1
-     r:= upgCustomMsg("       Налоги по авансовому счету-фактуре," + chr(13) + chr(10) + ;
-                      "         сформированные на основе заказа,"+ chr(13) + chr(10) + ;
-                      "не совпадают с налогами по платежному документу." ,,;
-            {"Не сохранять",;
-             "Продолжить"},,.T.,.T.)
+     r:= upgCustomMsg("       РќР°Р»РѕРіРё РїРѕ Р°РІР°РЅСЃРѕРІРѕРјСѓ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ," + chr(13) + chr(10) + ;
+                      "         СЃС„РѕСЂРјРёСЂРѕРІР°РЅРЅС‹Рµ РЅР° РѕСЃРЅРѕРІРµ Р·Р°РєР°Р·Р°,"+ chr(13) + chr(10) + ;
+                      "РЅРµ СЃРѕРІРїР°РґР°СЋС‚ СЃ РЅР°Р»РѕРіР°РјРё РїРѕ РїР»Р°С‚РµР¶РЅРѕРјСѓ РґРѕРєСѓРјРµРЅС‚Сѓ." ,,;
+            {"РќРµ СЃРѕС…СЂР°РЅСЏС‚СЊ",;
+             "РџСЂРѕРґРѕР»Р¶РёС‚СЊ"},,.T.,.T.)
     nRet := r
   endif
   cOldTag := (::mAliasSum)->(OrdSetFocus("TAG_TAX"))
@@ -10799,7 +10799,7 @@ Local aModStr
   do while !(::mAliasSum)->(Eof())
     lNoRate := .T.
     if (::mAliasSum)->TAX_RATE  == 0
-     // Проверим 0 ставка или не облагается
+     // РџСЂРѕРІРµСЂРёРј 0 СЃС‚Р°РІРєР° РёР»Рё РЅРµ РѕР±Р»Р°РіР°РµС‚СЃСЏ
       lRet := .F.
       lNds := .F.
       if !LookUpSeek("SPR_NDS","TAG_OPER",@lRet,(::mAliasSum)->TAX_IDRT,"NONDS",@lNds)
@@ -10836,12 +10836,12 @@ Local aModStr
     next
   endif
   if !lRet
-     r:= upgCustomMsg("       Налоги по авансовому счету-фактуре," + chr(13) + chr(10) + ;
-                      "         сформированные на основе заказа,"+ chr(13) + chr(10) + ;
-                      "не совпадают с налогами по платежному документу." ,,;
-            {"Сохранять",;
-             "Не сохранять",;
-             "Продолжить"},,.T.,.T.)
+     r:= upgCustomMsg("       РќР°Р»РѕРіРё РїРѕ Р°РІР°РЅСЃРѕРІРѕРјСѓ СЃС‡РµС‚Сѓ-С„Р°РєС‚СѓСЂРµ," + chr(13) + chr(10) + ;
+                      "         СЃС„РѕСЂРјРёСЂРѕРІР°РЅРЅС‹Рµ РЅР° РѕСЃРЅРѕРІРµ Р·Р°РєР°Р·Р°,"+ chr(13) + chr(10) + ;
+                      "РЅРµ СЃРѕРІРїР°РґР°СЋС‚ СЃ РЅР°Р»РѕРіР°РјРё РїРѕ РїР»Р°С‚РµР¶РЅРѕРјСѓ РґРѕРєСѓРјРµРЅС‚Сѓ." ,,;
+            {"РЎРѕС…СЂР°РЅСЏС‚СЊ",;
+             "РќРµ СЃРѕС…СЂР°РЅСЏС‚СЊ",;
+             "РџСЂРѕРґРѕР»Р¶РёС‚СЊ"},,.T.,.T.)
     if r == 1
       nRet := 0
     elseif r == 2
@@ -10892,11 +10892,11 @@ Method clsTax_Inv:CheckUniqueNum(lReg,sMess)
   (::mTbInv)->(OrdSetFocus(cTag))
 
   if lReg
-    // Проверить уникальность в пределах вида и года
+    // РџСЂРѕРІРµСЂРёС‚СЊ СѓРЅРёРєР°Р»СЊРЅРѕСЃС‚СЊ РІ РїСЂРµРґРµР»Р°С… РІРёРґР° Рё РіРѕРґР°
     lUnique := .T.
     if (::mTbInv)->(DbSeek(cKey,.T.,"TAG_NUMREG"))
       do while (::mTbInv)->DOC_TP + left(DTOS((::mTbInv)->DOC_DATE),4) + Upper((::mTbInv)->REG_NUM) == cKey
-          //Такой же номер но не на этой записи
+          //РўР°РєРѕР№ Р¶Рµ РЅРѕРјРµСЂ РЅРѕ РЅРµ РЅР° СЌС‚РѕР№ Р·Р°РїРёСЃРё
          if (::mTbInv)->(RecNo()) != (::mAliasInv)->(RecNo())
            lUnique := .F.
            Exit
@@ -10905,7 +10905,7 @@ Method clsTax_Inv:CheckUniqueNum(lReg,sMess)
       enddo
     endif
     if !lUnique
-      sMess := "Регистрационный номер счета-фактуры не уникален!"
+      sMess := "Р РµРіРёСЃС‚СЂР°С†РёРѕРЅРЅС‹Р№ РЅРѕРјРµСЂ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹ РЅРµ СѓРЅРёРєР°Р»РµРЅ!"
     endif
   else
     if (::mAliasInv)->DEF
@@ -10920,16 +10920,16 @@ Method clsTax_Inv:CheckUniqueNum(lReg,sMess)
         enddo
       endif
     elseif (::mAliasInv)->TI_CTG == "1"
-      // Проверяем в пределах вида, контрагента и года
+      // РџСЂРѕРІРµСЂСЏРµРј РІ РїСЂРµРґРµР»Р°С… РІРёРґР°, РєРѕРЅС‚СЂР°РіРµРЅС‚Р° Рё РіРѕРґР°
       lUnique := .T.
       if ::mParamIni[_TAX_IN_NUM]
         if (::mTbInv)->(DbSeek(cKey,.T.,cTag))
            do while (::mTbInv)->DOC_TP + left(DTOS((::mTbInv)->DOC_DATE),4) + Upper((::mTbInv)->DOC_NUM) == cKey
-             //Для это го же партнера
+             //Р”Р»СЏ СЌС‚Рѕ РіРѕ Р¶Рµ РїР°СЂС‚РЅРµСЂР°
              if (::mTbInv)->PRT_ID == (::mAliasInv)->PRT_ID
-               //Такой же номер но не на этой записи
+               //РўР°РєРѕР№ Р¶Рµ РЅРѕРјРµСЂ РЅРѕ РЅРµ РЅР° СЌС‚РѕР№ Р·Р°РїРёСЃРё
                if (::mTbInv)->(RecNo()) != (::mAliasInv)->(RecNo())
-                 if (::mAliasInv)->MOVE_TP $ "ОТ,БП,ЗК"
+                 if (::mAliasInv)->MOVE_TP $ "РћРў,Р‘Рџ,Р—Рљ"
                    if !((::mTbInv)->IS_COMB .And. (::mAliasInv)->IS_COMB)
                      lUnique := .F.
                      Exit
@@ -10946,14 +10946,14 @@ Method clsTax_Inv:CheckUniqueNum(lReg,sMess)
         endif
       endif
     else
-     //  Проверяем в пределах вида и года
-      // Проверяем в пределах вида, контрагента и года
+     //  РџСЂРѕРІРµСЂСЏРµРј РІ РїСЂРµРґРµР»Р°С… РІРёРґР° Рё РіРѕРґР°
+      // РџСЂРѕРІРµСЂСЏРµРј РІ РїСЂРµРґРµР»Р°С… РІРёРґР°, РєРѕРЅС‚СЂР°РіРµРЅС‚Р° Рё РіРѕРґР°
       lUnique := .T.
       if (::mTbInv)->(DbSeek(cKey,.T.,cTag))
         do while (::mTbInv)->DOC_TP + left(DTOS((::mTbInv)->DOC_DATE),4) + Upper((::mTbInv)->DOC_NUM) == cKey
-           //Такой же номер но не на этой записи
+           //РўР°РєРѕР№ Р¶Рµ РЅРѕРјРµСЂ РЅРѕ РЅРµ РЅР° СЌС‚РѕР№ Р·Р°РїРёСЃРё
           if (::mTbInv)->(RecNo()) != (::mAliasInv)->(RecNo())
-            if (::mAliasInv)->MOVE_TP $ "ОТ,БП,ЗК"
+            if (::mAliasInv)->MOVE_TP $ "РћРў,Р‘Рџ,Р—Рљ"
               if !((::mTbInv)->IS_COMB .And. (::mAliasInv)->IS_COMB)
                 lUnique := .F.
                 Exit
@@ -10968,19 +10968,19 @@ Method clsTax_Inv:CheckUniqueNum(lReg,sMess)
       endif
     endif
     if !lUnique
-      if !(::mAliasInv)->DEF .And. (::mAliasInv)->MOVE_TP $ "ОТ,БП,ЗК"
-        sMess := "Номер счета-фактуры не уникален!"
-        sMess += ' Измените номер, или установите признак "Сводный"'
-        sMess += ' для всех счетов-фактур с совпадающими номерами.'
+      if !(::mAliasInv)->DEF .And. (::mAliasInv)->MOVE_TP $ "РћРў,Р‘Рџ,Р—Рљ"
+        sMess := "РќРѕРјРµСЂ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹ РЅРµ СѓРЅРёРєР°Р»РµРЅ!"
+        sMess += ' РР·РјРµРЅРёС‚Рµ РЅРѕРјРµСЂ, РёР»Рё СѓСЃС‚Р°РЅРѕРІРёС‚Рµ РїСЂРёР·РЅР°Рє "РЎРІРѕРґРЅС‹Р№"'
+        sMess += ' РґР»СЏ РІСЃРµС… СЃС‡РµС‚РѕРІ-С„Р°РєС‚СѓСЂ СЃ СЃРѕРІРїР°РґР°СЋС‰РёРјРё РЅРѕРјРµСЂР°РјРё.'
       else
-        sMess := "Номер счета-фактуры не уникален!"
+        sMess := "РќРѕРјРµСЂ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹ РЅРµ СѓРЅРёРєР°Р»РµРЅ!"
       endif
     endif
   endif
 
   recover
     lUnique  :=  .F.
-    sMess := "Ошибка проверки уникальности номера!"
+    sMess := "РћС€РёР±РєР° РїСЂРѕРІРµСЂРєРё СѓРЅРёРєР°Р»СЊРЅРѕСЃС‚Рё РЅРѕРјРµСЂР°!"
   end sequence
 Return lUnique
 
@@ -11012,7 +11012,7 @@ Method clsTax_Inv:CreateArrStrAssets(cAlStr,cCard,lGroup,aRec,dDoc, IdNds, nRecN
   local IdStrNds := "", cAlAssGr := ""
   begin sequence
   lRet := .F.
-  Key := "НДС"
+  Key := "РќР”РЎ"
   RetValue := ""
   if !LookUpSeek("TAX\TAX_TP","TAG_CODE",@lRet,Key,"TAX_ID",@RetValue)
     Break(.F.)
@@ -11031,9 +11031,9 @@ Method clsTax_Inv:CreateArrStrAssets(cAlStr,cCard,lGroup,aRec,dDoc, IdNds, nRecN
   (cAlSprNds)->(OrdScope(1,Key))
   (cAlSprNds)->(DbGoTop())
   if (cAlSprNds)->(eof())
-    //messagebox("Нет ставки НДС 18%.",TITLEAPP,48)
+    //messagebox("РќРµС‚ СЃС‚Р°РІРєРё РќР”РЎ 18%.",TITLEAPP,48)
     //break(.F.)
-    cMsg := "Нет ставки НДС 18%."
+    cMsg := "РќРµС‚ СЃС‚Р°РІРєРё РќР”РЎ 18%."
   else
     Do While !(cAlSprNds)->(Eof())
       if dDoc >= (cAlSprNds)->DATE_BEG
@@ -11054,9 +11054,9 @@ Method clsTax_Inv:CreateArrStrAssets(cAlStr,cCard,lGroup,aRec,dDoc, IdNds, nRecN
   (cAlSprNds)->(OrdScope(1,nil))
   (cAlSprNds)->(OrdSetFocus("TAG_OPER"))
   if Empty(IdNds)
-    //messagebox("Нет действующей на дату документа ставки НДС 18%.",TITLEAPP,48)
+    //messagebox("РќРµС‚ РґРµР№СЃС‚РІСѓСЋС‰РµР№ РЅР° РґР°С‚Сѓ РґРѕРєСѓРјРµРЅС‚Р° СЃС‚Р°РІРєРё РќР”РЎ 18%.",TITLEAPP,48)
     //break(.F.)
-    cMsg := "Нет действующей на дату документа ставки НДС 18%."
+    cMsg := "РќРµС‚ РґРµР№СЃС‚РІСѓСЋС‰РµР№ РЅР° РґР°С‚Сѓ РґРѕРєСѓРјРµРЅС‚Р° СЃС‚Р°РІРєРё РќР”РЎ 18%."
   endif
 
   Do While !(cAlStr)->(Eof())
@@ -11198,7 +11198,7 @@ Method clsTax_Inv:DelAllRec()
     oBook:Skip(1)
   enddo
   oObjBook := clsTax_Book():New()
-  if (::cWa)->MOVE_TP $ {'ПР','ПП'}
+  if (::cWa)->MOVE_TP $ {'РџР ','РџРџ'}
     oObjBook:lSfStDel := .F.
   else
     oObjBook:lSfDel := .F.
@@ -11239,8 +11239,8 @@ local cAl := ::GetTaxInvFrom()
 Return .T.
 
 
-//Для построения темпового индекса при отборе сторнирующий
-// с-ф в книге
+//Р”Р»СЏ РїРѕСЃС‚СЂРѕРµРЅРёСЏ С‚РµРјРїРѕРІРѕРіРѕ РёРЅРґРµРєСЃР° РїСЂРё РѕС‚Р±РѕСЂРµ СЃС‚РѕСЂРЅРёСЂСѓСЋС‰РёР№
+// СЃ-С„ РІ РєРЅРёРіРµ
 Method clsTax_Inv:SelectKorrSf()
 local aKorr := ::lNegativPozit()
 local n
@@ -11265,9 +11265,9 @@ begin sequence
   oObjBook := clsTax_Book():New()
   oObjBook:Open()
   if (::mAliasInv)->TI_CTG == "1"
-    aParam := {0,"1","ОП"}
+    aParam := {0,"1","РћРџ"}
   else
-    aParam := {0,"2","ОТ"}
+    aParam := {0,"2","РћРў"}
   endif
   if !oObjBook:BeforeAppend(aParam)
     Break(.F.)
