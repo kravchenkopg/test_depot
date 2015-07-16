@@ -1,5 +1,5 @@
-//импорт с-ф
-#include "bo_const.ch" 
+//РёРјРїРѕСЂС‚ СЃ-С„
+#include "bo_const.ch"
 #define _NOMSTR_      1
 #define _NAME_TOV_    2
 #define _OKEY_        3
@@ -34,18 +34,18 @@ altd()
   a := {}
   hxmldocs := HXMLDoc():new()
   hxmldocs:read(cFile)
-  elem := hxmldocs:Find("Файл")
+  elem := hxmldocs:Find("Р¤Р°Р№Р»")
   begin sequence
-    ParsXmlDoc(elem,a)     
+    ParsXmlDoc(elem,a)
   recover
-     AADD(aMssg,"не правильная XML структура файла.")
+     AADD(aMssg,"РЅРµ РїСЂР°РІРёР»СЊРЅР°СЏ XML СЃС‚СЂСѓРєС‚СѓСЂР° С„Р°Р№Р»Р°.")
     Return .F.
   end sequence
   if !GetStructXmlDoc(a,cFileName,cTiCtg,@aMssg)
     Return .F.
   endif
 Return .T.
- 
+
 Function GetStructXmlDoc(arr,cFile,cTiCtg,aMssg)
 local a := {},aStr := {},i
 local cParam,Value
@@ -56,7 +56,7 @@ local cDocNum := "", cDocDopNum := "" , dDocDate := CTOD("") , cMoveTp := "", cV
 local lRet ,lNoNds
 local cMsg := ''
 local cDocNumDef := "", cDocNumKor := "",cDocDopNumDef := "", cDocDopNumKor := "",  dDocDateDef := CTOD(""),dDocDateKor := CTOD("")
-local cDocNumKorSfDef := "",cDocDopNumKorSfDef := "",cDateNumKorSfDef := CTOD("") //Исправительный к корректируемому - в корректировочном
+local cDocNumKorSfDef := "",cDocDopNumKorSfDef := "",cDateNumKorSfDef := CTOD("") //РСЃРїСЂР°РІРёС‚РµР»СЊРЅС‹Р№ Рє РєРѕСЂСЂРµРєС‚РёСЂСѓРµРјРѕРјСѓ - РІ РєРѕСЂСЂРµРєС‚РёСЂРѕРІРѕС‡РЅРѕРј
 local IsDef := .F. , IsDefKorSf
 local IsBest5 := .F. , sTextInf := "" ,sTextInfStr := ""
 local idOper := "", nLen
@@ -75,41 +75,41 @@ local dCUST_DATE := CTOD(""),dCONF_DATE := CTOD(""),cCompl_M := "",cStrNid := ""
     cParam := Upper(AllTrim(arr[i][1]))
     Value := Upper(AllTrim(arr[i][2]))
     DO CASE
-      CASE cParam == Upper("ИдФайл")
+      CASE cParam == Upper("РРґР¤Р°Р№Р»")
         if AllTrim(Upper(Value + ".xml")) != Upper(AllTrim(cFile))
-           //if (6 != messagebox("Имя файла не соответствует имени в параметре 'ИдФайл'. Продолжить? ",TITLEAPP,68))
-           AADD(aMssg,"Имя файла не соответствует имени в параметре 'ИдФайл'")
+           //if (6 != messagebox("РРјСЏ С„Р°Р№Р»Р° РЅРµ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ РёРјРµРЅРё РІ РїР°СЂР°РјРµС‚СЂРµ 'РРґР¤Р°Р№Р»'. РџСЂРѕРґРѕР»Р¶РёС‚СЊ? ",TITLEAPP,68))
+           AADD(aMssg,"РРјСЏ С„Р°Р№Р»Р° РЅРµ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ РёРјРµРЅРё РІ РїР°СЂР°РјРµС‚СЂРµ 'РРґР¤Р°Р№Р»'")
            Return .F.
            //Endif
         endif
         if "ON_KORSFAKT_" $ Value
           IsKor := .T.
         endif
-      CASE cParam == Upper("ВерсПрог")
-        if Value == Upper("БЭСТ-5")
+      CASE cParam == Upper("Р’РµСЂСЃРџСЂРѕРі")
+        if Value == Upper("Р‘Р­РЎРў-5")
           IsBest5 := .T.
         endif
-      CASE cParam == Upper("ВерсФорм")
+      CASE cParam == Upper("Р’РµСЂСЃР¤РѕСЂРј")
         //if Value != Upper(AllTrim("5.02"))
-           //if (6 != messagebox("Версия формата " +  Value +". Продолжить? ",TITLEAPP,68))
+           //if (6 != messagebox("Р’РµСЂСЃРёСЏ С„РѕСЂРјР°С‚Р° " +  Value +". РџСЂРѕРґРѕР»Р¶РёС‚СЊ? ",TITLEAPP,68))
            //  Return .F.
            //Endif
         //endif
-      CASE cParam == Upper("ИдОтпр")
+      CASE cParam == Upper("РРґРћС‚РїСЂ")
         if Empty(Value)
-          AADD(aMssg,'Для отправителя не определен код участника электронного документооборота')
+          AADD(aMssg,'Р”Р»СЏ РѕС‚РїСЂР°РІРёС‚РµР»СЏ РЅРµ РѕРїСЂРµРґРµР»РµРЅ РєРѕРґ СѓС‡Р°СЃС‚РЅРёРєР° СЌР»РµРєС‚СЂРѕРЅРЅРѕРіРѕ РґРѕРєСѓРјРµРЅС‚РѕРѕР±РѕСЂРѕС‚Р°')
           Return .F.
         endif
         idOtprav := Value
 
-      CASE cParam == Upper("ИдПок")
+      CASE cParam == Upper("РРґРџРѕРє")
         if Empty(Value)
-          AADD(aMssg,'Для покупателя не определен код участника электронного документооборота')
+          AADD(aMssg,'Р”Р»СЏ РїРѕРєСѓРїР°С‚РµР»СЏ РЅРµ РѕРїСЂРµРґРµР»РµРЅ РєРѕРґ СѓС‡Р°СЃС‚РЅРёРєР° СЌР»РµРєС‚СЂРѕРЅРЅРѕРіРѕ РґРѕРєСѓРјРµРЅС‚РѕРѕР±РѕСЂРѕС‚Р°')
           Return .F.
         endif
         idPoluch := Value
 
-      CASE cParam == Upper("КНД")
+      CASE cParam == Upper("РљРќР”")
 /*
         lRet := .T.
         If IsKor
@@ -122,77 +122,77 @@ local dCUST_DATE := CTOD(""),dCONF_DATE := CTOD(""),cCompl_M := "",cStrNid := ""
           endif
         endif
         if !lRet
-          if (6 != messagebox("Код формы по КНД:  " +  Value +". Продолжить? ",TITLEAPP,68))
+          if (6 != messagebox("РљРѕРґ С„РѕСЂРјС‹ РїРѕ РљРќР”:  " +  Value +". РџСЂРѕРґРѕР»Р¶РёС‚СЊ? ",TITLEAPP,68))
              Return .F.
            Endif
         endif */
 altd()
-     CASE cParam == Upper("ИдЭДО")
+     CASE cParam == Upper("РРґР­Р”Рћ")
        idOper := Value
        if Empty(idOper)
-         AADD(aMssg,'Для отправителя не определен идентификатор оператора электронного документооборота')
+         AADD(aMssg,'Р”Р»СЏ РѕС‚РїСЂР°РІРёС‚РµР»СЏ РЅРµ РѕРїСЂРµРґРµР»РµРЅ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РѕРїРµСЂР°С‚РѕСЂР° СЌР»РµРєС‚СЂРѕРЅРЅРѕРіРѕ РґРѕРєСѓРјРµРЅС‚РѕРѕР±РѕСЂРѕС‚Р°')
          Return .F.
        endif
        nLen := len(idOper)
        idOtprav := SubStr(idOtprav,nLen + 1)
        if Empty(idOtprav) .Or. !(DIC_PARTNER)->(DbSeek(idOtprav,.T.,"TAG_UCHEDO"))
-         AADD(aMssg,'Для отправителя не определен код участника электронного документооборота')
+         AADD(aMssg,'Р”Р»СЏ РѕС‚РїСЂР°РІРёС‚РµР»СЏ РЅРµ РѕРїСЂРµРґРµР»РµРЅ РєРѕРґ СѓС‡Р°СЃС‚РЅРёРєР° СЌР»РµРєС‚СЂРѕРЅРЅРѕРіРѕ РґРѕРєСѓРјРµРЅС‚РѕРѕР±РѕСЂРѕС‚Р°')
          Return .F.
        else
          idOtprav := (DIC_PARTNER)->PART_ID
        endif
        idPoluch := SubStr(idPoluch,nLen + 1)
        if Empty(idPoluch) .Or. !(DIC_PARTNER)->(DbSeek(idPoluch,.T.,"TAG_UCHEDO"))
-         AADD(aMssg,'Для отправителя не определен код участника электронного документооборота')
+         AADD(aMssg,'Р”Р»СЏ РѕС‚РїСЂР°РІРёС‚РµР»СЏ РЅРµ РѕРїСЂРµРґРµР»РµРЅ РєРѕРґ СѓС‡Р°СЃС‚РЅРёРєР° СЌР»РµРєС‚СЂРѕРЅРЅРѕРіРѕ РґРѕРєСѓРјРµРЅС‚РѕРѕР±РѕСЂРѕС‚Р°')
          Return .F.
        else
          idPoluch := (DIC_PARTNER)->PART_ID
        endif
 
-     CASE cParam == Upper("ИННЮЛ")
-       if Upper("СвУчДокОбор") $ Upper(AllTrim(arr[i][3]))
+     CASE cParam == Upper("РРќРќР®Р›")
+       if Upper("РЎРІРЈС‡Р”РѕРєРћР±РѕСЂ") $ Upper(AllTrim(arr[i][3]))
          if !CheckPartnerForInn(Value,.T.)
-           AADD(aMssg,'Не определен оператор электронного документооборота')
+           AADD(aMssg,'РќРµ РѕРїСЂРµРґРµР»РµРЅ РѕРїРµСЂР°С‚РѕСЂ СЌР»РµРєС‚СЂРѕРЅРЅРѕРіРѕ РґРѕРєСѓРјРµРЅС‚РѕРѕР±РѕСЂРѕС‚Р°')
            Return .F.
          endif
        endif
-     CASE cParam == Upper("НаимОрг")
-       if Upper("СвСчФакт-СвПрод-ИдСв-СвЮЛ") $ Upper(AllTrim(arr[i][3]))
+     CASE cParam == Upper("РќР°РёРјРћСЂРі")
+       if Upper("РЎРІРЎС‡Р¤Р°РєС‚-РЎРІРџСЂРѕРґ-РРґРЎРІ-РЎРІР®Р›") $ Upper(AllTrim(arr[i][3]))
          cSobsName := Value
        endif
-       if Upper("СвСчФакт-СвПокуп-ИдСв-СвЮЛ") $ Upper(AllTrim(arr[i][3]))
+       if Upper("РЎРІРЎС‡Р¤Р°РєС‚-РЎРІРџРѕРєСѓРї-РРґРЎРІ-РЎРІР®Р›") $ Upper(AllTrim(arr[i][3]))
          cPoluchName := Value
        endif
-       if Upper("СвСчФакт-ГрузОт-ГрузОтпр-НаимГОП") $ Upper(AllTrim(arr[i][3]))
+       if Upper("РЎРІРЎС‡Р¤Р°РєС‚-Р“СЂСѓР·РћС‚-Р“СЂСѓР·РћС‚РїСЂ-РќР°РёРјР“РћРџ") $ Upper(AllTrim(arr[i][3]))
          cGrOtpravName := Value
        endif
-       if Upper("СвСчФакт-ГрузПолуч-НаимГОП") $ Upper(AllTrim(arr[i][3]))
+       if Upper("РЎРІРЎС‡Р¤Р°РєС‚-Р“СЂСѓР·РџРѕР»СѓС‡-РќР°РёРјР“РћРџ") $ Upper(AllTrim(arr[i][3]))
          cGrPoluchName := Value
        endif
-     CASE cParam == Upper("ОнЖе")
+     CASE cParam == Upper("РћРЅР–Рµ")
         IdGrOtprav := IdOtprav
-     CASE cParam == Upper("ИННФЛ")
-       if Upper("СвСчФакт-ГрузОт-ГрузОтпр-НаимГОП") $ Upper(AllTrim(arr[i][3]))
+     CASE cParam == Upper("РРќРќР¤Р›")
+       if Upper("РЎРІРЎС‡Р¤Р°РєС‚-Р“СЂСѓР·РћС‚-Р“СЂСѓР·РћС‚РїСЂ-РќР°РёРјР“РћРџ") $ Upper(AllTrim(arr[i][3]))
          if !CheckPartnerForInn(Value,.F.,@IdGrOtprav)
            IdGrOtprav := ""
-           //не определен грузоотправитель
+           //РЅРµ РѕРїСЂРµРґРµР»РµРЅ РіСЂСѓР·РѕРѕС‚РїСЂР°РІРёС‚РµР»СЊ
          endif
        endif
-       if Upper("СвСчФакт-ГрузПолуч-НаимГОП") $ Upper(AllTrim(arr[i][3]))
+       if Upper("РЎРІРЎС‡Р¤Р°РєС‚-Р“СЂСѓР·РџРѕР»СѓС‡-РќР°РёРјР“РћРџ") $ Upper(AllTrim(arr[i][3]))
          if !CheckPartnerForInn(Value,.F.,@IdGrPoluch)
            IdGrPoluch := ""
-           //не определен грузоотправитель
+           //РЅРµ РѕРїСЂРµРґРµР»РµРЅ РіСЂСѓР·РѕРѕС‚РїСЂР°РІРёС‚РµР»СЊ
          endif
        endif
    ENDCASE
   next
-  //Не можем определить адресса 
+  //РќРµ РјРѕР¶РµРј РѕРїСЂРµРґРµР»РёС‚СЊ Р°РґСЂРµСЃСЃР°
 
   if !Empty(cGrOtpravName)
     if cGrOtpravName == cSobsName
       IdGrOtprav := idOtprav
     else
-       //не определен грузоотправитель
+       //РЅРµ РѕРїСЂРµРґРµР»РµРЅ РіСЂСѓР·РѕРѕС‚РїСЂР°РІРёС‚РµР»СЊ
     endif
   endif
 
@@ -200,7 +200,7 @@ altd()
     if cGrPoluchName == cPoluchName
       IdGrPoluch := idPoluch
     else
-      //не определен грузополучатель
+      //РЅРµ РѕРїСЂРµРґРµР»РµРЅ РіСЂСѓР·РѕРїРѕР»СѓС‡Р°С‚РµР»СЊ
     endif
   endif
 
@@ -209,19 +209,19 @@ altd()
     cParam := Upper(AllTrim(arr[i][1]))
     Value := AllTrim(arr[i][2])
     DO CASE
-      CASE cParam == Upper("НомерСчФ")
+      CASE cParam == Upper("РќРѕРјРµСЂРЎС‡Р¤")
         cDocNum := AllTrim(arr[i][2])
-        if len(cDocNum) > 24          
+        if len(cDocNum) > 24
           cDocDopNum := SubStr(cDocNum,25)
           cDocNum := PADR(AllTrim(cDocNum),24)
         endif
-      CASE cParam == Upper("ДатаСчФ")
+      CASE cParam == Upper("Р”Р°С‚Р°РЎС‡Р¤")
         if !conversionDateFromXml(@Value)
           cMsg := ''
-          cMsg += ' Не верно передана дата счета-фактуры. Изменена на текущую.' + CRLF
+          cMsg += ' РќРµ РІРµСЂРЅРѕ РїРµСЂРµРґР°РЅР° РґР°С‚Р° СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹. РР·РјРµРЅРµРЅР° РЅР° С‚РµРєСѓС‰СѓСЋ.' + CRLF
           AADD(aMssg,cMsg)
-          //cMsg += ' Не верно передана дата счета-фактуры.' + CRLF
-          //cMsg += 'При записи будет изменена на текущую. Продолжить? '
+          //cMsg += ' РќРµ РІРµСЂРЅРѕ РїРµСЂРµРґР°РЅР° РґР°С‚Р° СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹.' + CRLF
+          //cMsg += 'РџСЂРё Р·Р°РїРёСЃРё Р±СѓРґРµС‚ РёР·РјРµРЅРµРЅР° РЅР° С‚РµРєСѓС‰СѓСЋ. РџСЂРѕРґРѕР»Р¶РёС‚СЊ? '
           //if (6 != messagebox(cMsg,TITLEAPP,68))
           //   Return .F.
           //Endif
@@ -229,13 +229,13 @@ altd()
         else
           dDocDate := Value
         endif
-      CASE cParam == Upper("КодОКВ")
+      CASE cParam == Upper("РљРѕРґРћРљР’")
         if Empty(Value) .Or. !CheckValutaFromXml(@Value)
           cMsg := ''
-          cMsg += ' Не верно передана валюта счета-фактуры. Изменена на основную валюту.' + CRLF
+          cMsg += ' РќРµ РІРµСЂРЅРѕ РїРµСЂРµРґР°РЅР° РІР°Р»СЋС‚Р° СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹. РР·РјРµРЅРµРЅР° РЅР° РѕСЃРЅРѕРІРЅСѓСЋ РІР°Р»СЋС‚Сѓ.' + CRLF
           AADD(aMssg,cMsg)
-          //cMsg += ' Не верно передана валюта счета-фактуры.' + CRLF
-          //cMsg += 'При записи будет установлена основная валюта. Продолжить? '
+          //cMsg += ' РќРµ РІРµСЂРЅРѕ РїРµСЂРµРґР°РЅР° РІР°Р»СЋС‚Р° СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹.' + CRLF
+          //cMsg += 'РџСЂРё Р·Р°РїРёСЃРё Р±СѓРґРµС‚ СѓСЃС‚Р°РЅРѕРІР»РµРЅР° РѕСЃРЅРѕРІРЅР°СЏ РІР°Р»СЋС‚Р°. РџСЂРѕРґРѕР»Р¶РёС‚СЊ? '
           //if (6 != messagebox(cMsg,TITLEAPP,68))
           //   Return .F.
           //Endif
@@ -243,22 +243,22 @@ altd()
         else
           cValId := Value
         endif
-      CASE cParam == Upper("НомИспрСчФ")
+      CASE cParam == Upper("РќРѕРјРСЃРїСЂРЎС‡Р¤")
         if !Empty(Value)
           IsDef := .T.
         endif
         cDocNumDef := AllTrim(arr[i][2])
         if len(cDocNumDef) > 24
-          cDocDopNumDef := SubStr(cDocNumDef,25) 
+          cDocDopNumDef := SubStr(cDocNumDef,25)
           cDocNumDef := PADR(cDocNumDef,24)
         endif
-      CASE cParam == Upper("ДатаИспрСчФ")
+      CASE cParam == Upper("Р”Р°С‚Р°РСЃРїСЂРЎС‡Р¤")
         if !conversionDateFromXml(@Value)
           cMsg := ''
-          cMsg += ' Не верно передана дата счета-фактуры. Изменена на текущую.' + CRLF
+          cMsg += ' РќРµ РІРµСЂРЅРѕ РїРµСЂРµРґР°РЅР° РґР°С‚Р° СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹. РР·РјРµРЅРµРЅР° РЅР° С‚РµРєСѓС‰СѓСЋ.' + CRLF
           AADD(aMssg,cMsg)
-          //cMsg += ' Не верно передана дата счета-фактуры.' + CRLF
-          //cMsg += 'При записи будет изменена на текущую. Продолжить? '
+          //cMsg += ' РќРµ РІРµСЂРЅРѕ РїРµСЂРµРґР°РЅР° РґР°С‚Р° СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹.' + CRLF
+          //cMsg += 'РџСЂРё Р·Р°РїРёСЃРё Р±СѓРґРµС‚ РёР·РјРµРЅРµРЅР° РЅР° С‚РµРєСѓС‰СѓСЋ. РџСЂРѕРґРѕР»Р¶РёС‚СЊ? '
           //if (6 != messagebox(cMsg,TITLEAPP,68))
           //   Return .F.
           //Endif
@@ -266,19 +266,19 @@ altd()
         else
           dDocDateDef := Value
         endif
-      CASE cParam == Upper("НомерКСчФ")
+      CASE cParam == Upper("РќРѕРјРµСЂРљРЎС‡Р¤")
         cDocNumKor := AllTrim(arr[i][2])
         if len(cDocNumKor) > 24
           cDocDopNumKor := SubStr(cDocNumKor,25)
           cDocNumKor := PADR(cDocNumKor,24)
         endif
-      CASE cParam == Upper("ДатаКСчФ")
+      CASE cParam == Upper("Р”Р°С‚Р°РљРЎС‡Р¤")
         if !conversionDateFromXml(@Value)
           cMsg := ''
-          cMsg += ' Не верно передана дата счета-фактуры. Изменена на текущую.' + CRLF
+          cMsg += ' РќРµ РІРµСЂРЅРѕ РїРµСЂРµРґР°РЅР° РґР°С‚Р° СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹. РР·РјРµРЅРµРЅР° РЅР° С‚РµРєСѓС‰СѓСЋ.' + CRLF
           AADD(aMssg,cMsg)
-          //cMsg += ' Не верно передана дата счета-фактуры.' + CRLF
-          //cMsg += 'При записи будет изменена на текущую. Продолжить? '
+          //cMsg += ' РќРµ РІРµСЂРЅРѕ РїРµСЂРµРґР°РЅР° РґР°С‚Р° СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹.' + CRLF
+          //cMsg += 'РџСЂРё Р·Р°РїРёСЃРё Р±СѓРґРµС‚ РёР·РјРµРЅРµРЅР° РЅР° С‚РµРєСѓС‰СѓСЋ. РџСЂРѕРґРѕР»Р¶РёС‚СЊ? '
           //if (6 != messagebox(cMsg,TITLEAPP,68))
           //   Return .F.
           //Endif
@@ -286,7 +286,7 @@ altd()
         else
           dDocDateKor := Value
         endif
-      CASE cParam == Upper("НомИспрКСчФ")
+      CASE cParam == Upper("РќРѕРјРСЃРїСЂРљРЎС‡Р¤")
         if !Empty(Value)
           IsDefKorSf := .T.
         endif
@@ -295,13 +295,13 @@ altd()
           cDocDopNumKorSfDef := SubStr(cDocNumKorSfDef,25)
           cDocNumKorSfDef := PADR(cDocNumKorSfDef,24)
         endif
-      CASE cParam == Upper("ДатаИспрКСчФ")
+      CASE cParam == Upper("Р”Р°С‚Р°РСЃРїСЂРљРЎС‡Р¤")
         if !conversionDateFromXml(@Value)
           cMsg := ''
-          cMsg += ' Не верно передана дата счета-фактуры. Изменена на текущую.' + CRLF
+          cMsg += ' РќРµ РІРµСЂРЅРѕ РїРµСЂРµРґР°РЅР° РґР°С‚Р° СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹. РР·РјРµРЅРµРЅР° РЅР° С‚РµРєСѓС‰СѓСЋ.' + CRLF
           AADD(aMssg,cMsg)
-          //cMsg += ' Не верно передана дата счета-фактуры.' + CRLF
-          //cMsg += 'При записи будет изменена на текущую. Продолжить? '
+          //cMsg += ' РќРµ РІРµСЂРЅРѕ РїРµСЂРµРґР°РЅР° РґР°С‚Р° СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹.' + CRLF
+          //cMsg += 'РџСЂРё Р·Р°РїРёСЃРё Р±СѓРґРµС‚ РёР·РјРµРЅРµРЅР° РЅР° С‚РµРєСѓС‰СѓСЋ. РџСЂРѕРґРѕР»Р¶РёС‚СЊ? '
           //if (6 != messagebox(cMsg,TITLEAPP,68))
           //   Return .F.
           //Endif
@@ -309,10 +309,10 @@ altd()
         else
           cDateNumKorSfDef := Value
         endif
-      CASE Upper("ИнфПол-ТекстИнф") $ Upper(AllTrim(arr[i][3]))
+      CASE Upper("РРЅС„РџРѕР»-РўРµРєСЃС‚РРЅС„") $ Upper(AllTrim(arr[i][3]))
 
           Do case
-            case  cParam == Upper("ИД_СФ")
+            case  cParam == Upper("РР”_РЎР¤")
               cSfId := Value
             case  cParam == Upper("TI_CTG")
               if !Empty(Value) .And. Value $ "12"
@@ -326,11 +326,11 @@ altd()
               endif
             case  cParam == Upper("SFD_ID")
               cSfDefId := Value
-            case  cParam == Upper("ИД_Грузоотпр")
+            case  cParam == Upper("РР”_Р“СЂСѓР·РѕРѕС‚РїСЂ")
               if !Empty(Value) .And. (DIC_PARTNER)->(DbSeek(Value,.T.,"TAG_UCHEDO"))
                 IdGrOtprav := (DIC_PARTNER)->PART_ID
               endif
-            case  cParam == Upper("ИД_Грузопол")
+            case  cParam == Upper("РР”_Р“СЂСѓР·РѕРїРѕР»")
               if !Empty(Value) .And. (DIC_PARTNER)->(DbSeek(Value,.T.,"TAG_UCHEDO"))
                 idGrPoluch := (DIC_PARTNER)->PART_ID
               endif
@@ -338,55 +338,55 @@ altd()
               if Value == "T"
                 IsKor := .T.
               endif
-            case  cParam == Upper("ИД_ПОСРЕД")
+            case  cParam == Upper("РР”_РџРћРЎР Р•Р”")
               if !Empty(Value) .And. (DIC_PARTNER)->(DbSeek(Value,.T.,"TAG_UCHEDO"))
                 IdPosred := (DIC_PARTNER)->PART_ID
               endif
-            case  cParam == Upper("ИД_ПОСР_ОСНОВ")
+            case  cParam == Upper("РР”_РџРћРЎР _РћРЎРќРћР’")
               cSfPosredId := Value
-            case  cParam == Upper("КОД_ОПЕР_СФ")
+            case  cParam == Upper("РљРћР”_РћРџР•Р _РЎР¤")
               cKOP_NDS := Value
-            case  cParam == Upper("КОД_НДС0")
+            case  cParam == Upper("РљРћР”_РќР”РЎ0")
               cKOP_NDS0 := Value
-            case  cParam == Upper("КОД_НЕТ_НДС")
+            case  cParam == Upper("РљРћР”_РќР•Рў_РќР”РЎ")
               cKOP_NNDS := Value
-            case  cParam == Upper("КОД_АГЕНТА")
+            case  cParam == Upper("РљРћР”_РђР“Р•РќРўРђ")
               cKOP_AG_NDS := Value
-            case  cParam == Upper("КОД_НЕДВ")
+            case  cParam == Upper("РљРћР”_РќР•Р”Р’")
               cKOP_AST := Value
-            case  cParam == Upper("ДАТА_ТАМОЖ")
+            case  cParam == Upper("Р”РђРўРђ_РўРђРњРћР–")
               if !Empty(!conversionDateFromXml(@Value))
                 dCUST_DATE := Value
               endif
-            case  cParam == Upper("ДАТА_ПОДТВ")
+            case  cParam == Upper("Р”РђРўРђ_РџРћР”РўР’")
               if !Empty(!conversionDateFromXml(@Value))
                 dCONF_DATE := Value
               endif
-            case  cParam == Upper("Коммент_сф")
+            case  cParam == Upper("РљРѕРјРјРµРЅС‚_СЃС„")
               cCompl_M := Value
-            case  cParam == Upper("СЧЕТ")
+            case  cParam == Upper("РЎР§Р•Рў")
               cSchet := CheckSchetFromXml(Value)
             OTHERWISE
               if Empty(sTextInf)
-                sTextInf := "Параметры дополнительной информации от " + cSobsName + " :" + CRLF
+                sTextInf := "РџР°СЂР°РјРµС‚СЂС‹ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕР№ РёРЅС„РѕСЂРјР°С†РёРё РѕС‚ " + cSobsName + " :" + CRLF
               endif
-              sTextInf += "Имя: " + Upper(AllTrim(arr[i][1])) + " Значение: " + Upper(AllTrim(arr[i][2])) + CRLF
+              sTextInf += "РРјСЏ: " + Upper(AllTrim(arr[i][1])) + " Р—РЅР°С‡РµРЅРёРµ: " + Upper(AllTrim(arr[i][2])) + CRLF
           endcase
 
-      CASE cParam == Upper("СтТовБезНДСВсего")
+      CASE cParam == Upper("РЎС‚РўРѕРІР‘РµР·РќР”РЎР’СЃРµРіРѕ")
         nSumSfNNds := Val(Value)
-      CASE cParam == Upper("СтТовУчНалВсего")
+      CASE cParam == Upper("РЎС‚РўРѕРІРЈС‡РќР°Р»Р’СЃРµРіРѕ")
         nSumSfA := Val(Value)
-      CASE Upper("ВсегоОпл-СумНалВсего") $ Upper(AllTrim(arr[i][3]))
+      CASE Upper("Р’СЃРµРіРѕРћРїР»-РЎСѓРјРќР°Р»Р’СЃРµРіРѕ") $ Upper(AllTrim(arr[i][3]))
         do case
-          CASE cParam == Upper("СумНДС")
+          CASE cParam == Upper("РЎСѓРјРќР”РЎ")
             nSumSfNds := Val(Value)
-          CASE cParam == Upper("БезНДС")
+          CASE cParam == Upper("Р‘РµР·РќР”РЎ")
             lNoNdsSf := .T.
         endcase
-      CASE cParam == Upper("НомСтр") .Or. i == len(arr) - 1
+      CASE cParam == Upper("РќРѕРјРЎС‚СЂ") .Or. i == len(arr) - 1
         lAdd := .F.
-        if cParam != Upper("НомСтр") .And. nNomStr != 0
+        if cParam != Upper("РќРѕРјРЎС‚СЂ") .And. nNomStr != 0
           lAdd := .T.
         else
           if nNomStr != Val(Value)
@@ -399,7 +399,7 @@ altd()
         if lAdd
           if !Empty(nASum) .And. Empty(IdTaxARate)
              if !CheckRateA(nCostNotTax,nASum,@nTaxARate,@IdTaxARate,dDocDate)
-               AADD(aMssg,'Не удалось определить ставку Акциза.')
+               AADD(aMssg,'РќРµ СѓРґР°Р»РѕСЃСЊ РѕРїСЂРµРґРµР»РёС‚СЊ СЃС‚Р°РІРєСѓ РђРєС†РёР·Р°.')
                Return .F.
              endif
           endif
@@ -434,23 +434,23 @@ altd()
           cComment := ""
           cStrNid := ""
         endif
-      CASE cParam == Upper("НаимТов")
+      CASE cParam == Upper("РќР°РёРјРўРѕРІ")
         cNameTov := Value
-      CASE cParam == Upper("ОКЕИ_Тов")
+      CASE cParam == Upper("РћРљР•Р_РўРѕРІ")
         if CheckUnitFromXml(@Value)
           cOKEY := Value
         endif
-      CASE cParam == Upper("КолТов")
+      CASE cParam == Upper("РљРѕР»РўРѕРІ")
         nQuan := Val(Value)
-      CASE cParam == Upper("ЦенаТов")
+      CASE cParam == Upper("Р¦РµРЅР°РўРѕРІ")
         nPrice := Val(Value)
-      CASE cParam == Upper("СтТовБезНДС")
+      CASE cParam == Upper("РЎС‚РўРѕРІР‘РµР·РќР”РЎ")
         nCostNotTax := Val(Value)
-      CASE cParam == Upper("СтТовУчНал")
+      CASE cParam == Upper("РЎС‚РўРѕРІРЈС‡РќР°Р»")
         nCostAll := Val(Value)
-      CASE cParam == Upper("НалСт")
+      CASE cParam == Upper("РќР°Р»РЎС‚")
         lNoNds := .F.
-        if Upper("без") $ Value
+        if Upper("Р±РµР·") $ Value
           lNoNds := .T.
           Value := 0
         elseif AT("/",Value) > 0
@@ -461,7 +461,7 @@ altd()
           Value := Val(Value)
         endif
         if !CheckTax(Value,lNoNds,@IdRate,@lStA,dDocDate)
-          AADD(aMssg,'Ставка НДС - " + Str(Value,10,5) + "%  отсутствует в справочнике')
+          AADD(aMssg,'РЎС‚Р°РІРєР° РќР”РЎ - " + Str(Value,10,5) + "%  РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚ РІ СЃРїСЂР°РІРѕС‡РЅРёРєРµ')
           Return .F.
         endif
         if  lStA
@@ -474,18 +474,18 @@ altd()
         endif
 
 
-      CASE cParam == Upper("БезАкциз")
+      CASE cParam == Upper("Р‘РµР·РђРєС†РёР·")
         lA := .F.
-      CASE cParam == Upper("СумАкциз")
+      CASE cParam == Upper("РЎСѓРјРђРєС†РёР·")
         nASum := Val(Value)
-      CASE cParam == Upper("СумНДС")
+      CASE cParam == Upper("РЎСѓРјРќР”РЎ")
         nNdsSum := Val(Value)
-      CASE cParam == Upper("КодПроисх")
+      CASE cParam == Upper("РљРѕРґРџСЂРѕРёСЃС…")
         cCountry := Value
-      CASE cParam == Upper("НомерТД")
+      CASE cParam == Upper("РќРѕРјРµСЂРўР”")
         cGTD := Value
 
-      CASE Upper("ТаблСчФакт-СведТов-ИнфПолСтр") $ Upper(AllTrim(arr[i][3]))
+      CASE Upper("РўР°Р±Р»РЎС‡Р¤Р°РєС‚-РЎРІРµРґРўРѕРІ-РРЅС„РџРѕР»РЎС‚СЂ") $ Upper(AllTrim(arr[i][3]))
 
           Do case
             case  cParam == Upper("STR_ID")
@@ -496,21 +496,21 @@ altd()
               endif
             case  cParam == Upper("STRN_ID")
               cStrNid := Value
-            case  cParam == Upper("ГРУППА")
+            case  cParam == Upper("Р“Р РЈРџРџРђ")
               cGroup := Value
-            case  cParam == Upper("НОМ_НОМЕР")
+            case  cParam == Upper("РќРћРњ_РќРћРњР•Р ")
               cNomNum := Padr(Value,13)
-            case  cParam == Upper("НОМ_ПАРТИЯ")
+            case  cParam == Upper("РќРћРњ_РџРђР РўРРЇ")
               cPart := Value
-            case  cParam == Upper("Тип_СТРОКИ")
+            case  cParam == Upper("РўРёРї_РЎРўР РћРљР")
               cStrFrom := Value
-            case  cParam == Upper("КОММЕНТ_СТРОКИ")
+            case  cParam == Upper("РљРћРњРњР•РќРў_РЎРўР РћРљР")
               cComment := Value
             OTHERWISE
               if Empty(sTextInfStr)
-                sTextInfStr := "Параметры дополнительной информации по строкам от " + cSobsName + " :" + CRLF
+                sTextInfStr := "РџР°СЂР°РјРµС‚СЂС‹ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕР№ РёРЅС„РѕСЂРјР°С†РёРё РїРѕ СЃС‚СЂРѕРєР°Рј РѕС‚ " + cSobsName + " :" + CRLF
               endif
-              sTextInfStr += "Имя: " + Upper(AllTrim(arr[i][1])) + " Значение: " + Upper(AllTrim(arr[i][2])) + CRLF
+              sTextInfStr += "РРјСЏ: " + Upper(AllTrim(arr[i][1])) + " Р—РЅР°С‡РµРЅРёРµ: " + Upper(AllTrim(arr[i][2])) + CRLF
           endcase
 
     ENDCASE
@@ -518,43 +518,43 @@ altd()
 
   If !Empty(sTextInf)
      AADD(aMssg,sTextInf + CRLF)
-     AADD(aMssg,"не обработаны программой импорта" + CRLF)
+     AADD(aMssg,"РЅРµ РѕР±СЂР°Р±РѕС‚Р°РЅС‹ РїСЂРѕРіСЂР°РјРјРѕР№ РёРјРїРѕСЂС‚Р°" + CRLF)
     //cMsg := sTextInf + CRLF
-    //cMsg := "не обработаны программой импорта. Продолжить?  " + CRLF
+    //cMsg := "РЅРµ РѕР±СЂР°Р±РѕС‚Р°РЅС‹ РїСЂРѕРіСЂР°РјРјРѕР№ РёРјРїРѕСЂС‚Р°. РџСЂРѕРґРѕР»Р¶РёС‚СЊ?  " + CRLF
     //if (6 != messagebox(cMsg,TITLEAPP,68))
-    //   messagebox("В работе")
+    //   messagebox("Р’ СЂР°Р±РѕС‚Рµ")
     //Endif
   endif
 
   If !Empty(sTextInfStr)
      AADD(aMssg,sTextInfStr + CRLF)
-     AADD(aMssg,"не обработаны программой импорта" + CRLF)
+     AADD(aMssg,"РЅРµ РѕР±СЂР°Р±РѕС‚Р°РЅС‹ РїСЂРѕРіСЂР°РјРјРѕР№ РёРјРїРѕСЂС‚Р°" + CRLF)
     //cMsg := sTextInfStr + CRLF
-    //cMsg += 'не обработаны программой импорта. Продолжить? ' + CRLF
+    //cMsg += 'РЅРµ РѕР±СЂР°Р±РѕС‚Р°РЅС‹ РїСЂРѕРіСЂР°РјРјРѕР№ РёРјРїРѕСЂС‚Р°. РџСЂРѕРґРѕР»Р¶РёС‚СЊ? ' + CRLF
     //if (6 != messagebox(cMsg,TITLEAPP,68))
     //   Return .F.
     //Endif
   endif
 
   if len(astr)==0
-    AADD(aMssg," У импортируемого счета-фактуры нет строк" + CRLF)
-    //cMsg := " У импортируемого счета-фактуры нет строк "
-    //cMsg += 'продолжить импорт?' + CRLF
+    AADD(aMssg," РЈ РёРјРїРѕСЂС‚РёСЂСѓРµРјРѕРіРѕ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹ РЅРµС‚ СЃС‚СЂРѕРє" + CRLF)
+    //cMsg := " РЈ РёРјРїРѕСЂС‚РёСЂСѓРµРјРѕРіРѕ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹ РЅРµС‚ СЃС‚СЂРѕРє "
+    //cMsg += 'РїСЂРѕРґРѕР»Р¶РёС‚СЊ РёРјРїРѕСЂС‚?' + CRLF
     //if (6 != messagebox(cMsg,TITLEAPP,68))
     //   Return .F.
     //Endif
   endif
 
   if ValType(cTiCtg) != "C" .Or. Empty(cTiCtg) .Or. !(cTiCtg $ "1,2")
-    aAns:={'Закупка','Продажа default'}
-    aIniValue := {{'Категория счета-фактуры',aAns}}
-    a := DialogGr('Укажите категория', aIniValue)
+    aAns:={'Р—Р°РєСѓРїРєР°','РџСЂРѕРґР°Р¶Р° default'}
+    aIniValue := {{'РљР°С‚РµРіРѕСЂРёСЏ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹',aAns}}
+    a := DialogGr('РЈРєР°Р¶РёС‚Рµ РєР°С‚РµРіРѕСЂРёСЏ', aIniValue)
    IF Len(A)=0
-      Messagebox("Выполнение программы прервано пользователем.")
+      Messagebox("Р’С‹РїРѕР»РЅРµРЅРёРµ РїСЂРѕРіСЂР°РјРјС‹ РїСЂРµСЂРІР°РЅРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј.")
       RETURN .F.
    ELSE
       IF !EMPTY(a[1])
-        if Upper(AllTrim(a[1])) == Upper('Закупка')
+        if Upper(AllTrim(a[1])) == Upper('Р—Р°РєСѓРїРєР°')
           cTiCtg := "1"
         else
           cTiCtg := "2"
@@ -563,39 +563,39 @@ altd()
    ENDIF
   endif
 
-  if Empty(cMoveTp) .Or. ValType(cMoveTp) != "C" .Or. !(cMoveTp $ "ЗК,БП,ПР,ОТ,ПП")
+  if Empty(cMoveTp) .Or. ValType(cMoveTp) != "C" .Or. !(cMoveTp $ "Р—Рљ,Р‘Рџ,РџР ,РћРў,РџРџ")
     if cTiCtg == "1"
-      aAns:={'Закупка ТМЦ default','Безвоздмездное получение','Предоплата'}
+      aAns:={'Р—Р°РєСѓРїРєР° РўРњР¦ default','Р‘РµР·РІРѕР·РґРјРµР·РґРЅРѕРµ РїРѕР»СѓС‡РµРЅРёРµ','РџСЂРµРґРѕРїР»Р°С‚Р°'}
     else
-      aAns:={'Отгрузка default','Безвозмездная передача','Предоплата','Поступление прочих денежных средств'}
+      aAns:={'РћС‚РіСЂСѓР·РєР° default','Р‘РµР·РІРѕР·РјРµР·РґРЅР°СЏ РїРµСЂРµРґР°С‡Р°','РџСЂРµРґРѕРїР»Р°С‚Р°','РџРѕСЃС‚СѓРїР»РµРЅРёРµ РїСЂРѕС‡РёС… РґРµРЅРµР¶РЅС‹С… СЃСЂРµРґСЃС‚РІ'}
     endif
-    aIniValue := {{'Вид движения счета-фактуры',aAns}}
+    aIniValue := {{'Р’РёРґ РґРІРёР¶РµРЅРёСЏ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹',aAns}}
 
-   a := DialogGr('Вид движения счета-фактуры', aIniValue)
+   a := DialogGr('Р’РёРґ РґРІРёР¶РµРЅРёСЏ СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹', aIniValue)
    IF Len(A)=0
-      Messagebox("Выполнение программы прервано пользователем.")
+      Messagebox("Р’С‹РїРѕР»РЅРµРЅРёРµ РїСЂРѕРіСЂР°РјРјС‹ РїСЂРµСЂРІР°РЅРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј.")
       RETURN .T.
    ELSE
       IF !EMPTY(a[1])
         cMoveTp := Upper(AllTrim(a[1]))
         do case
-          case cMoveTp  == Upper('Закупка ТМЦ')
-            cMoveTp := "ЗК"
-          case cMoveTp  == Upper('Безвоздмездное получение')
-            cMoveTp := "БП"
-          case cMoveTp  == Upper('Предоплата')
-            cMoveTp := "ПР"
-          case cMoveTp  == Upper('Отгрузка')
-            cMoveTp := "ОТ"
-          case cMoveTp  == Upper('Поступление прочих денежных средств')
-            cMoveTp := "ПП"
+          case cMoveTp  == Upper('Р—Р°РєСѓРїРєР° РўРњР¦')
+            cMoveTp := "Р—Рљ"
+          case cMoveTp  == Upper('Р‘РµР·РІРѕР·РґРјРµР·РґРЅРѕРµ РїРѕР»СѓС‡РµРЅРёРµ')
+            cMoveTp := "Р‘Рџ"
+          case cMoveTp  == Upper('РџСЂРµРґРѕРїР»Р°С‚Р°')
+            cMoveTp := "РџР "
+          case cMoveTp  == Upper('РћС‚РіСЂСѓР·РєР°')
+            cMoveTp := "РћРў"
+          case cMoveTp  == Upper('РџРѕСЃС‚СѓРїР»РµРЅРёРµ РїСЂРѕС‡РёС… РґРµРЅРµР¶РЅС‹С… СЃСЂРµРґСЃС‚РІ')
+            cMoveTp := "РџРџ"
         endcase
       ENDIF
    ENDIF
 
-    //Запросить вид двидения
+    //Р—Р°РїСЂРѕСЃРёС‚СЊ РІРёРґ РґРІРёРґРµРЅРёСЏ
   endif
-  if cMoveTp $ "ОТ,БП,ЗК"
+  if cMoveTp $ "РћРў,Р‘Рџ,Р—Рљ"
     if !CheckStr(astr,@aMssg)
       Return .F.
     endif
@@ -680,9 +680,9 @@ local cAl,lRet := .T., cAlTaxTp , aKey,i ,cKey
      Break(.F.)
   endif
   if lNoNds
-    aKey := {"НДС"}
+    aKey := {"РќР”РЎ"}
   else
-    aKey := {"НДС","АКЦ"}
+    aKey := {"РќР”РЎ","РђРљР¦"}
   endif
   for i := 1 to len(aKey)
     if !(cAlTaxTp)->(DbSeek(aKey[i]))
@@ -700,7 +700,7 @@ local cAl,lRet := .T., cAlTaxTp , aKey,i ,cKey
       if dDocDate >= (cAl)->DATE_BEG
         if Empty((cAl)->DATE_END) .Or. dDocDate <= (cAl)->DATE_BEG
           IdTaxNdsRate := (cAl)->NNOPER
-          lStA := (aKey[i] == "АКЦ")
+          lStA := (aKey[i] == "РђРљР¦")
         endif
       endif
       (cAl)->(DbSkip(1))
@@ -737,25 +737,25 @@ Local i , value ,aAns,aIniValue,a
 local tbName , tagName , group, nnum,name,cAl , lAdd := .F.
 local cMsg , aEd := {}, j , cName := ""
   for i := 1 to len(astr)
-    value := astr[i][_STR_TP_]    
+    value := astr[i][_STR_TP_]
     if ValType(value) != "C" .Or. Empty(value) .Or. !(value $ "2,3,4,5,6,7")
-        aAns:={'Товары default','Запасы','Услуги','Имущество'}
-        aIniValue := {{"Категория для товара: " +  astr[i][_NAME_TOV_] ,aAns}}
-        a := DialogGr('Укажите категория', aIniValue)
+        aAns:={'РўРѕРІР°СЂС‹ default','Р—Р°РїР°СЃС‹','РЈСЃР»СѓРіРё','РРјСѓС‰РµСЃС‚РІРѕ'}
+        aIniValue := {{"РљР°С‚РµРіРѕСЂРёСЏ РґР»СЏ С‚РѕРІР°СЂР°: " +  astr[i][_NAME_TOV_] ,aAns}}
+        a := DialogGr('РЈРєР°Р¶РёС‚Рµ РєР°С‚РµРіРѕСЂРёСЏ', aIniValue)
         IF Len(A)=0
-          Messagebox("Выполнение программы прервано пользователем.")
+          Messagebox("Р’С‹РїРѕР»РЅРµРЅРёРµ РїСЂРѕРіСЂР°РјРјС‹ РїСЂРµСЂРІР°РЅРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј.")
           RETURN .F.
         endif
         IF !EMPTY(a[1])
           value := Upper(AllTrim(a[1]))
           do case
-            case value  == Upper('Товары')
+            case value  == Upper('РўРѕРІР°СЂС‹')
               value := "2"
-            case value  == Upper('Запасы')
+            case value  == Upper('Р—Р°РїР°СЃС‹')
               value := "3"
-            case value  == Upper('Услуги')
+            case value  == Upper('РЈСЃР»СѓРіРё')
               value := "4"
-            case value  == Upper('Имущество')
+            case value  == Upper('РРјСѓС‰РµСЃС‚РІРѕ')
               value := "5"
           endcase
           astr[i][_STR_TP_] := value
@@ -764,17 +764,17 @@ local cMsg , aEd := {}, j , cName := ""
 
     do case
       case value  == "2"
-        cName := "товара"
+        cName := "С‚РѕРІР°СЂР°"
       case value  == "3"
-        cName := "запаса"
+        cName := "Р·Р°РїР°СЃР°"
       case value  == "4"
-        cName := "услуги"
+        cName := "СѓСЃР»СѓРіРё"
       case value  == "5"
-        cName := "имущества"
+        cName := "РёРјСѓС‰РµСЃС‚РІР°"
    endcase
-    
-    if Empty(astr[i][_NAME_TOV_])      
-       AADD(aMssg,"Не указано наименование " + cName )
+
+    if Empty(astr[i][_NAME_TOV_])
+       AADD(aMssg,"РќРµ СѓРєР°Р·Р°РЅРѕ РЅР°РёРјРµРЅРѕРІР°РЅРёРµ " + cName )
       RETURN .F.
     endif
 
@@ -817,13 +817,13 @@ local cMsg , aEd := {}, j , cName := ""
         lAdd := .T.
       else
         if UPPER(ALLTRIM(astr[i][_NAME_TOV_])) != Upper(AllTrim((cAl)->Name))
-altd()           
-          cMsg := " У " + cName + ": " + astr[i][_NAME_TOV_]   + CRLF
-          cMsg := "наименование в справочнике не совепадается с наименованием в импортируемом файле"   + CRLF          
-          cMsg += "Изменено на наименвоание из справочника." + CRLF 
-          astr[i][_NAME_TOV_] := (cAl)->Name 
-          AADD(aMssg,cMsg)         
-          //cMsg += "Изменить название " + cName + " на соответствующее параметрам?"
+altd()
+          cMsg := " РЈ " + cName + ": " + astr[i][_NAME_TOV_]   + CRLF
+          cMsg := "РЅР°РёРјРµРЅРѕРІР°РЅРёРµ РІ СЃРїСЂР°РІРѕС‡РЅРёРєРµ РЅРµ СЃРѕРІРµРїР°РґР°РµС‚СЃСЏ СЃ РЅР°РёРјРµРЅРѕРІР°РЅРёРµРј РІ РёРјРїРѕСЂС‚РёСЂСѓРµРјРѕРј С„Р°Р№Р»Рµ"   + CRLF
+          cMsg += "РР·РјРµРЅРµРЅРѕ РЅР° РЅР°РёРјРµРЅРІРѕР°РЅРёРµ РёР· СЃРїСЂР°РІРѕС‡РЅРёРєР°." + CRLF
+          astr[i][_NAME_TOV_] := (cAl)->Name
+          AADD(aMssg,cMsg)
+          //cMsg += "РР·РјРµРЅРёС‚СЊ РЅР°Р·РІР°РЅРёРµ " + cName + " РЅР° СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РµРµ РїР°СЂР°РјРµС‚СЂР°Рј?"
           //if (6 != messagebox(cMsg,TITLEAPP,68))
           //lAdd := .T.
           //Endif
@@ -832,7 +832,7 @@ altd()
     endif
     if lAdd
       If !(cAl)->(DbSeek(Upper(name),.T.,tagName))
-        AADD(aMssg,"Не найдено соответствие " + cName + " из счета-фактуры в номенклатурном справочнике.")
+        AADD(aMssg,"РќРµ РЅР°Р№РґРµРЅРѕ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРµ " + cName + " РёР· СЃС‡РµС‚Р°-С„Р°РєС‚СѓСЂС‹ РІ РЅРѕРјРµРЅРєР»Р°С‚СѓСЂРЅРѕРј СЃРїСЂР°РІРѕС‡РЅРёРєРµ.")
         _DbAreaClose(cAl)
         RETURN .F.
       else
@@ -864,16 +864,16 @@ altd()
 
     endif
     _DbAreaClose(cAl)
-    
+
     if Empty(astr[i][_OKEY_])
       if len(aEd) = 1
-        cMsg := " У " + cName +": " + astr[i][_NAME_TOV_]  + CRLF
-        cMsg += "не определена единица измерения." + CRLF
-        cMsg += "Изменена на основную из номенклатурного справочника."
+        cMsg := " РЈ " + cName +": " + astr[i][_NAME_TOV_]  + CRLF
+        cMsg += "РЅРµ РѕРїСЂРµРґРµР»РµРЅР° РµРґРёРЅРёС†Р° РёР·РјРµСЂРµРЅРёСЏ." + CRLF
+        cMsg += "РР·РјРµРЅРµРЅР° РЅР° РѕСЃРЅРѕРІРЅСѓСЋ РёР· РЅРѕРјРµРЅРєР»Р°С‚СѓСЂРЅРѕРіРѕ СЃРїСЂР°РІРѕС‡РЅРёРєР°."
         AADD(aMssg,cMsg)
-        //cMsg += "Изменить на основную из номенклатурного справочника?"
+        //cMsg += "РР·РјРµРЅРёС‚СЊ РЅР° РѕСЃРЅРѕРІРЅСѓСЋ РёР· РЅРѕРјРµРЅРєР»Р°С‚СѓСЂРЅРѕРіРѕ СЃРїСЂР°РІРѕС‡РЅРёРєР°?"
         //if (6 != messagebox(cMsg,TITLEAPP,68))
-        //  Messagebox("Выполнение программы прервано пользователем.")
+        //  Messagebox("Р’С‹РїРѕР»РЅРµРЅРёРµ РїСЂРѕРіСЂР°РјРјС‹ РїСЂРµСЂРІР°РЅРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј.")
         //  RETURN .F.
         //Endif
         astr[i][_OKEY_] := aEd[1]
@@ -885,10 +885,10 @@ altd()
             aAns[n] += "default"
           endif
         next
-        aIniValue := {{"Единица измерения для " + cName + ": " +  astr[i][_NAME_TOV_] ,aAns}}
-        a := DialogGr('Укажите единицу измерения', aIniValue)
+        aIniValue := {{"Р•РґРёРЅРёС†Р° РёР·РјРµСЂРµРЅРёСЏ РґР»СЏ " + cName + ": " +  astr[i][_NAME_TOV_] ,aAns}}
+        a := DialogGr('РЈРєР°Р¶РёС‚Рµ РµРґРёРЅРёС†Сѓ РёР·РјРµСЂРµРЅРёСЏ', aIniValue)
         IF Len(A)=0
-          Messagebox("Выполнение программы прервано пользователем.")
+          Messagebox("Р’С‹РїРѕР»РЅРµРЅРёРµ РїСЂРѕРіСЂР°РјРјС‹ РїСЂРµСЂРІР°РЅРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј.")
           RETURN .F.
         endif
         IF !EMPTY(a[1])
@@ -899,20 +899,20 @@ altd()
       lAdd := .T.
       for j := 1 to len(aEd)
         if AllTrim(Upper(astr[i][_OKEY_])) == AllTrim(Upper(aEd[j]))
-          lAdd := .F. 
+          lAdd := .F.
           exit
         endif
       next
-      if lAdd 
-        cMsg := " У " + cName + ": " + astr[i][_NAME_TOV_]  + CRLF
-        cMsg += "не найдено соответствие переданной единицы измерения" + CRLF      
-        cMsg += "единицам измерения из номенклатурного справочника." + CRLF
-        cMsg += "Изменена на переданную единицу измерения."
+      if lAdd
+        cMsg := " РЈ " + cName + ": " + astr[i][_NAME_TOV_]  + CRLF
+        cMsg += "РЅРµ РЅР°Р№РґРµРЅРѕ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРµ РїРµСЂРµРґР°РЅРЅРѕР№ РµРґРёРЅРёС†С‹ РёР·РјРµСЂРµРЅРёСЏ" + CRLF
+        cMsg += "РµРґРёРЅРёС†Р°Рј РёР·РјРµСЂРµРЅРёСЏ РёР· РЅРѕРјРµРЅРєР»Р°С‚СѓСЂРЅРѕРіРѕ СЃРїСЂР°РІРѕС‡РЅРёРєР°." + CRLF
+        cMsg += "РР·РјРµРЅРµРЅР° РЅР° РїРµСЂРµРґР°РЅРЅСѓСЋ РµРґРёРЅРёС†Сѓ РёР·РјРµСЂРµРЅРёСЏ."
         AADD(aMssg,cMsg)
-        //cMsg += "Изменить на переданную единицу измерения?"
-        //if (6 != messagebox(cMsg,TITLEAPP,68))          
+        //cMsg += "РР·РјРµРЅРёС‚СЊ РЅР° РїРµСЂРµРґР°РЅРЅСѓСЋ РµРґРёРЅРёС†Сѓ РёР·РјРµСЂРµРЅРёСЏ?"
+        //if (6 != messagebox(cMsg,TITLEAPP,68))
           astr[i][_OKEY_] := aEd[1]
-        //Endif   
+        //Endif
       endif
     endif
 
