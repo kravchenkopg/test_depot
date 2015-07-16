@@ -1,3 +1,4 @@
+﻿//русский
 //импорт с-ф
 #include "bo_const.ch"
 #define _NOMSTR_      1
