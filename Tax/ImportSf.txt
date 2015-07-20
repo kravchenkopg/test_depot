@@ -1,6 +1,5 @@
-﻿//русский
 //импорт с-ф
-#include "bo_const.ch"
+#include "bo_const.ch" 
 #define _NOMSTR_      1
 #define _NAME_TOV_    2
 #define _OKEY_        3
@@ -37,7 +36,7 @@ altd()
   hxmldocs:read(cFile)
   elem := hxmldocs:Find("Файл")
   begin sequence
-    ParsXmlDoc(elem,a)
+    ParsXmlDoc(elem,a)     
   recover
      AADD(aMssg,"не правильная XML структура файла.")
     Return .F.
@@ -46,7 +45,7 @@ altd()
     Return .F.
   endif
 Return .T.
-
+ 
 Function GetStructXmlDoc(arr,cFile,cTiCtg,aMssg)
 local a := {},aStr := {},i
 local cParam,Value
@@ -187,7 +186,7 @@ altd()
        endif
    ENDCASE
   next
-  //Не можем определить адресса
+  //Не можем определить адресса 
 
   if !Empty(cGrOtpravName)
     if cGrOtpravName == cSobsName
@@ -212,7 +211,7 @@ altd()
     DO CASE
       CASE cParam == Upper("НомерСчФ")
         cDocNum := AllTrim(arr[i][2])
-        if len(cDocNum) > 24
+        if len(cDocNum) > 24          
           cDocDopNum := SubStr(cDocNum,25)
           cDocNum := PADR(AllTrim(cDocNum),24)
         endif
@@ -250,7 +249,7 @@ altd()
         endif
         cDocNumDef := AllTrim(arr[i][2])
         if len(cDocNumDef) > 24
-          cDocDopNumDef := SubStr(cDocNumDef,25)
+          cDocDopNumDef := SubStr(cDocNumDef,25) 
           cDocNumDef := PADR(cDocNumDef,24)
         endif
       CASE cParam == Upper("ДатаИспрСчФ")
@@ -738,7 +737,7 @@ Local i , value ,aAns,aIniValue,a
 local tbName , tagName , group, nnum,name,cAl , lAdd := .F.
 local cMsg , aEd := {}, j , cName := ""
   for i := 1 to len(astr)
-    value := astr[i][_STR_TP_]
+    value := astr[i][_STR_TP_]    
     if ValType(value) != "C" .Or. Empty(value) .Or. !(value $ "2,3,4,5,6,7")
         aAns:={'Товары default','Запасы','Услуги','Имущество'}
         aIniValue := {{"Категория для товара: " +  astr[i][_NAME_TOV_] ,aAns}}
@@ -773,8 +772,8 @@ local cMsg , aEd := {}, j , cName := ""
       case value  == "5"
         cName := "имущества"
    endcase
-
-    if Empty(astr[i][_NAME_TOV_])
+    
+    if Empty(astr[i][_NAME_TOV_])      
        AADD(aMssg,"Не указано наименование " + cName )
       RETURN .F.
     endif
@@ -818,12 +817,12 @@ local cMsg , aEd := {}, j , cName := ""
         lAdd := .T.
       else
         if UPPER(ALLTRIM(astr[i][_NAME_TOV_])) != Upper(AllTrim((cAl)->Name))
-altd()
+altd()           
           cMsg := " У " + cName + ": " + astr[i][_NAME_TOV_]   + CRLF
-          cMsg := "наименование в справочнике не совепадается с наименованием в импортируемом файле"   + CRLF
-          cMsg += "Изменено на наименвоание из справочника." + CRLF
-          astr[i][_NAME_TOV_] := (cAl)->Name
-          AADD(aMssg,cMsg)
+          cMsg := "наименование в справочнике не совепадается с наименованием в импортируемом файле"   + CRLF          
+          cMsg += "Изменено на наименвоание из справочника." + CRLF 
+          astr[i][_NAME_TOV_] := (cAl)->Name 
+          AADD(aMssg,cMsg)         
           //cMsg += "Изменить название " + cName + " на соответствующее параметрам?"
           //if (6 != messagebox(cMsg,TITLEAPP,68))
           //lAdd := .T.
@@ -865,7 +864,7 @@ altd()
 
     endif
     _DbAreaClose(cAl)
-
+    
     if Empty(astr[i][_OKEY_])
       if len(aEd) = 1
         cMsg := " У " + cName +": " + astr[i][_NAME_TOV_]  + CRLF
@@ -900,23 +899,22 @@ altd()
       lAdd := .T.
       for j := 1 to len(aEd)
         if AllTrim(Upper(astr[i][_OKEY_])) == AllTrim(Upper(aEd[j]))
-          lAdd := .F.
+          lAdd := .F. 
           exit
         endif
       next
-      if lAdd
+      if lAdd 
         cMsg := " У " + cName + ": " + astr[i][_NAME_TOV_]  + CRLF
-        cMsg += "не найдено соответствие переданной единицы измерения" + CRLF
+        cMsg += "не найдено соответствие переданной единицы измерения" + CRLF      
         cMsg += "единицам измерения из номенклатурного справочника." + CRLF
         cMsg += "Изменена на переданную единицу измерения."
         AADD(aMssg,cMsg)
         //cMsg += "Изменить на переданную единицу измерения?"
-        //if (6 != messagebox(cMsg,TITLEAPP,68))
+        //if (6 != messagebox(cMsg,TITLEAPP,68))          
           astr[i][_OKEY_] := aEd[1]
-        //Endif
+        //Endif   
       endif
     endif
 
   next
 return .T.
-
