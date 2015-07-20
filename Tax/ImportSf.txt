@@ -71,6 +71,9 @@ local aAns ,aIniValue , nSumSfNNds := 0, nSumSfNds := 0 , nSumSfA := 0  ,lNoNdsS
 local cSfKorrId := "", IdPosred := "", cSfPosredId := ""
 local cKOP_NDS := "",cKOP_AST := "", cKOP_NNDS := "",cKOP_NDS0 := "",cKOP_AG_NDS := ""
 local dCUST_DATE := CTOD(""),dCONF_DATE := CTOD(""),cCompl_M := "",cStrNid := ""
+local cOtpravInn := "",cOtpravKpp := "" ,cPoluchInn := "",cPoluchKpp := ""
+Local cGrOtpravInn := "",cGrOtpravKpp := "" ,cGrPoluchInn := "",cGrPoluchKpp := ""
+Local lUrOtprav := .T. , lUrPoluch := .T.,lUrGrOtprav := .T. , lUrGrPoluch := .T.
   for i := 1 to len(arr)
     cParam := Upper(AllTrim(arr[i][1]))
     Value := Upper(AllTrim(arr[i][2]))
@@ -134,12 +137,23 @@ altd()
          Return .F.
        endif
        nLen := len(idOper)
-       idOtprav := SubStr(idOtprav,nLen + 1)
+       if SubStr(idOtprav,nLen + 1,1)== "-"
+         nLen := nLen + 2
+       else
+         nLen := nLen + 1
+       endif
+       idOtprav := SubStr(idOtprav,nLen)
        if Empty(idOtprav) .Or. !(DIC_PARTNER)->(DbSeek(idOtprav,.T.,"TAG_UCHEDO"))
          AADD(aMssg,'Для отправителя не определен код участника электронного документооборота')
          Return .F.
        else
          idOtprav := (DIC_PARTNER)->PART_ID
+       endif
+       nLen := len(idOper)
+       if SubStr(idPoluc,nLen + 1,1)== "-"
+         nLen := nLen + 2
+       else
+         nLen := nLen + 1
        endif
        idPoluch := SubStr(idPoluch,nLen + 1)
        if Empty(idPoluch) .Or. !(DIC_PARTNER)->(DbSeek(idPoluch,.T.,"TAG_UCHEDO"))
@@ -150,12 +164,116 @@ altd()
        endif
 
      CASE cParam == Upper("ИННЮЛ")
+       //Сведения об операторе электронного документооборота отправителя 
        if Upper("СвУчДокОбор") $ Upper(AllTrim(arr[i][3]))
          if !CheckPartnerForInn(Value,.T.)
            AADD(aMssg,'Не определен оператор электронного документооборота')
            Return .F.
          endif
        endif
+    ENDCASE
+  
+  next
+//Определим партнеров с-ф если определены ИНН и КПП
+
+  for i := 1 to len(arr)
+    cParam := Upper(AllTrim(arr[i][1]))
+    Value := Upper(AllTrim(arr[i][2]))
+    DO CASE
+     CASE cParam == Upper("ИННЮЛ")
+       //Сведения об организации продавце
+       if Upper("СвСчФакт-СвПрод-ИдСв-СвЮЛ") $ Upper(AllTrim(arr[i][3]))
+         if !Empty(Value)
+           lUrOtprav := .T.
+           cOtpravInn := Value
+         endif
+       endif
+       //Сведения об организации покупателе
+       if Upper("СвСчФакт-СвПокуп-ИдСв-СвЮЛ") $ Upper(AllTrim(arr[i][3]))
+         if !Empty(Value)
+           lUrPoluch := .T.
+           cPoluchInn := Value
+         endif
+       endif
+     CASE cParam == Upper("КПП")
+       //Сведения об организации продавце
+       if Upper("СвСчФакт-СвПрод-ИдСв-СвЮЛ") $ Upper(AllTrim(arr[i][3]))
+         if !Empty(Value)
+           lUrOtprav := .T.
+           cOtpravKpp := Value
+         endif
+       endif
+       //Сведения об организации покупателе
+       if Upper("СвСчФакт-СвПокуп-ИдСв-СвЮЛ") $ Upper(AllTrim(arr[i][3]))
+         if !Empty(Value)
+           lUrPoluch := .T.
+           cPoluchKpp := Value
+         endif
+       endif
+     CASE cParam == Upper("ИННФЛ")
+      //Сведения о ФЛ продавце
+       if Upper("СвСчФакт-СвПрод-ИдСв-СвФЛ") $ Upper(AllTrim(arr[i][3]))
+         if !Empty(Value)
+           lUrOtprav := .F.
+           cOtpravInn := Value
+         endif
+       endif
+       //Сведения о ФЛ покупателе
+       if Upper("СвСчФакт-СвПокуп-ИдСв-СвФЛ") $ Upper(AllTrim(arr[i][3]))
+         if !Empty(Value)
+           lUrPoluch := .F.
+           cPoluchInn := Value
+         endif
+       endif
+    ENDCASE    
+  next
+  
+  if lUrPoluch
+    if Empty(cPoluchInn) .and. Empty(cPoluchKpp)
+    elseif  !Empty(cPoluchInn) .And. CheckPartnerForInn(cPoluchInn,.T.,@cPoluchInn)
+      idPoluch := cPoluchInn
+    elseif  !Empty(cPoluchKpp) .And. CheckPartnerForKpp(cPoluchKpp,@cPoluchInn)
+      idPoluch := cPoluchInn
+    else 
+      cMsg += ' Не верно переданны ИНН и КПП покупателя.'  + CRLF + 'Покупатель определен по коду участника электронного документооборота.' + CRLF
+      AADD(aMssg,cMsg)
+    endif    
+  else
+    if Empty(cPoluchInn)
+    elseif CheckPartnerForInn(cPoluchInn,.T.,@cPoluchInn)
+      idPoluch := cPoluchInn
+    else
+      cMsg += ' Не верно переданны ИНН и КПП покупателя.'  + CRLF + 'Покупатель определен по коду участника электронного документооборота.' + CRLF
+      AADD(aMssg,cMsg)
+    endif
+  endif
+  if lUrOtprav
+    if Empty(cOtpravInn) .and. Empty(cPoluchKpp)
+    elseif  !Empty(cOtpravInn) .And. CheckPartnerForInn(cOtpravInn,.T.,@cOtpravInn)
+      idOtprav := cOtpravInn
+    elseif  !Empty(cPoluchKpp) .And. CheckPartnerForKpp(cPoluchKpp,@cOtpravInn)
+      idOtprav := cOtpravInn
+    else 
+      cMsg += ' Не верно переданны ИНН и КПП продавца.'  + CRLF + 'Продавец определен по коду участника электронного документооборота.' + CRLF
+      AADD(aMssg,cMsg)
+    endif
+  else
+    if Empty(cOtpravInn)
+    elseif CheckPartnerForInn(cOtpravInn,.T.,@cOtpravInn)
+      idOtprav := cOtpravInn
+    else
+      cMsg += ' Не верно переданны ИНН и КПП продавца.'  + CRLF + 'Продавец определен по коду участника электронного документооборота.' + CRLF
+      AADD(aMssg,cMsg)
+    endif
+  endif
+
+ 
+
+  for i := 1 to len(arr)
+    cParam := Upper(AllTrim(arr[i][1]))
+    Value := Upper(AllTrim(arr[i][2]))
+     
+    DO CASE
      CASE cParam == Upper("НаимОрг")
        if Upper("СвСчФакт-СвПрод-ИдСв-СвЮЛ") $ Upper(AllTrim(arr[i][3]))
          cSobsName := Value
@@ -168,22 +286,10 @@ altd()
        endif
        if Upper("СвСчФакт-ГрузПолуч-НаимГОП") $ Upper(AllTrim(arr[i][3]))
          cGrPoluchName := Value
-       endif
+       endif    
      CASE cParam == Upper("ОнЖе")
         IdGrOtprav := IdOtprav
-     CASE cParam == Upper("ИННФЛ")
-       if Upper("СвСчФакт-ГрузОт-ГрузОтпр-НаимГОП") $ Upper(AllTrim(arr[i][3]))
-         if !CheckPartnerForInn(Value,.F.,@IdGrOtprav)
-           IdGrOtprav := ""
-           //не определен грузоотправитель
-         endif
-       endif
-       if Upper("СвСчФакт-ГрузПолуч-НаимГОП") $ Upper(AllTrim(arr[i][3]))
-         if !CheckPartnerForInn(Value,.F.,@IdGrPoluch)
-           IdGrPoluch := ""
-           //не определен грузоотправитель
-         endif
-       endif
+     
    ENDCASE
   next
   //Не можем определить адресса 
@@ -596,7 +702,7 @@ altd()
     //Запросить вид двидения
   endif
   if cMoveTp $ "ОТ,БП,ЗК"
-    if !CheckStr(astr,@aMssg)
+    if !CheckStr(astr,IsBest5,@aMssg)
       Return .F.
     endif
   endif
@@ -656,6 +762,7 @@ local lRet := .F.
 return lRet
 
 Function CheckPartnerForInn(INN,NotFiz,IdPartner)
+  INN := Upper(INN)
   if NotFiz
     if !(DIC_PARTNER)->(DbSeek(" " + INN,.T.,"S_TAG_INN"))
       if !(DIC_PARTNER)->(DbSeek("2" + INN,.T.,"S_TAG_INN"))
@@ -666,6 +773,13 @@ Function CheckPartnerForInn(INN,NotFiz,IdPartner)
     if !(DIC_PARTNER)->(DbSeek("1" + INN,.T.,"S_TAG_INN"))
       Return .F.
     endif
+  endif
+  IdPartner := (DIC_PARTNER)->PART_ID
+Return .T.
+
+Function CheckPartnerForKpp(Kpp,IdPartner)
+  if !(DIC_PARTNER)->(DbSeek( Upper(Kpp),.T.,"FULTAG_KPP"))
+      Return .F.
   endif
   IdPartner := (DIC_PARTNER)->PART_ID
 Return .T.
@@ -732,10 +846,69 @@ local lStA
   endif
 return .T.
 
-function CheckStr(astr,aMssg)
+function GetTovarParam(cname,group, nnum,name,type)
+Local lRet := .F., i,key ,tbName, cAl,tagName
+  for i := 1 to 4
+    do case
+      case value == 1
+        tbName +="Sclad\MLabel.dbf"
+        tagName := "TAG_NAME"
+        key := Upper(AllTrim(Padr(cname,30)))
+      case value == 2
+        tbName +="Zapas\MLabel.dbf"
+        tagName := "TAG_NAME"
+        key := Upper(AllTrim(Padr(cname,30)))
+      case value == 3
+        tbName +="TOVAR\MLabel.dbf"
+        tagName := "MLabel_T"
+        key := Upper(AllTrim(Padr(" " + cname,61)))
+      case value == 4
+        tbName +="Assets\res_lbl.dbf"
+        tagName := "TAG_NAME"
+        key := Upper(AllTrim(Padr(cname,60)))//60
+    endcase
+    if ! _DbAreaOpen(tbName, @cAl,tagName)
+      RETURN .F.
+    endif
+    if (cAl)->(DbSeek(key))
+      if i < 4 
+        group := (cAl)->grup
+        nnum  := (cAl)->nnum
+        name  := (cAl)->name
+      else
+        group := (cAl)->group
+        nnum  := (cAl)->nnum
+        name  := (cAl)->name
+      endif 
+      type := str(i+1,1,0)
+      lRet := .T.
+      exit
+    endif
+    
+    _DbAreaClose(cAl)
+  next
+  _DbAreaClose(cAl)
+return lRet
+
+function CheckStr(astr,IsBest5,aMssg)
 Local i , value ,aAns,aIniValue,a
-local tbName , tagName , group, nnum,name,cAl , lAdd := .F.
+local tbName , tagName , group, nnum,name,cAl , lAdd := .F.,type
 local cMsg , aEd := {}, j , cName := ""
+  if !IsBest5
+    for i := 1 to len(astr)    
+      if Empty(astr[i][_NAME_TOV_])      
+         AADD(aMssg,"Не указано наименование товара."  )           
+         RETURN .F.
+      endif
+      if !GetTovarParam(astr[i][_NAME_TOV_],@group, @nnum,@name,@type)
+         AADD(aMssg,"Неудалось получить соответствие товару: " + AllTrim(astr[i][_NAME_TOV_]) + CRLF +  " в номенклатурных справочниках."  )
+      endif 
+      astr[i][_NAME_TOV_] := name
+      astr[i][_STR_TP_] := type
+      astr[i][_GROUP_] := group
+      astr[i][_NOM_NUM_] := nnum 
+    next
+  endif 
   for i := 1 to len(astr)
     value := astr[i][_STR_TP_]    
     if ValType(value) != "C" .Or. Empty(value) .Or. !(value $ "2,3,4,5,6,7")
@@ -918,3 +1091,7 @@ altd()
 
   next
 return .T.
+
+
+
+
